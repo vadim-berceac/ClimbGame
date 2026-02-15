@@ -29,6 +29,9 @@ public class AdvancedCharacterController
     private Vector3 _climbNormal;
     private RaycastHit _slopeHit;
     
+    private bool _isForcedFalling; 
+    private int _forcedFallingFrames;
+    
     public bool IsGrounded() => _isGrounded;
     public bool IsClimbing() => _isClimbing;
     public bool IsOnClimbableSurface() => _isOnClimbableSurface;
@@ -100,13 +103,11 @@ public class AdvancedCharacterController
             _jumpRequested = false;
         }
 
-        // Карабканье отменяет прыжок
         if (_isClimbing || _isOnClimbableSurface)
         {
             _isJumping = false;
         }
     
-        // Прыжок заканчивается при начале падения
         if (_isJumping)
         {
             if (_velocity.y < -JumpVelocityThreshold)
@@ -115,7 +116,6 @@ public class AdvancedCharacterController
             }
         }
 
-        // Полный сброс при приземлении
         if (_isGrounded && _velocity.y <= 0f)
         {
             _isJumping = false;
@@ -146,12 +146,19 @@ public class AdvancedCharacterController
     
     private void CheckGround()
     {
+        if (_forcedFallingFrames > 0)
+        {
+            _forcedFallingFrames--;
+            _isGrounded = false;
+            return;
+        }
+    
         if (Physics.SphereCast(_transform.position, _controller.radius, Vector3.down, out var hit, 
-            _controller.height / 2f + _groundCheckDistance, _groundMask))
+                _controller.height / 2f + _groundCheckDistance, _groundMask))
         {
             var angle = Vector3.Angle(Vector3.up, hit.normal);
             _isGrounded = angle <= _controller.slopeLimit;
-            
+        
             if (_isGrounded && _velocity.y < 0)
             {
                 _velocity.y = -2f;
@@ -165,6 +172,11 @@ public class AdvancedCharacterController
     
     private void CheckClimbing()
     {
+        if (_forcedFallingFrames > 0)
+        {
+            return;
+        }
+    
         if (_isJumping)
         {
             _isOnClimbableSurface = false;
@@ -174,7 +186,9 @@ public class AdvancedCharacterController
     
         if (_isOnClimbableSurface && _moveInput.y < -0.1f)
         {
-            if (!Physics.Raycast(_transform.position, Vector3.down, _controller.height * 0.6f, _groundMask))
+            var isVerticalWall = Mathf.Abs(_climbNormal.y) < 0.5f;
+        
+            if (isVerticalWall && _isGrounded)
             {
                 _isOnClimbableSurface = false;
                 _isClimbing = false;
@@ -190,6 +204,22 @@ public class AdvancedCharacterController
         
             if (angle > _controller.slopeLimit && angle <= _maxClimbAngle + 90f)
             {
+                var hitBelowCharacter = hit.point.y < _transform.position.y;
+            
+                if (_isGrounded && hitBelowCharacter && _moveInput.y < -0.1f)
+                {
+                    var backCheckPos = _transform.position - _transform.forward * (_controller.radius * 0.5f);
+                
+                    if (!Physics.Raycast(backCheckPos, Vector3.down, _controller.height, _groundMask))
+                    {
+                        _isOnClimbableSurface = false;
+                        _isClimbing = false;
+                        _isGrounded = false;
+                        _forcedFallingFrames = 10;
+                        return;
+                    }
+                }
+            
                 _isOnClimbableSurface = true;
                 _climbNormal = hit.normal;
                 _isClimbing = _moveInput.magnitude > 0.1f;
@@ -203,6 +233,14 @@ public class AdvancedCharacterController
     
     private void HandleMovement()
     {
+        if (_forcedFallingFrames > 0)
+        {
+            _velocity.x = -_transform.forward.x * _moveSpeed * 0.8f;
+            _velocity.z = -_transform.forward.z * _moveSpeed * 0.8f;
+            _velocity.y = -8f;
+            return;
+        }
+    
         if (_isClimbing)
         {
             _velocity = HandleClimbingMovement();
