@@ -36,7 +36,7 @@ public class CharacterCore : MonoBehaviour
 
     private void Update()
     {
-        Controller.Move(InputHandler.MoveInput, walkSpeed);
+        Controller.Move(InputHandler.MoveInput, walkSpeed, 0.1f);
         Controller.JumpAndGravity(InputHandler.JumpPressed, jumpHeight);
         Controller.Rotation(rotationSpeed);
         
