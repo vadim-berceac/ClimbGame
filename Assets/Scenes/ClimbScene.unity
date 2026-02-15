@@ -958,18 +958,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3478375533377123974, guid: eb34a0d6c25159846b8a7f55258e53e7, type: 3}
-      propertyPath: mode
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 3478375533377123974, guid: eb34a0d6c25159846b8a7f55258e53e7, type: 3}
-      propertyPath: controllerData.<MaxClimbAngle>k__BackingField
-      value: 90
-      objectReference: {fileID: 0}
-    - target: {fileID: 3478375533377123974, guid: eb34a0d6c25159846b8a7f55258e53e7, type: 3}
-      propertyPath: controllerData.<ClimbForwardRayOffset>k__BackingField
-      value: 0
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

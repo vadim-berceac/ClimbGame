@@ -2,53 +2,94 @@ using UnityEngine;
 
 public class AdvancedCharacterController
 {
+    #region Constants
+    
+    private const float JumpVelocityThreshold = 0.1f;
+    private const float VerticalWallThreshold = 0.5f;
+    private const float MinClimbAngle = 60f;
+    private const float WallRotationSpeed = 8f;
+    private const float ClimbingRotationMultiplier = 5f;
+    private const float ForcedFallSpeed = -8f;
+    private const int ForcedFallFrames = 10;
+    private const float GroundSnapVelocity = -2f;
+    private const float LedgeClimbMultiplier = 3.0f;
+    private const float LedgeForwardPushMultiplier = 1.5f;
+    
+    #endregion
+
+    #region Configuration (Readonly)
+    
     private readonly CharacterController _controller;
-    private readonly float _groundCheckDistance;
+    private readonly Transform _transform;
     private readonly LayerMask _groundMask;
+    
+    private readonly float _groundCheckDistance;
     private readonly float _slopeForce;
-    private readonly bool _enableClimbing;
     private readonly float _climbCheckDistance;
     private readonly float _maxClimbAngle;
     private readonly float _climbRayOffset;
     private readonly float _climbSpeedMultiplier;
-    private readonly Transform _transform;
-    private const float JumpVelocityThreshold = 0.1f;
+    private readonly float _speedChangeRate;
+    private readonly bool _enableClimbing;
+    
+    #endregion
+
+    #region State
     
     private Vector3 _moveInput;
+    private Vector3 _velocity;
+    private Vector3 _climbNormal;
+    private RaycastHit _slopeHit;
+    
     private float _moveSpeed;
+    private float _currentSpeed;
     private float _rotationSpeed;
     private float _jumpHeight;
     private float _gravity;
-    private float _climbSpeed;
-    private Vector3 _velocity;
+    
     private bool _isGrounded;
     private bool _isClimbing;
     private bool _isJumping;
     private bool _jumpRequested;
     private bool _isOnClimbableSurface;
-    private Vector3 _climbNormal;
-    private RaycastHit _slopeHit;
     
-    private bool _isForcedFalling; 
-    private int _forcedFallingFrames;
+    #endregion
+
+    #region Wall Rotation State
+    
     private bool _isRotatingToWall;
     private Quaternion _targetWallRotation;
     private Quaternion _startRotation;
     private float _wallRotationProgress;
+    
+    #endregion
+
+    #region Forced Falling State
+    
+    private int _forcedFallingFrames;
+    
+    #endregion
+
+    #region Public Properties
     
     public bool IsGrounded() => _isGrounded;
     public bool IsClimbing() => _isClimbing;
     public bool IsOnClimbableSurface() => _isOnClimbableSurface;
     public bool IsJumping() => _isJumping;
     public bool IsFalling() => !_isGrounded && !_isOnClimbableSurface && _velocity.y < -JumpVelocityThreshold;
-    public bool IsAirborne() => !_isGrounded && !_isClimbing && !_isOnClimbableSurface; 
+    public bool IsAirborne() => !_isGrounded && !_isClimbing && !_isOnClimbableSurface;
     public Vector3 Velocity => _velocity;
+    public float CurrentSpeed => _currentSpeed;
     
+    #endregion
+
+    #region Initialization
     
-    public AdvancedCharacterController(CharacterController characterController,
-        AdvancedCharacterControllerData data)
+    public AdvancedCharacterController(CharacterController characterController, AdvancedCharacterControllerData data)
     {
         _controller = characterController;
+        _transform = characterController.transform;
+        
         _groundCheckDistance = data.GroundCheckDistance;
         _groundMask = data.GroundMask;
         _slopeForce = data.SlopeForce;
@@ -57,15 +98,26 @@ public class AdvancedCharacterController
         _maxClimbAngle = data.MaxClimbAngle;
         _climbRayOffset = data.ClimbRayOffset;
         _climbSpeedMultiplier = data.ClimbSpeedMultipler;
-        
-        _transform = characterController.transform;
+        _speedChangeRate = 10f;
     }
     
-    public void Move(Vector3 motion, float speed)
+    #endregion
+
+    #region Public Methods
+    
+    /// <summary>
+    /// Обрабатывает движение персонажа с плавным изменением скорости
+    /// </summary>
+    /// <param name="motion">Направление движения (X - поворот, Y - вперёд/назад)</param>
+    /// <param name="speed">Целевая скорость движения</param>
+    /// <param name="speedChangeRate">Скорость изменения скорости (по умолчанию 10)</param>
+    public void Move(Vector3 motion, float speed, float? speedChangeRate = null)
     {
         _moveInput = motion;
         _moveSpeed = speed;
-        _climbSpeed = speed * _climbSpeedMultiplier;
+        
+        var actualSpeedChangeRate = speedChangeRate ?? _speedChangeRate;
+        _currentSpeed = Mathf.Lerp(_currentSpeed, _moveSpeed, actualSpeedChangeRate * Time.fixedDeltaTime);
         
         CheckGround();
         
@@ -79,106 +131,46 @@ public class AdvancedCharacterController
         _controller.Move(_velocity * Time.fixedDeltaTime);
     }
     
+    /// <summary>
+    /// Обрабатывает прыжок и применение гравитации
+    /// </summary>
     public void JumpAndGravity(bool jumpPressed, float jumpHeight, float gravityMultiplier = 1f)
     {
         _jumpHeight = jumpHeight;
         _gravity = gravityMultiplier * Physics.gravity.y;
 
-        if (jumpPressed)
-        {
-            if (_isOnClimbableSurface || _isClimbing)
-            {
-                _isOnClimbableSurface = false;
-                _isClimbing = false;
-                _velocity.y = Mathf.Sqrt(_jumpHeight * -2f * _gravity);
-                _velocity +=  _moveSpeed * 0.5f * -_transform.forward;
-                _isJumping = true;
-                _jumpRequested = true;
-            }
-            else if (_isGrounded && !_jumpRequested)
-            {
-                _velocity.y = Mathf.Sqrt(_jumpHeight * -2f * _gravity);
-                _isJumping = true;
-                _jumpRequested = true;
-            }
-        }
-        else
-        {
-            _jumpRequested = false;
-        }
-
-        if (_isClimbing || _isOnClimbableSurface)
-        {
-            _isJumping = false;
-        }
-    
-        if (_isJumping)
-        {
-            if (_velocity.y < -JumpVelocityThreshold)
-            {
-                _isJumping = false;
-            }
-        }
-
-        if (_isGrounded && _velocity.y <= 0f)
-        {
-            _isJumping = false;
-            _jumpRequested = false;
-        }
-  
-        if (!_isClimbing && !_isOnClimbableSurface)
-        {
-            _velocity.y += _gravity * Time.fixedDeltaTime;
-        }
-        else if (!_isClimbing)
-        {
-            _velocity.y = 0f;
-        }
+        HandleJump(jumpPressed);
+        UpdateJumpState();
+        ApplyGravity();
     }
     
+    /// <summary>
+    /// Обрабатывает поворот персонажа
+    /// </summary>
     public void Rotation(float rotationSpeed)
     {
         _rotationSpeed = rotationSpeed;
     
         if (_isRotatingToWall)
         {
-            _wallRotationProgress += Time.fixedDeltaTime * 8f;
-            _transform.rotation = Quaternion.Slerp(_startRotation, _targetWallRotation, _wallRotationProgress);
-        
-            if (_wallRotationProgress >= 1f)
-            {
-                _isRotatingToWall = false;
-            }
+            UpdateWallRotation();
             return;
         }
     
-        if (_isClimbing || _isOnClimbableSurface) 
+        if (_isClimbing || _isOnClimbableSurface)
         {
-            var targetForward = -_climbNormal;
-        
-            var targetUp = Vector3.ProjectOnPlane(Vector3.up, _climbNormal).normalized;
-        
-            if (targetUp.sqrMagnitude < 0.01f)
-            {
-                targetUp = Vector3.ProjectOnPlane(Vector3.forward, _climbNormal).normalized;
-            }
-        
-            var targetRotation = Quaternion.LookRotation(targetForward, targetUp);
-        
-            _transform.rotation = Quaternion.Slerp(
-                _transform.rotation,
-                targetRotation,
-                _rotationSpeed * 5f * Time.fixedDeltaTime
-            );
-        
+            AlignToSurface();
             return;
         }
     
-        if (Mathf.Abs(_moveInput.x) > 0.1f)
-        {
-            _transform.Rotate(0f, _moveInput.x * _rotationSpeed * Time.fixedDeltaTime, 0f);
-        }
+        // При обычном движении плавно возвращаем капсулу в вертикальное положение
+        AlignToVertical();
+        ApplyNormalRotation();
     }
+    
+    #endregion
+
+    #region Ground Detection
     
     private void CheckGround()
     {
@@ -188,16 +180,18 @@ public class AdvancedCharacterController
             _isGrounded = false;
             return;
         }
-    
-        if (Physics.SphereCast(_transform.position, _controller.radius, Vector3.down, out var hit, 
-                _controller.height / 2f + _groundCheckDistance, _groundMask))
-        {
-            var angle = Vector3.Angle(Vector3.up, hit.normal);
-            _isGrounded = angle <= _controller.slopeLimit;
         
+        var sphereCastOrigin = _transform.position;
+        var sphereCastDistance = _controller.height / 2f + _groundCheckDistance;
+        
+        if (Physics.SphereCast(sphereCastOrigin, _controller.radius, Vector3.down, out var hit, sphereCastDistance, _groundMask))
+        {
+            var surfaceAngle = Vector3.Angle(Vector3.up, hit.normal);
+            _isGrounded = surfaceAngle <= _controller.slopeLimit;
+           
             if (_isGrounded && _velocity.y < 0)
             {
-                _velocity.y = -2f;
+                _velocity.y = GroundSnapVelocity;
             }
         }
         else
@@ -206,98 +200,115 @@ public class AdvancedCharacterController
         }
     }
     
-    private void CheckClimbing()
-{
-    if (_forcedFallingFrames > 0)
-    {
-        return;
-    }
+    #endregion
 
-    if (_isJumping)
-    {
-        _isOnClimbableSurface = false;
-        _isClimbing = false;
-        _isRotatingToWall = false;
-        return;
-    }
-
-    if (_isOnClimbableSurface && _moveInput.y < -0.1f)
-    {
-        var isVerticalWall = Mathf.Abs(_climbNormal.y) < 0.5f;
+    #region Climbing Detection
     
-        if (isVerticalWall && _isGrounded)
+    private void CheckClimbing()
+    {
+        if (_forcedFallingFrames > 0 || _isJumping)
+        {
+            ResetClimbingState();
+            return;
+        }
+        
+        if (ShouldDetachFromWall())
         {
             _isOnClimbableSurface = false;
             _isClimbing = false;
             return;
         }
-    }
-   
-    var rayOrigin = _transform.position + Vector3.up * _climbRayOffset;
-
-    if (Physics.Raycast(rayOrigin, _transform.forward, out var hit, _climbCheckDistance, _groundMask))
-    {
-        var angle = Vector3.Angle(Vector3.up, hit.normal);
-    
-        // КЛЮЧЕВОЕ ИЗМЕНЕНИЕ: карабканье только на крутых поверхностях (> 60 градусов)
-        // Наклоны 45-60 градусов обрабатываются как склоны
-        if (angle > 60f && angle <= _maxClimbAngle + 90f)
+        
+        if (TryFindClimbableSurface(out var hit))
         {
-            var hitBelowCharacter = hit.point.y < _transform.position.y;
-        
-            if (_isGrounded && hitBelowCharacter && _moveInput.y < -0.1f)
+            if (ShouldFallFromEdge(hit))
             {
-                var backCheckPos = _transform.position - _transform.forward * (_controller.radius * 0.5f);
-            
-                if (!Physics.Raycast(backCheckPos, Vector3.down, _controller.height, _groundMask))
-                {
-                    _isOnClimbableSurface = false;
-                    _isClimbing = false;
-                    _isGrounded = false;
-                    _forcedFallingFrames = 10;
-                    return;
-                }
+                InitiateForcedFall();
+                return;
             }
             
-            if (!_isOnClimbableSurface)
-            {
-                Vector3 targetForward = -hit.normal;
-                targetForward.y = 0f;
-                
-                if (targetForward.sqrMagnitude > 0.01f)
-                {
-                    targetForward.Normalize();
-                    _targetWallRotation = Quaternion.LookRotation(targetForward);
-                    _startRotation = _transform.rotation;
-                    _wallRotationProgress = 0f;
-                    _isRotatingToWall = true;
-                }
-            }
-        
-            _isOnClimbableSurface = true;
-            _climbNormal = hit.normal;
-            _isClimbing = _moveInput.magnitude > 0.1f;
-            return;
+            AttachToSurface(hit);
+        }
+        else
+        {
+            _isOnClimbableSurface = false;
+            _isClimbing = false;
         }
     }
+    
+    private bool ShouldDetachFromWall()
+    {
+        if (!_isOnClimbableSurface || _moveInput.y >= -0.1f)
+            return false;
+        
+        var isVerticalWall = Mathf.Abs(_climbNormal.y) < VerticalWallThreshold;
+        return isVerticalWall && _isGrounded;
+    }
+    
+    private bool TryFindClimbableSurface(out RaycastHit hit)
+    {
+        var rayOrigin = _transform.position + Vector3.up * _climbRayOffset;
+        
+        if (!Physics.Raycast(rayOrigin, _transform.forward, out hit, _climbCheckDistance, _groundMask))
+            return false;
+        
+        var angle = Vector3.Angle(Vector3.up, hit.normal);
+        return angle > MinClimbAngle && angle <= _maxClimbAngle + 90f;
+    }
+    
+    private bool ShouldFallFromEdge(RaycastHit hit)
+    {
+        if (!_isGrounded || hit.point.y >= _transform.position.y || _moveInput.y >= -0.1f)
+            return false;
+        
+        var backCheckPos = _transform.position - _transform.forward * (_controller.radius * 0.5f);
+        return !Physics.Raycast(backCheckPos, Vector3.down, _controller.height, _groundMask);
+    }
+    
+    private void InitiateForcedFall()
+    {
+        _isOnClimbableSurface = false;
+        _isClimbing = false;
+        _isGrounded = false;
+        _forcedFallingFrames = ForcedFallFrames;
+    }
+    
+    private void AttachToSurface(RaycastHit hit)
+    {
+        var wasNotAttached = !_isOnClimbableSurface;
+        
+        if (wasNotAttached)
+        {
+            InitiateWallRotation(hit.normal);
+        }
+        
+        _isOnClimbableSurface = true;
+        _climbNormal = hit.normal;
+        _isClimbing = _moveInput.magnitude > 0.1f;
+    }
+    
+    private void ResetClimbingState()
+    {
+        _isOnClimbableSurface = false;
+        _isClimbing = false;
+        _isRotatingToWall = false;
+    }
+    
+    #endregion
 
-    _isOnClimbableSurface = false;
-    _isClimbing = false;
-}
+    #region Movement Handling
     
     private void HandleMovement()
     {
         if (_forcedFallingFrames > 0)
         {
-            _velocity.x = -_transform.forward.x * _moveSpeed * 0.8f;
-            _velocity.z = -_transform.forward.z * _moveSpeed * 0.8f;
-            _velocity.y = -8f;
+            ApplyForcedFallVelocity();
             return;
         }
-    
+        
         if (_isClimbing)
         {
-            _velocity = HandleClimbingMovement();
+            _velocity = CalculateClimbingVelocity();
         }
         else if (_isOnClimbableSurface)
         {
@@ -306,7 +317,7 @@ public class AdvancedCharacterController
         }
         else if (Mathf.Abs(_moveInput.y) > 0.1f)
         {
-            var targetMove = OnSlope() ? HandleSlopeMovement() : _moveInput.y * _moveSpeed * _transform.forward;
+            var targetMove = OnSlope() ? CalculateSlopeVelocity() : CalculateNormalVelocity();
             _velocity.x = targetMove.x;
             _velocity.z = targetMove.z;
         }
@@ -317,82 +328,266 @@ public class AdvancedCharacterController
         }
     }
     
-    private Vector3 HandleClimbingMovement()
+    private void ApplyForcedFallVelocity()
     {
-        var climbMove = Vector3.zero;
+        var backwardDirection = -_transform.forward;
+        _velocity.x = backwardDirection.x * _currentSpeed * 0.8f;
+        _velocity.z = backwardDirection.z * _currentSpeed * 0.8f;
+        _velocity.y = ForcedFallSpeed;
+    }
     
-        // Определяем насколько поверхность наклонная (Y компонент нормали)
-        float surfaceTilt = Mathf.Abs(_climbNormal.y);
-        bool isSlopedSurface = surfaceTilt > 0.2f; // Наклонная если Y > 0.2
-    
+    private Vector3 CalculateClimbingVelocity()
+    {
+        var desiredDirection = Vector3.zero;
+        
         if (Mathf.Abs(_moveInput.y) > 0.1f)
         {
-            var rayOrigin = _transform.position + Vector3.up * _climbRayOffset;
-            var lowerCheck = _transform.position + Vector3.up * (_climbRayOffset * 0.5f);
-        
-            var atLedge = !Physics.Raycast(rayOrigin, _transform.forward, _climbCheckDistance, _groundMask) &&
-                          Physics.Raycast(lowerCheck, _transform.forward, _climbCheckDistance, _groundMask) &&
-                          _moveInput.y > 0.1f;
-        
-            if (atLedge)
-            {
-                climbMove.y = _climbSpeed * _moveInput.y * 3.0f;
-                var forwardPush =  _climbSpeed * 1.5f * _transform.forward;
-                climbMove.x = forwardPush.x;
-                climbMove.z = forwardPush.z;
-            }
-            else
-            {
-                climbMove.y = _climbSpeed * _moveInput.y;
-            
-                // КЛЮЧЕВОЕ: для наклонных поверхностей при движении вниз - больше отталкиваемся
-                float pushMultiplier = 0.3f;
-                if (isSlopedSurface && _moveInput.y < -0.1f)
-                {
-                    // При спуске по наклону - сильнее отталкиваемся от поверхности
-                    pushMultiplier = 1.2f;
-                }
-            
-                var stickyMove = _climbSpeed * pushMultiplier * -_climbNormal;
-                climbMove.x = stickyMove.x;
-                climbMove.z = stickyMove.z;
-            }
+            desiredDirection += _transform.up * _moveInput.y;
         }
-    
-        if (Mathf.Abs(_moveInput.x) > 0.1f && climbMove.y < _climbSpeed * 2f)
+        
+        if (Mathf.Abs(_moveInput.x) > 0.1f)
         {
-            var rightMove = _climbSpeed * _moveInput.x * _transform.right;
-            climbMove.x += rightMove.x;
-            climbMove.z += rightMove.z;
+            desiredDirection += _transform.right * _moveInput.x;
+        }
+        
+        var currentClimbSpeed = _currentSpeed * _climbSpeedMultiplier;
+        var projectedDirection = ProjectOnSurface(desiredDirection.normalized, _climbNormal);
+        var climbVelocity = projectedDirection * currentClimbSpeed;
+        
+        if (_moveInput.y > 0.1f && IsAtLedge())
+        {
+            climbVelocity = CalculateLedgeClimbVelocity(currentClimbSpeed);
+        }
+        
+        return climbVelocity;
+    }
+    
+    private bool IsAtLedge()
+    {
+        var upperRayOrigin = _transform.position + Vector3.up * _climbRayOffset;
+        var lowerRayOrigin = _transform.position + Vector3.up * (_climbRayOffset * 0.5f);
+        
+        var noUpperHit = !Physics.Raycast(upperRayOrigin, _transform.forward, _climbCheckDistance, _groundMask);
+        var hasLowerHit = Physics.Raycast(lowerRayOrigin, _transform.forward, _climbCheckDistance, _groundMask);
+        
+        return noUpperHit && hasLowerHit;
+    }
+    
+    private Vector3 CalculateLedgeClimbVelocity(float climbSpeed)
+    {
+        return climbSpeed * LedgeClimbMultiplier * _transform.up  + 
+               climbSpeed * LedgeForwardPushMultiplier * _transform.forward;
+    }
+    
+    private Vector3 CalculateNormalVelocity()
+    {
+        return _moveInput.y * _currentSpeed * _transform.forward;
+    }
+    
+    private Vector3 CalculateSlopeVelocity()
+    {
+        var moveDirection = _transform.forward * _moveInput.y;
+        var slopeMoveDirection = Vector3.ProjectOnPlane(moveDirection, _slopeHit.normal).normalized;
+        var slopeVelocity = _currentSpeed * Mathf.Abs(_moveInput.y) * slopeMoveDirection;
+        
+        if (_isGrounded)
+        {
+            slopeVelocity.y -= _slopeForce;
+        }
+        
+        return slopeVelocity;
+    }
+    
+    #endregion
+
+    #region Jump Handling
+    
+    private void HandleJump(bool jumpPressed)
+    {
+        if (!jumpPressed)
+        {
+            _jumpRequested = false;
+            return;
+        }
+        
+        if (_isOnClimbableSurface || _isClimbing)
+        {
+            JumpFromWall();
+        }
+        else if (_isGrounded && !_jumpRequested)
+        {
+            JumpFromGround();
+        }
+    }
+    
+    private void JumpFromWall()
+    {
+        _isOnClimbableSurface = false;
+        _isClimbing = false;
+        _velocity.y = Mathf.Sqrt(_jumpHeight * -2f * _gravity);
+        _velocity += _moveSpeed * 0.5f * -_transform.forward;
+        _isJumping = true;
+        _jumpRequested = true;
+    }
+    
+    private void JumpFromGround()
+    {
+        _velocity.y = Mathf.Sqrt(_jumpHeight * -2f * _gravity);
+        _isJumping = true;
+        _jumpRequested = true;
+    }
+    
+    private void UpdateJumpState()
+    {
+        if (_isClimbing || _isOnClimbableSurface)
+        {
+            _isJumping = false;
+            return;
+        }
+        
+        if (_isJumping && _velocity.y < -JumpVelocityThreshold)
+        {
+            _isJumping = false;
+        }
+        
+        if (_isGrounded && _velocity.y <= 0f)
+        {
+            _isJumping = false;
+            _jumpRequested = false;
+        }
+    }
+    
+    private void ApplyGravity()
+    {
+        if (_isClimbing)
+        {
+            return;
+        }
+        
+        if (_isOnClimbableSurface)
+        {
+            _velocity.y = 0f;
+        }
+        else
+        {
+            _velocity.y += _gravity * Time.fixedDeltaTime;
+        }
+    }
+    
+    #endregion
+
+    #region Rotation Handling
+    
+    private void UpdateWallRotation()
+    {
+        _wallRotationProgress += Time.fixedDeltaTime * WallRotationSpeed;
+        _transform.rotation = Quaternion.Slerp(_startRotation, _targetWallRotation, _wallRotationProgress);
+    
+        if (_wallRotationProgress >= 1f)
+        {
+            _isRotatingToWall = false;
+        }
+    }
+    
+    private void AlignToSurface()
+    {
+        var targetForward = -_climbNormal;
+        var targetUp = CalculateSurfaceUp();
+    
+        var targetRotation = Quaternion.LookRotation(targetForward, targetUp);
+        _transform.rotation = Quaternion.Slerp(
+            _transform.rotation,
+            targetRotation,
+            _rotationSpeed * ClimbingRotationMultiplier * Time.fixedDeltaTime
+        );
+    }
+    
+    /// <summary>
+    /// Плавно выравнивает капсулу в вертикальное положение при обычном движении
+    /// </summary>
+    private void AlignToVertical()
+    {
+        var currentForward = _transform.forward;
+        currentForward.y = 0f;
+    
+        if (currentForward.sqrMagnitude < 0.01f)
+        {
+            currentForward = Vector3.ProjectOnPlane(_transform.forward, Vector3.up);
         }
     
-        return climbMove;
+        currentForward.Normalize();
+        
+        var targetRotation = Quaternion.LookRotation(currentForward, Vector3.up);
+    
+        _transform.rotation = Quaternion.Slerp(
+            _transform.rotation,
+            targetRotation,
+            _rotationSpeed * 3f * Time.fixedDeltaTime
+        );
     }
+    
+    private Vector3 CalculateSurfaceUp()
+    {
+        var targetUp = Vector3.ProjectOnPlane(Vector3.up, _climbNormal).normalized;
+    
+        if (targetUp.sqrMagnitude < 0.01f)
+        {
+            targetUp = Vector3.ProjectOnPlane(Vector3.forward, _climbNormal).normalized;
+        }
+    
+        return targetUp;
+    }
+    
+    private void ApplyNormalRotation()
+    {
+        if (Mathf.Abs(_moveInput.x) > 0.1f)
+        {
+            _transform.Rotate(0f, _moveInput.x * _rotationSpeed * Time.fixedDeltaTime, 0f);
+        }
+    }
+    
+    private void InitiateWallRotation(Vector3 surfaceNormal)
+    {
+        var targetForward = -surfaceNormal;
+        targetForward.y = 0f;
+    
+        if (targetForward.sqrMagnitude >= 0.01f)
+        {
+           return;
+        }
+        targetForward.Normalize();
+        _targetWallRotation = Quaternion.LookRotation(targetForward);
+        _startRotation = _transform.rotation;
+        _wallRotationProgress = 0f;
+        _isRotatingToWall = true;
+    }
+    #endregion
+
+    #region Slope Detection
     
     private bool OnSlope()
     {
         var rayOrigin = _transform.position + Vector3.up * 0.1f;
+        var rayDistance = _controller.height / 2f + 0.5f;
         
-        if (Physics.Raycast(rayOrigin, Vector3.down, out _slopeHit, _controller.height / 2f + 0.5f, _groundMask))
-        {
-            var angle = Vector3.Angle(Vector3.up, _slopeHit.normal);
-            return angle > 0.1f && angle <= _controller.slopeLimit;
-        }
+        if (!Physics.Raycast(rayOrigin, Vector3.down, out _slopeHit, rayDistance, _groundMask))
+            return false;
         
-        return false;
+        var angle = Vector3.Angle(Vector3.up, _slopeHit.normal);
+        return angle > 0.1f && angle <= _controller.slopeLimit;
     }
     
-    private Vector3 HandleSlopeMovement()
+    #endregion
+
+    #region Utility Methods
+    
+    /// <summary>
+    /// Проецирует вектор направления на плоскость поверхности
+    /// </summary>
+    private Vector3 ProjectOnSurface(Vector3 direction, Vector3 surfaceNormal)
     {
-        var moveDirection = _transform.forward * _moveInput.y;
-        var slopeMoveDirection = Vector3.ProjectOnPlane(moveDirection, _slopeHit.normal).normalized;
-        var slopeMove = _moveSpeed * Mathf.Abs(_moveInput.y) * slopeMoveDirection;
-    
-        if (_isGrounded)
-        {
-            slopeMove.y -= _slopeForce;
-        }
-    
-        return slopeMove;
+        return direction - Vector3.Dot(direction, surfaceNormal) * surfaceNormal;
     }
+    
+    #endregion
 }

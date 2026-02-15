@@ -3,6 +3,8 @@ using UnityEngine;
 [System.Serializable]
 public struct AdvancedCharacterControllerData
 {
+    [field:Header("Movement")]
+    
     [field:Header("Jump")]
     [field:SerializeField] public float GroundCheckDistance {get; set;}
     [field:SerializeField] public LayerMask GroundMask {get; set;}
