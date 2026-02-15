@@ -566,13 +566,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1149964769}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: 0.5564863, z: -0, w: 0.83085686}
+  m_LocalRotation: {x: 0.051205836, y: 0.5541253, z: -0.07645243, w: 0.827332}
   m_LocalPosition: {x: -11.02, y: 0, z: 26.78}
   m_LocalScale: {x: 19.660002, y: 21.58, z: 5.19}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 908935089}
-  m_LocalEulerAnglesHint: {x: 0, y: 67.626, z: 0}
+  m_LocalEulerAnglesHint: {x: 9.756, y: 67.28, z: -4.059}
 --- !u!1 &1335482024
 GameObject:
   m_ObjectHideFlags: 0
@@ -961,6 +961,10 @@ PrefabInstance:
     - target: {fileID: 3478375533377123974, guid: eb34a0d6c25159846b8a7f55258e53e7, type: 3}
       propertyPath: mode
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3478375533377123974, guid: eb34a0d6c25159846b8a7f55258e53e7, type: 3}
+      propertyPath: controllerData.<MaxClimbAngle>k__BackingField
+      value: 90
       objectReference: {fileID: 0}
     - target: {fileID: 3478375533377123974, guid: eb34a0d6c25159846b8a7f55258e53e7, type: 3}
       propertyPath: controllerData.<ClimbForwardRayOffset>k__BackingField
