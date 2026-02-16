@@ -135,7 +135,7 @@ Animator:
   m_GameObject: {fileID: 1252590841341855642}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 698a5940d430ef940831e3c1003a4bdb, type: 2}
+  m_Controller: {fileID: 0}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -172,8 +172,13 @@ MonoBehaviour:
     <EnableClimbing>k__BackingField: 1
     <ClimbSpeedMultipler>k__BackingField: 0.6
     <ClimbCheckDistance>k__BackingField: 0.6
-    <MaxClimbAngle>k__BackingField: 120
+    <MaxClimbAngle>k__BackingField: 60
     <ClimbRayOffset>k__BackingField: -1.2
+  animationConfigs:
+    <Idle0>k__BackingField: {fileID: 7400000, guid: 82a0705a8096b1a418b8f452bfdc9b94, type: 2}
+    <Walk0>k__BackingField: {fileID: 7400000, guid: 9295aa2c900f1cd468025e65c8b1126b, type: 2}
+    <Climb0>k__BackingField: {fileID: 7400000, guid: eb5c18473a6565b4b9d2ec659c17f97b, type: 2}
+    <Jump0>k__BackingField: {fileID: 7400000, guid: eb5c18473a6565b4b9d2ec659c17f97b, type: 2}
 --- !u!1 &2023685588104745601
 GameObject:
   m_ObjectHideFlags: 0

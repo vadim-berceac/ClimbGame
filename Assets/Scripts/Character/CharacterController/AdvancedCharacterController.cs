@@ -15,8 +15,8 @@ public class AdvancedCharacterController
     private const float LedgeClimbMultiplier = 3.0f;
     private const float LedgeForwardPushMultiplier = 1.5f;
     private const float RotationSnapThreshold = 0.1f;
-    private const float TerminalVelocity = -53f; // ~190 км/ч максимальная скорость падения
-    private const float FallGravityMultiplier = 2f; // Усиленная гравитация при падении для более естественного ощущения
+    private const float TerminalVelocity = -53f; 
+    private const float FallGravityMultiplier = 2f; 
     
     #endregion
 
@@ -42,11 +42,12 @@ public class AdvancedCharacterController
     private Vector3 _moveInput;
     private Vector3 _velocity;
     private Vector3 _climbNormal;
-    private Vector3 _rotationInput; // Добавлено для хранения направления от камеры
+    private Vector3 _rotationInput; 
     private RaycastHit _slopeHit;
     
     private float _moveSpeed;
     private float _currentSpeed;
+    private float _actualSpeed; 
     private float _rotationSpeed;
     private float _jumpHeight;
     private float _gravity;
@@ -83,7 +84,7 @@ public class AdvancedCharacterController
     public bool IsFalling() => !_isGrounded && !_isOnClimbableSurface && _velocity.y < -JumpVelocityThreshold;
     public bool IsAirborne() => !_isGrounded && !_isClimbing && !_isOnClimbableSurface;
     public Vector3 Velocity => _velocity;
-    public float CurrentSpeed => _currentSpeed;
+    public float CurrentSpeed => _actualSpeed; 
     
     #endregion
 
@@ -133,6 +134,9 @@ public class AdvancedCharacterController
         HandleMovement();
         
         _controller.Move(_velocity * Time.deltaTime);
+        
+        // Вычисляем реальную скорость движения после применения velocity
+        UpdateActualSpeed();
     }
     
     /// <summary>
@@ -170,7 +174,6 @@ public class AdvancedCharacterController
             return;
         }
     
-        // При обычном движении плавно возвращаем капсулу в вертикальное положение
         AlignToVertical();
         ApplyNormalRotation();
     }
@@ -255,12 +258,17 @@ public class AdvancedCharacterController
     private bool TryFindClimbableSurface(out RaycastHit hit)
     {
         var rayOrigin = _transform.position + Vector3.up * _climbRayOffset;
-        
-        if (!Physics.Raycast(rayOrigin, _transform.forward, out hit, _climbCheckDistance, _groundMask))
+    
+        if (!Physics.SphereCast(rayOrigin, _controller.radius * 0.5f, _transform.forward, 
+                out hit, _climbCheckDistance, _groundMask))
+        {
             return false;
-        
+        }
+    
         var angle = Vector3.Angle(Vector3.up, hit.normal);
-        return angle > MinClimbAngle && angle <= _maxClimbAngle + 90f;
+        var deviationFromVertical = Mathf.Abs(90f - angle);
+        
+        return angle > MinClimbAngle && deviationFromVertical <= _maxClimbAngle;
     }
     
     private bool ShouldFallFromEdge(RaycastHit hit)
@@ -408,6 +416,15 @@ public class AdvancedCharacterController
         }
         
         return slopeVelocity;
+    }
+    
+    /// <summary>
+    /// Вычисляет реальную скорость движения на основе горизонтальной составляющей velocity
+    /// </summary>
+    private void UpdateActualSpeed()
+    {
+        var horizontalVelocity = new Vector3(_velocity.x, 0f, _velocity.z);
+        _actualSpeed = horizontalVelocity.magnitude;
     }
     
     #endregion

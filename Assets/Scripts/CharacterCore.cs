@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using Zenject;
 
@@ -8,14 +9,14 @@ public class CharacterCore : MonoBehaviour
     [SerializeField] private float rotationSpeed = 50f;
     [SerializeField] private float jumpHeight = 3f;
     [SerializeField] private AdvancedCharacterControllerData controllerData;
+    [SerializeField] private AnimationPlayablesConfigs animationConfigs;
     
     public AdvancedCharacterController Controller { get; set; }
+    private PlayablesAnimatorController _animatorController;
+    
     public InputHandler InputHandler { get; set; }
     
-    //test
-    public Animator Animator { get; set; }
-    private int _climbingStateHash;
-    private int _jumpStateHash;
+    private bool _isInteracting;
     
     [Inject]
     private void Construct(PlayerInput playerInput, AIInput aiInput, CharacterController controller, Animator animator)
@@ -24,10 +25,15 @@ public class CharacterCore : MonoBehaviour
         InputHandler.SetupInput(mode);
         
         Controller = new AdvancedCharacterController(controller, controllerData);
+        _animatorController = new PlayablesAnimatorController(this, animator, animationConfigs);
+    }
+
+    public void PlayInteractAnimation(AnimationClip animationClip)
+    {
+        if(_isInteracting) {return;}
+        _isInteracting = true;
+        _animatorController.PlayOneShotAnimationClip(animationClip);
         
-        Animator = animator;
-        _climbingStateHash = Animator.StringToHash("IsClimb");
-        _jumpStateHash = Animator.StringToHash("IsJump");
     }
 
     private void OnValidate()
@@ -37,11 +43,20 @@ public class CharacterCore : MonoBehaviour
 
     private void Update()
     {
-        Controller.Move(InputHandler.MoveInput, walkSpeed, 0.1f);
+        Controller.Move(InputHandler.MoveInput, walkSpeed);
         Controller.JumpAndGravity(InputHandler.JumpPressed, jumpHeight);
         Controller.Rotation(InputHandler.Rotation, rotationSpeed);
         
-        Animator.SetBool(_climbingStateHash, Controller.IsClimbing() || Controller.IsOnClimbableSurface());
-        Animator.SetBool(_jumpStateHash, Controller.IsJumping());
+        _animatorController.UpdateLocomotion(Controller.CurrentSpeed);
+
+        if (Controller.IsJumping())
+        {
+            _animatorController.PlayOneShotAnimationClip(animationConfigs.Jump0);
+        }
+    }
+
+    private void OnDestroy()
+    {
+        _animatorController.Destroy();
     }
 }
