@@ -14,6 +14,9 @@ public class AdvancedCharacterController
     private const float GroundSnapVelocity = -2f;
     private const float LedgeClimbMultiplier = 3.0f;
     private const float LedgeForwardPushMultiplier = 1.5f;
+    private const float RotationSnapThreshold = 0.1f;
+    private const float TerminalVelocity = -53f; // ~190 км/ч максимальная скорость падения
+    private const float FallGravityMultiplier = 2f; // Усиленная гравитация при падении для более естественного ощущения
     
     #endregion
 
@@ -39,6 +42,7 @@ public class AdvancedCharacterController
     private Vector3 _moveInput;
     private Vector3 _velocity;
     private Vector3 _climbNormal;
+    private Vector3 _rotationInput; // Добавлено для хранения направления от камеры
     private RaycastHit _slopeHit;
     
     private float _moveSpeed;
@@ -108,7 +112,7 @@ public class AdvancedCharacterController
     /// <summary>
     /// Обрабатывает движение персонажа с плавным изменением скорости
     /// </summary>
-    /// <param name="motion">Направление движения (X - поворот, Y - вперёд/назад)</param>
+    /// <param name="motion">Направление движения (X - влево/вправо, Y - вперёд/назад)</param>
     /// <param name="speed">Целевая скорость движения</param>
     /// <param name="speedChangeRate">Скорость изменения скорости (по умолчанию 10)</param>
     public void Move(Vector3 motion, float speed, float? speedChangeRate = null)
@@ -117,7 +121,7 @@ public class AdvancedCharacterController
         _moveSpeed = speed;
         
         var actualSpeedChangeRate = speedChangeRate ?? _speedChangeRate;
-        _currentSpeed = Mathf.Lerp(_currentSpeed, _moveSpeed, actualSpeedChangeRate * Time.fixedDeltaTime);
+        _currentSpeed = Mathf.Lerp(_currentSpeed, _moveSpeed, actualSpeedChangeRate * Time.deltaTime);
         
         CheckGround();
         
@@ -128,7 +132,7 @@ public class AdvancedCharacterController
         
         HandleMovement();
         
-        _controller.Move(_velocity * Time.fixedDeltaTime);
+        _controller.Move(_velocity * Time.deltaTime);
     }
     
     /// <summary>
@@ -147,8 +151,11 @@ public class AdvancedCharacterController
     /// <summary>
     /// Обрабатывает поворот персонажа
     /// </summary>
-    public void Rotation(float rotationSpeed)
+    /// <param name="rotation">Вектор вращения (обычно от камеры, используется rotation.y)</param>
+    /// <param name="rotationSpeed">Скорость поворота</param>
+    public void Rotation(Vector3 rotation, float rotationSpeed)
     {
+        _rotationInput = rotation;
         _rotationSpeed = rotationSpeed;
     
         if (_isRotatingToWall)
@@ -188,8 +195,8 @@ public class AdvancedCharacterController
         {
             var surfaceAngle = Vector3.Angle(Vector3.up, hit.normal);
             _isGrounded = surfaceAngle <= _controller.slopeLimit;
-           
-            if (_isGrounded && _velocity.y < 0)
+            
+            if (_isGrounded && _velocity.y < 0 && _velocity.y > -10f)
             {
                 _velocity.y = GroundSnapVelocity;
             }
@@ -315,7 +322,7 @@ public class AdvancedCharacterController
             _velocity.x = 0f;
             _velocity.z = 0f;
         }
-        else if (Mathf.Abs(_moveInput.y) > 0.1f)
+        else if (_moveInput.magnitude > 0.1f)
         {
             var targetMove = OnSlope() ? CalculateSlopeVelocity() : CalculateNormalVelocity();
             _velocity.x = targetMove.x;
@@ -381,14 +388,19 @@ public class AdvancedCharacterController
     
     private Vector3 CalculateNormalVelocity()
     {
-        return _moveInput.y * _currentSpeed * _transform.forward;
+        var forwardMovement = _moveInput.y * _transform.forward;
+        var strafeMovement = _moveInput.x * _transform.right;
+        return _currentSpeed * (forwardMovement + strafeMovement);
     }
     
     private Vector3 CalculateSlopeVelocity()
     {
-        var moveDirection = _transform.forward * _moveInput.y;
+        var forwardMovement = _transform.forward * _moveInput.y;
+        var strafeMovement = _transform.right * _moveInput.x;
+        var moveDirection = forwardMovement + strafeMovement;
+        
         var slopeMoveDirection = Vector3.ProjectOnPlane(moveDirection, _slopeHit.normal).normalized;
-        var slopeVelocity = _currentSpeed * Mathf.Abs(_moveInput.y) * slopeMoveDirection;
+        var slopeVelocity = _currentSpeed * _moveInput.magnitude * slopeMoveDirection;
         
         if (_isGrounded)
         {
@@ -470,7 +482,13 @@ public class AdvancedCharacterController
         }
         else
         {
-            _velocity.y += _gravity * Time.fixedDeltaTime;
+            var gravityMultiplier = (_velocity.y < 0f && !_isJumping) ? FallGravityMultiplier : 1f;
+            _velocity.y += _gravity * gravityMultiplier * Time.deltaTime;
+           
+            if (_velocity.y < TerminalVelocity)
+            {
+                _velocity.y = TerminalVelocity;
+            }
         }
     }
     
@@ -480,7 +498,7 @@ public class AdvancedCharacterController
     
     private void UpdateWallRotation()
     {
-        _wallRotationProgress += Time.fixedDeltaTime * WallRotationSpeed;
+        _wallRotationProgress += Time.deltaTime * WallRotationSpeed;
         _transform.rotation = Quaternion.Slerp(_startRotation, _targetWallRotation, _wallRotationProgress);
     
         if (_wallRotationProgress >= 1f)
@@ -498,7 +516,7 @@ public class AdvancedCharacterController
         _transform.rotation = Quaternion.Slerp(
             _transform.rotation,
             targetRotation,
-            _rotationSpeed * ClimbingRotationMultiplier * Time.fixedDeltaTime
+            _rotationSpeed * ClimbingRotationMultiplier * Time.deltaTime
         );
     }
     
@@ -522,7 +540,7 @@ public class AdvancedCharacterController
         _transform.rotation = Quaternion.Slerp(
             _transform.rotation,
             targetRotation,
-            _rotationSpeed * 3f * Time.fixedDeltaTime
+            _rotationSpeed * 3f * Time.deltaTime
         );
     }
     
@@ -538,12 +556,26 @@ public class AdvancedCharacterController
         return targetUp;
     }
     
+    /// <summary>
+    /// Применяет вращение персонажа по направлению камеры на земле
+    /// </summary>
     private void ApplyNormalRotation()
     {
-        if (Mathf.Abs(_moveInput.x) > 0.1f)
+        var targetRotation = Quaternion.Euler(0f, _rotationInput.y, 0f);
+        
+        var angleDifference = Quaternion.Angle(_transform.rotation, targetRotation);
+        
+        if (angleDifference < RotationSnapThreshold)
         {
-            _transform.Rotate(0f, _moveInput.x * _rotationSpeed * Time.fixedDeltaTime, 0f);
+            _transform.rotation = targetRotation;
+            return;
         }
+       
+        _transform.rotation = Quaternion.Slerp(
+            _transform.rotation, 
+            targetRotation, 
+            Time.deltaTime * _rotationSpeed
+        );
     }
     
     private void InitiateWallRotation(Vector3 surfaceNormal)
@@ -551,16 +583,18 @@ public class AdvancedCharacterController
         var targetForward = -surfaceNormal;
         targetForward.y = 0f;
     
-        if (targetForward.sqrMagnitude >= 0.01f)
+        if (targetForward.sqrMagnitude < 0.01f)
         {
            return;
         }
+        
         targetForward.Normalize();
         _targetWallRotation = Quaternion.LookRotation(targetForward);
         _startRotation = _transform.rotation;
         _wallRotationProgress = 0f;
         _isRotatingToWall = true;
     }
+    
     #endregion
 
     #region Slope Detection

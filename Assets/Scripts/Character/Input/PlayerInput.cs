@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Zenject;
 
 public class PlayerInput : InputSource
 {
@@ -11,13 +12,26 @@ public class PlayerInput : InputSource
    private InputAction _jump;
 
    private InputAction _nextCharacter;
+   
+   private Camera _mainCamera;
 
    public Action OnCharacterSwitch;
+
+   [Inject]
+   private void Construct(Camera mainCamera)
+   {
+      _mainCamera = mainCamera;
+   }
    
    private void OnEnable()
    {
       FindActions();
       Subscribe();
+   }
+
+   private void Update()
+   {
+      Rotation = _mainCamera.transform.rotation.eulerAngles;
    }
 
    private void FindActions()

@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2630375227598488300}
   - component: {fileID: 3266804368567124125}
-  m_Layer: 0
+  m_Layer: 31
   m_Name: ZenjectInstaller
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -160,7 +160,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AdvancedCharacterController
   mode: 1
-  walkSpeed: 4
+  walkSpeed: 6
   rotationSpeed: 50
   jumpHeight: 2
   controllerData:
@@ -170,7 +170,7 @@ MonoBehaviour:
       m_Bits: 1
     <SlopeForce>k__BackingField: 20
     <EnableClimbing>k__BackingField: 1
-    <ClimbSpeedMultipler>k__BackingField: 0.3
+    <ClimbSpeedMultipler>k__BackingField: 0.6
     <ClimbCheckDistance>k__BackingField: 0.6
     <MaxClimbAngle>k__BackingField: 120
     <ClimbRayOffset>k__BackingField: -1.2
@@ -216,7 +216,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8645565511491036005}
   - component: {fileID: 8293375754736197083}
-  m_Layer: 0
+  m_Layer: 31
   m_Name: AIBrain
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -258,6 +258,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 8070610269716636418}
     m_Modifications:
+    - target: {fileID: 2018410301803881558, guid: ae8017037ed2ab242a2b96653790c559, type: 3}
+      propertyPath: m_Layer
+      value: 31
+      objectReference: {fileID: 0}
     - target: {fileID: 2694502680630260615, guid: ae8017037ed2ab242a2b96653790c559, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -298,9 +302,29 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2749827566378966921, guid: ae8017037ed2ab242a2b96653790c559, type: 3}
+      propertyPath: m_Layer
+      value: 31
+      objectReference: {fileID: 0}
+    - target: {fileID: 3582480265005878420, guid: ae8017037ed2ab242a2b96653790c559, type: 3}
+      propertyPath: m_Layer
+      value: 31
+      objectReference: {fileID: 0}
+    - target: {fileID: 5353804422106951741, guid: ae8017037ed2ab242a2b96653790c559, type: 3}
+      propertyPath: m_Layer
+      value: 31
+      objectReference: {fileID: 0}
     - target: {fileID: 5584137491012013230, guid: ae8017037ed2ab242a2b96653790c559, type: 3}
       propertyPath: m_Name
       value: Dummy
+      objectReference: {fileID: 0}
+    - target: {fileID: 7868420087816102347, guid: ae8017037ed2ab242a2b96653790c559, type: 3}
+      propertyPath: m_Layer
+      value: 31
+      objectReference: {fileID: 0}
+    - target: {fileID: 8170630003476435722, guid: ae8017037ed2ab242a2b96653790c559, type: 3}
+      propertyPath: m_Layer
+      value: 31
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

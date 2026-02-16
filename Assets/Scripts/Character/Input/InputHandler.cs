@@ -5,6 +5,8 @@ public class InputHandler
     private readonly IInputSource _playerSource;
     private readonly IInputSource _aiSource;
     public Vector2 MoveInput => _currentInputSource?.OnMove ?? Vector2.zero;
+    public Vector2 LookInput => _currentInputSource?.OnLook ?? Vector2.zero;
+    public Vector3 Rotation => _currentInputSource?.Rotation ?? Vector3.zero;
     public bool JumpPressed => _currentInputSource?.OnJump ?? false;
     
     private IInputSource _currentInputSource;

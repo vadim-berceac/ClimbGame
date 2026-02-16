@@ -8,6 +8,7 @@ public class CharacterCore : MonoBehaviour
     [SerializeField] private float rotationSpeed = 50f;
     [SerializeField] private float jumpHeight = 3f;
     [SerializeField] private AdvancedCharacterControllerData controllerData;
+    
     public AdvancedCharacterController Controller { get; set; }
     public InputHandler InputHandler { get; set; }
     
@@ -38,7 +39,7 @@ public class CharacterCore : MonoBehaviour
     {
         Controller.Move(InputHandler.MoveInput, walkSpeed, 0.1f);
         Controller.JumpAndGravity(InputHandler.JumpPressed, jumpHeight);
-        Controller.Rotation(rotationSpeed);
+        Controller.Rotation(InputHandler.Rotation, rotationSpeed);
         
         Animator.SetBool(_climbingStateHash, Controller.IsClimbing() || Controller.IsOnClimbableSurface());
         Animator.SetBool(_jumpStateHash, Controller.IsJumping());
