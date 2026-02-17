@@ -1,18 +1,19 @@
-using System;
 using UnityEngine;
 using Zenject;
 
 public class CharacterCore : MonoBehaviour
 {
     [SerializeField] private InputSourceMode mode;
-    [SerializeField] private float walkSpeed = 5f;
     [SerializeField] private float rotationSpeed = 50f;
     [SerializeField] private float jumpHeight = 3f;
     [SerializeField] private AdvancedCharacterControllerData controllerData;
-    [SerializeField] private AnimationPlayablesConfigs animationConfigs;
+    [SerializeField] private LocomotionConfigs locomotionConfigs;
+    [SerializeField] private MoveSpeedData moveSpeedData;
+    [SerializeField] private JumpConfigs jumpConfigs;
     
     public AdvancedCharacterController Controller { get; set; }
     private PlayablesAnimatorController _animatorController;
+    private MoveSpeed _moveSpeed;
     
     public InputHandler InputHandler { get; set; }
     
@@ -25,7 +26,8 @@ public class CharacterCore : MonoBehaviour
         InputHandler.SetupInput(mode);
         
         Controller = new AdvancedCharacterController(controller, controllerData);
-        _animatorController = new PlayablesAnimatorController(this, animator, animationConfigs);
+        _animatorController = new PlayablesAnimatorController(this, animator, locomotionConfigs);
+        _moveSpeed = new MoveSpeed(InputHandler);
     }
 
     public void PlayInteractAnimation(AnimationClip animationClip)
@@ -33,7 +35,6 @@ public class CharacterCore : MonoBehaviour
         if(_isInteracting) {return;}
         _isInteracting = true;
         _animatorController.PlayOneShotAnimationClip(animationClip);
-        
     }
 
     private void OnValidate()
@@ -43,15 +44,15 @@ public class CharacterCore : MonoBehaviour
 
     private void Update()
     {
-        Controller.Move(InputHandler.MoveInput, walkSpeed);
+        Controller.Move(InputHandler.MoveInput, _moveSpeed.GetSpeed(moveSpeedData), 1f);
         Controller.JumpAndGravity(InputHandler.JumpPressed, jumpHeight);
         Controller.Rotation(InputHandler.Rotation, rotationSpeed);
         
-        _animatorController.UpdateLocomotion(Controller.CurrentSpeed);
+        _animatorController.UpdateLocomotion(Controller.HorizontalVelocity.normalized);
 
         if (Controller.IsJumping())
         {
-            _animatorController.PlayOneShotAnimationClip(animationConfigs.Jump0);
+            _animatorController.PlayOneShotAnimationClip(jumpConfigs.Jump0);
         }
     }
 

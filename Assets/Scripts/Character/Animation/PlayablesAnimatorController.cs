@@ -17,8 +17,11 @@ public class PlayablesAnimatorController
     private Coroutine _blendInHandle;
     private Coroutine _blendOutHandle;
     
+    private float _smoothedForward = 0f;
+    private float _smoothedStrafe  = 0f;
+    
     public PlayablesAnimatorController(MonoBehaviour coroutineRunner, Animator animator,
-        AnimationPlayablesConfigs animationPlayablesConfigs)
+        LocomotionConfigs locomotionConfigs)
     {
         _coroutineRunner = coroutineRunner;
         
@@ -30,39 +33,100 @@ public class PlayablesAnimatorController
         
         output.SetSourcePlayable(_animationMixerTopLevel);
         
-        _animationMixerLocomotion = AnimationMixerPlayable.Create(_playableGraph, 3);
+        _animationMixerLocomotion = AnimationMixerPlayable.Create(_playableGraph, 5);
         
         _animationMixerTopLevel.ConnectInput(0, _animationMixerLocomotion, 0);
         
         _playableGraph.GetRootPlayable(0).SetInputWeight(0, 1f);
 
-        ConnectClips(animationPlayablesConfigs);
+        ConnectClips(locomotionConfigs);
         
         _playableGraph.Play();
     }
 
-    private void ConnectClips(AnimationPlayablesConfigs animationPlayablesConfigs)
+    private void ConnectClips(LocomotionConfigs locomotionConfigs)
     {
-        var idle0 = AnimationClipPlayable.Create(_playableGraph, animationPlayablesConfigs.Idle0);
-        var walk0 = AnimationClipPlayable.Create(_playableGraph, animationPlayablesConfigs.Walk0);
-        var climb0 = AnimationClipPlayable.Create(_playableGraph, animationPlayablesConfigs.Climb0);
+        var idle = AnimationClipPlayable.Create(_playableGraph, locomotionConfigs.Idle);
+        var moveForward = AnimationClipPlayable.Create(_playableGraph, locomotionConfigs.MoveForward);
+        var moveBackward = AnimationClipPlayable.Create(_playableGraph, locomotionConfigs.MoveBackward);
+        var strafeLeft = AnimationClipPlayable.Create(_playableGraph, locomotionConfigs.StrafeLeft);
+        var strafeRight = AnimationClipPlayable.Create(_playableGraph, locomotionConfigs.StrafeRight);
 
-        idle0.GetAnimationClip().wrapMode = WrapMode.Loop;
-        walk0.GetAnimationClip().wrapMode = WrapMode.Loop;
-        climb0.GetAnimationClip().wrapMode = WrapMode.Loop;
+        idle.GetAnimationClip().wrapMode = WrapMode.Loop;
+        moveForward.GetAnimationClip().wrapMode = WrapMode.Loop;
+        moveBackward.GetAnimationClip().wrapMode = WrapMode.Loop;
+        strafeLeft.GetAnimationClip().wrapMode = WrapMode.Loop;
+        strafeRight.GetAnimationClip().wrapMode = WrapMode.Loop;
         
-        _animationMixerLocomotion.ConnectInput(0, idle0, 0);
-        _animationMixerLocomotion.ConnectInput(1, walk0, 0);
-        _animationMixerLocomotion.ConnectInput(2, climb0, 0);
+        _animationMixerLocomotion.ConnectInput(0, idle, 0);
+        _animationMixerLocomotion.ConnectInput(1, moveForward, 0);
+        _animationMixerLocomotion.ConnectInput(2, moveBackward, 0);
+        _animationMixerLocomotion.ConnectInput(3, strafeLeft, 0);
+        _animationMixerLocomotion.ConnectInput(4, strafeRight, 0);
     }
-
-    public void UpdateLocomotion(float currentSpeed)
+    
+    public void UpdateLocomotion(Vector2 input)
     {
-        var weight = Mathf.InverseLerp(0f, 0.1f, currentSpeed);
-        _animationMixerLocomotion.SetInputWeight(0, 1 - weight);
-        _animationMixerLocomotion.SetInputWeight(1, weight);
-    }
+        _smoothedForward = Mathf.Lerp(_smoothedForward, input.y, 9f * Time.deltaTime);
+        _smoothedStrafe  = Mathf.Lerp(_smoothedStrafe,  input.x, 9f * Time.deltaTime);
 
+        var fwd   = _smoothedForward;
+        var strafe = _smoothedStrafe;
+
+        var moveStrength = new Vector2(Mathf.Abs(strafe), Mathf.Abs(fwd)).magnitude;
+        moveStrength = Mathf.Clamp01(moveStrength); 
+
+        if (moveStrength < 0.015f)
+        {
+            SetLocomotionWeights(1f, 0f, 0f, 0f, 0f);
+            return;
+        }
+
+        var idleWeight = 1f - moveStrength;
+
+        var contribForward  = Mathf.Max(0f, fwd);
+        var contribBackward = Mathf.Max(0f, -fwd);
+        var contribLeft     = Mathf.Max(0f, -strafe);
+        var contribRight    = Mathf.Max(0f, strafe);
+       
+        var totalContrib = contribForward + contribBackward + contribLeft + contribRight;
+
+        float wFwd = 0f, wBwd = 0f, wLeft = 0f, wRight = 0f;
+
+        if (totalContrib > 0.00001f)
+        {
+            var scale = moveStrength / totalContrib;
+
+            wFwd   = contribForward  * scale;
+            wBwd   = contribBackward * scale;
+            wLeft  = contribLeft     * scale;
+            wRight = contribRight    * scale;
+        }
+        
+        var sumCheck = idleWeight + wFwd + wBwd + wLeft + wRight;
+
+        if (Mathf.Abs(sumCheck - 1f) > 0.001f)
+        {
+            var normalize = 1f / Mathf.Max(sumCheck, 0.0001f);
+            idleWeight *= normalize;
+            wFwd       *= normalize;
+            wBwd       *= normalize;
+            wLeft      *= normalize;
+            wRight     *= normalize;
+        }
+
+        SetLocomotionWeights(idleWeight, wFwd, wBwd, wLeft, wRight);
+    }
+    
+    private void SetLocomotionWeights(float idle, float fwd, float bwd, float left, float right)
+    {
+        _animationMixerLocomotion.SetInputWeight(0, idle);
+        _animationMixerLocomotion.SetInputWeight(1, fwd);
+        _animationMixerLocomotion.SetInputWeight(2, bwd);
+        _animationMixerLocomotion.SetInputWeight(3, left);
+        _animationMixerLocomotion.SetInputWeight(4, right);
+    }
+    
     public void PlayOneShotAnimationClip(AnimationClip animationClip)
     {
         if (_oneShotAnimationClip.IsValid() && _oneShotAnimationClip.GetAnimationClip() == animationClip)
