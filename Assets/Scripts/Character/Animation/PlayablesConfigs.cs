@@ -15,3 +15,9 @@ public struct JumpConfigs
 {
     [field: SerializeField] public AnimationClip Jump0 { get; set; }
 }
+
+[System.Serializable]
+public struct AudioSet
+{
+    [field: SerializeField] public AudioClip[] Set { get; set; }
+}

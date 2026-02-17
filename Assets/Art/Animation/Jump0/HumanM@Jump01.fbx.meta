@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: a4d154a0df484334bad2302fcf8f9e7f
+guid: b19585d2a5825de4e9f27595974e1104
 ModelImporter:
   serializedVersion: 24200
   internalIDToNameTable: []
@@ -31,18 +31,18 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: HumanM@StrafeWalk01_Left
-      takeName: Untitled
-      internalID: 3094330708855449807
+      name: HumanM@Jump01
+      takeName: HumanM@Jump01
+      internalID: 8973767263969007744
       firstFrame: 0
-      lastFrame: 24
+      lastFrame: 46
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
       cycleOffset: 0
       loop: 0
       hasAdditiveReferencePose: 0
-      loopTime: 1
+      loopTime: 0
       loopBlend: 0
       loopBlendOrientation: 1
       loopBlendPositionY: 1
@@ -55,7 +55,7 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: 0.5391003
+      - time: 0.66643596
         functionName: PlayFootStep
         data: 
         objectReferenceParameter: {instanceID: 0}

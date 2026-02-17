@@ -9,10 +9,13 @@ public class PlayablesAnimatorController
 {
     private PlayableGraph _playableGraph;
     private readonly MonoBehaviour _coroutineRunner;
+    private readonly AudioSource _audioSource;
+    private readonly ScriptPlayableOutput _scriptPlayableOutput;
     private readonly AnimationMixerPlayable _animationMixerTopLevel;
     private readonly AnimationMixerPlayable _animationMixerLocomotion;
     
     private AnimationClipPlayable _oneShotAnimationClip;
+    private ScriptPlayable<FootstepsPlayablesBehavior> _footstepsPlayable;
 
     private Coroutine _blendInHandle;
     private Coroutine _blendOutHandle;
@@ -20,10 +23,11 @@ public class PlayablesAnimatorController
     private float _smoothedForward = 0f;
     private float _smoothedStrafe  = 0f;
     
-    public PlayablesAnimatorController(MonoBehaviour coroutineRunner, Animator animator,
-        LocomotionConfigs locomotionConfigs)
+    public PlayablesAnimatorController(MonoBehaviour coroutineRunner, Animator animator, AudioSource audioSource)
     {
         _coroutineRunner = coroutineRunner;
+        
+        _audioSource = audioSource;
         
         _playableGraph = PlayableGraph.Create("AnimatorController");
         
@@ -38,13 +42,14 @@ public class PlayablesAnimatorController
         _animationMixerTopLevel.ConnectInput(0, _animationMixerLocomotion, 0);
         
         _playableGraph.GetRootPlayable(0).SetInputWeight(0, 1f);
-
-        ConnectClips(locomotionConfigs);
+        
+        _scriptPlayableOutput = ScriptPlayableOutput.Create(_playableGraph, "Footsteps");
+        _footstepsPlayable = ScriptPlayable<FootstepsPlayablesBehavior>.Create(_playableGraph);
         
         _playableGraph.Play();
     }
 
-    private void ConnectClips(LocomotionConfigs locomotionConfigs)
+    public void ConnectLocomotion(LocomotionConfigs locomotionConfigs)
     {
         var idle = AnimationClipPlayable.Create(_playableGraph, locomotionConfigs.Idle);
         var moveForward = AnimationClipPlayable.Create(_playableGraph, locomotionConfigs.MoveForward);
@@ -63,6 +68,20 @@ public class PlayablesAnimatorController
         _animationMixerLocomotion.ConnectInput(2, moveBackward, 0);
         _animationMixerLocomotion.ConnectInput(3, strafeLeft, 0);
         _animationMixerLocomotion.ConnectInput(4, strafeRight, 0);
+    }
+
+    public void ConnectFootSteps(AudioSet audioSet)
+    {
+        var behavior = _footstepsPlayable.GetBehaviour();
+        behavior.PlayableGraph = _playableGraph;
+        behavior.Footsteps = audioSet.Set;
+        behavior.AudioSource = new ExposedReference<AudioSource> { defaultValue = _audioSource };
+        _scriptPlayableOutput.SetSourcePlayable(_footstepsPlayable);
+    }
+
+    public void OnFootsteps()
+    {
+        _footstepsPlayable.GetBehaviour().PlayFootsteps();
     }
     
     public void UpdateLocomotion(Vector2 input)
