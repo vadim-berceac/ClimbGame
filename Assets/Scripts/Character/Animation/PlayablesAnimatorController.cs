@@ -1,6 +1,6 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Animations;
 using UnityEngine.Playables;
@@ -13,6 +13,7 @@ public class PlayablesAnimatorController
     private readonly ScriptPlayableOutput _scriptPlayableOutput;
     private readonly AnimationMixerPlayable _animationMixerTopLevel;
     private readonly AnimationMixerPlayable _animationMixerLocomotion;
+    private readonly BakedLocomotion[] _bakedLocomotions;
     
     private AnimationClipPlayable _oneShotAnimationClip;
     private ScriptPlayable<FootstepsPlayablesBehavior> _footstepsPlayable;
@@ -23,7 +24,8 @@ public class PlayablesAnimatorController
     private float _smoothedForward = 0f;
     private float _smoothedStrafe  = 0f;
     
-    public PlayablesAnimatorController(MonoBehaviour coroutineRunner, Animator animator, AudioSource audioSource)
+    public PlayablesAnimatorController(MonoBehaviour coroutineRunner, Animator animator, AudioSource audioSource,
+        LocomotionConfigs[] locomotionConfigs)
     {
         _coroutineRunner = coroutineRunner;
         
@@ -36,11 +38,15 @@ public class PlayablesAnimatorController
         _animationMixerTopLevel = AnimationMixerPlayable.Create(_playableGraph, 2);
         
         output.SetSourcePlayable(_animationMixerTopLevel);
-        
+        //
         _animationMixerLocomotion = AnimationMixerPlayable.Create(_playableGraph, 5);
-        
         _animationMixerTopLevel.ConnectInput(0, _animationMixerLocomotion, 0);
-        
+        _bakedLocomotions = new BakedLocomotion[locomotionConfigs.Length];
+        for (var i = 0; i < _bakedLocomotions.Length; i++)
+        {
+            _bakedLocomotions[i] = this.BakeLocomotion(locomotionConfigs[i], _playableGraph);
+        }
+        //
         _playableGraph.GetRootPlayable(0).SetInputWeight(0, 1f);
         
         _scriptPlayableOutput = ScriptPlayableOutput.Create(_playableGraph, "Footsteps");
@@ -49,25 +55,11 @@ public class PlayablesAnimatorController
         _playableGraph.Play();
     }
 
-    public void ConnectLocomotion(LocomotionConfigs locomotionConfigs)
+    public void SetLocomotion(LocomotionType locomotionType)
     {
-        var idle = AnimationClipPlayable.Create(_playableGraph, locomotionConfigs.Idle);
-        var moveForward = AnimationClipPlayable.Create(_playableGraph, locomotionConfigs.MoveForward);
-        var moveBackward = AnimationClipPlayable.Create(_playableGraph, locomotionConfigs.MoveBackward);
-        var strafeLeft = AnimationClipPlayable.Create(_playableGraph, locomotionConfigs.StrafeLeft);
-        var strafeRight = AnimationClipPlayable.Create(_playableGraph, locomotionConfigs.StrafeRight);
-
-        idle.GetAnimationClip().wrapMode = WrapMode.Loop;
-        moveForward.GetAnimationClip().wrapMode = WrapMode.Loop;
-        moveBackward.GetAnimationClip().wrapMode = WrapMode.Loop;
-        strafeLeft.GetAnimationClip().wrapMode = WrapMode.Loop;
-        strafeRight.GetAnimationClip().wrapMode = WrapMode.Loop;
-        
-        _animationMixerLocomotion.ConnectInput(0, idle, 0);
-        _animationMixerLocomotion.ConnectInput(1, moveForward, 0);
-        _animationMixerLocomotion.ConnectInput(2, moveBackward, 0);
-        _animationMixerLocomotion.ConnectInput(3, strafeLeft, 0);
-        _animationMixerLocomotion.ConnectInput(4, strafeRight, 0);
+        var bakedLocomotion = _bakedLocomotions.FirstOrDefault(b => b.Locomotion == locomotionType);
+        if(bakedLocomotion.Equals(default(BakedLocomotion))) return;
+        this.ConnectToMixer(_animationMixerLocomotion, _playableGraph, bakedLocomotion);
     }
 
     public void ConnectFootSteps(AudioSet audioSet)
@@ -219,16 +211,12 @@ public class PlayablesAnimatorController
         _animationMixerTopLevel.SetInputWeight(0, 1f);
         _animationMixerTopLevel.SetInputWeight(1, 0f);
 
-        if (_oneShotAnimationClip.IsValid())
-        {
-            DisconnectOneShot();
-        }
+        DisconnectOneShot();
     }
 
     private void DisconnectOneShot()
     {
-        _animationMixerTopLevel.DisconnectInput(1);
-        _playableGraph.DestroyPlayable(_oneShotAnimationClip);
+        this.DisconnectPlayable(_animationMixerTopLevel, _playableGraph, 1, true);
     }
 
     public void Destroy()
@@ -244,7 +232,7 @@ public class PlayablesAnimatorController
 
         if (_oneShotAnimationClip.IsValid())
         {
-            DisconnectOneShot();          
+            DisconnectOneShot();
         }
 
         if (_playableGraph.IsValid())

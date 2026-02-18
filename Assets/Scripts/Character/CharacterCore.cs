@@ -7,29 +7,32 @@ public class CharacterCore : MonoBehaviour
     [SerializeField] private float rotationSpeed = 50f;
     [SerializeField] private float jumpHeight = 3f;
     [SerializeField] private AdvancedCharacterControllerData controllerData;
-    [SerializeField] private LocomotionConfigs locomotionConfigs;
-    [SerializeField] private MoveSpeedData moveSpeedData;
     [SerializeField] private JumpConfigs jumpConfigs;
     [SerializeField] private AudioSet footSteps;
     
     public AdvancedCharacterController Controller { get; private set; }
     public PlayablesAnimatorController PlayablesAnimatorController { get; private set; }
+    private AnimationContainer _animationContainer;
     private MoveSpeed _moveSpeed;
     
     public InputHandler InputHandler { get; private set; }
     
+    private LocomotionType _currentLocomotion;
     private bool _isInteracting;
     
     [Inject]
     private void Construct(PlayerInput playerInput, AIInput aiInput, CharacterController controller,
-        Animator animator, AudioSource audioSource)
+        Animator animator, AnimationContainer animationContainer, AudioSource audioSource)
     {
         InputHandler = new InputHandler(playerInput, aiInput);
         InputHandler.SetupInput(mode);
         
         Controller = new AdvancedCharacterController(controller, controllerData);
-        PlayablesAnimatorController = new PlayablesAnimatorController(this, animator, audioSource);
-        PlayablesAnimatorController.ConnectLocomotion(locomotionConfigs);
+        _animationContainer = animationContainer;
+        PlayablesAnimatorController = 
+            new PlayablesAnimatorController(this, animator, audioSource, _animationContainer.LocomotionConfigs);
+        _currentLocomotion = _animationContainer.DefaultLocomotion;
+        PlayablesAnimatorController.SetLocomotion(_currentLocomotion);
         PlayablesAnimatorController.ConnectFootSteps(footSteps);
         _moveSpeed = new MoveSpeed(InputHandler);
     }
@@ -48,7 +51,9 @@ public class CharacterCore : MonoBehaviour
 
     private void Update()
     {
-        Controller.Move(InputHandler.MoveInput, _moveSpeed.GetSpeed(moveSpeedData), 1f);
+        var moveSpeed = _moveSpeed.GetSpeed(_animationContainer.GetMoveSpeedData(_currentLocomotion));
+        
+        Controller.Move(InputHandler.MoveInput, moveSpeed, 1f);
         Controller.JumpAndGravity(InputHandler.JumpPressed, jumpHeight);
         Controller.Rotation(InputHandler.Rotation, rotationSpeed);
         

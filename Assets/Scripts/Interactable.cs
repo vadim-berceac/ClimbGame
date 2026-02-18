@@ -1,6 +1,11 @@
 using UnityEngine;
 
-public class Interactable : MonoBehaviour
+public interface IInteractable
+{
+    public AnimationClip InteractClip { get; set; }
+}
+
+public class Interactable : MonoBehaviour, IInteractable
 {
     [field: SerializeField] public AnimationClip InteractClip { get; set; }
     

@@ -1,0 +1,85 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &6748008794238705200
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8646947621451566888}
+  - component: {fileID: 2892329489240849330}
+  m_Layer: 0
+  m_Name: AnimationContainer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8646947621451566888
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6748008794238705200}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2892329489240849330
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6748008794238705200}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2c949912745ef3d4eb56ec012b4544d6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AnimationContainer
+  locomotionConfigs:
+  - <Locomotion>k__BackingField: 0
+    <Idle>k__BackingField: {fileID: -2576967968662016515, guid: a03a754b3e0cfde478f9c7e186c931bb, type: 3}
+    <MoveForward>k__BackingField: {fileID: 3094330708855449807, guid: 592d405311e9f614586a9e2c16df904f, type: 3}
+    <MoveBackward>k__BackingField: {fileID: 3094330708855449807, guid: bd4440aa321abbf42a48ea674af567ec, type: 3}
+    <StrafeLeft>k__BackingField: {fileID: 3094330708855449807, guid: a4d154a0df484334bad2302fcf8f9e7f, type: 3}
+    <StrafeRight>k__BackingField: {fileID: 3094330708855449807, guid: 119822570dd279d48b9d20930a8a8deb, type: 3}
+    <MoveSpeedData>k__BackingField:
+      <IdleSpeed>k__BackingField: 0
+      <ForwardSpeed>k__BackingField: 4
+      <BackwardSpeed>k__BackingField: 2
+      <StrafeLeftSpeed>k__BackingField: 2.5
+      <StrafeRightSpeed>k__BackingField: 2.5
+  - <Locomotion>k__BackingField: 1
+    <Idle>k__BackingField: {fileID: -2576967968662016515, guid: a03a754b3e0cfde478f9c7e186c931bb, type: 3}
+    <MoveForward>k__BackingField: {fileID: 3094330708855449807, guid: 5d335344054fe064dbb0d3b53b6e7095, type: 3}
+    <MoveBackward>k__BackingField: {fileID: 3094330708855449807, guid: 1d583b7823cc2a4489ec76ba597e4549, type: 3}
+    <StrafeLeft>k__BackingField: {fileID: 3094330708855449807, guid: 528b3ff8c11ab8b41a47c722d906871b, type: 3}
+    <StrafeRight>k__BackingField: {fileID: 3094330708855449807, guid: 98426d0944c1ba745809ed941599ef1e, type: 3}
+    <MoveSpeedData>k__BackingField:
+      <IdleSpeed>k__BackingField: 0
+      <ForwardSpeed>k__BackingField: 7
+      <BackwardSpeed>k__BackingField: 3.5
+      <StrafeLeftSpeed>k__BackingField: 4.5
+      <StrafeRightSpeed>k__BackingField: 4.5
+  - <Locomotion>k__BackingField: 3
+    <Idle>k__BackingField: {fileID: 3094330708855449807, guid: 1206eca428c3cbc4ca8dbc01cefd0288, type: 3}
+    <MoveForward>k__BackingField: {fileID: 3094330708855449807, guid: c75ab60f951ff3f429d82ba0f55807a8, type: 3}
+    <MoveBackward>k__BackingField: {fileID: 3094330708855449807, guid: 5bd474a44164c3f439df43f014fc86aa, type: 3}
+    <StrafeLeft>k__BackingField: {fileID: 1691851316169767371, guid: 871312c6d96bd1c4e8afe2b8df4ae592, type: 3}
+    <StrafeRight>k__BackingField: {fileID: 3775301772596003388, guid: f26d668e11e649f48b97fc24a463466b, type: 3}
+    <MoveSpeedData>k__BackingField:
+      <IdleSpeed>k__BackingField: 0
+      <ForwardSpeed>k__BackingField: 2.5
+      <BackwardSpeed>k__BackingField: 1.5
+      <StrafeLeftSpeed>k__BackingField: 1.5
+      <StrafeRightSpeed>k__BackingField: 1.5
+  defaultLocomotion: 0
+  jumpConfigs: []

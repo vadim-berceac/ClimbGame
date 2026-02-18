@@ -127,7 +127,7 @@ AudioSource:
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
   m_PlayOnAwake: 1
-  m_Volume: 0.3
+  m_Volume: 0.2
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -284,18 +284,6 @@ MonoBehaviour:
     <ClimbCheckDistance>k__BackingField: 0.6
     <MaxClimbAngle>k__BackingField: 60
     <ClimbRayOffset>k__BackingField: -1.2
-  locomotionConfigs:
-    <Idle>k__BackingField: {fileID: -2576967968662016515, guid: a03a754b3e0cfde478f9c7e186c931bb, type: 3}
-    <MoveForward>k__BackingField: {fileID: 3094330708855449807, guid: 592d405311e9f614586a9e2c16df904f, type: 3}
-    <MoveBackward>k__BackingField: {fileID: 3094330708855449807, guid: bd4440aa321abbf42a48ea674af567ec, type: 3}
-    <StrafeLeft>k__BackingField: {fileID: 3094330708855449807, guid: a4d154a0df484334bad2302fcf8f9e7f, type: 3}
-    <StrafeRight>k__BackingField: {fileID: 3094330708855449807, guid: 119822570dd279d48b9d20930a8a8deb, type: 3}
-  moveSpeedData:
-    <IdleSpeed>k__BackingField: 0
-    <ForwardSpeed>k__BackingField: 4
-    <BackwardSpeed>k__BackingField: 2
-    <StrafeLeftSpeed>k__BackingField: 2.5
-    <StrafeRightSpeed>k__BackingField: 2.5
   jumpConfigs:
     <Jump0>k__BackingField: {fileID: 8973767263969007744, guid: b19585d2a5825de4e9f27595974e1104, type: 3}
   footSteps:

@@ -6,11 +6,13 @@ public class SceneBaseInstaller : MonoInstaller
     [SerializeField] private GameObject playerInputPrefab;
     [SerializeField] private GameObject mainCameraPrefab;
     [SerializeField] private GameObject selectorPrefab;
+    [SerializeField] private GameObject animationContainerPrefab;
     
     public override void InstallBindings()
     {
         Container.Bind<PlayerInput>().FromComponentInNewPrefab(playerInputPrefab).AsSingle().NonLazy();
         Container.Bind<Camera>().FromComponentInNewPrefab(mainCameraPrefab).AsSingle().NonLazy();
         Container.Bind<CharacterSelector>().FromComponentInNewPrefab(selectorPrefab).AsSingle().NonLazy();
+        Container.Bind<AnimationContainer>().FromComponentInNewPrefab(animationContainerPrefab).AsSingle().NonLazy();
     }
 }
