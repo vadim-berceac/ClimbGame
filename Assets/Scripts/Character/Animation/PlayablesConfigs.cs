@@ -71,7 +71,9 @@ public readonly struct BakedLocomotion
 [System.Serializable]
 public struct JumpConfigs
 {
-    [field: SerializeField] public AnimationClip Jump0 { get; set; }
+    [field: SerializeField] public AnimationClip JumpStart0 { get; set; }
+    [field: SerializeField] public AnimationClip JumpEnd0 { get; set; }
+    [field: SerializeField] public float JumpHeight { get; set; }
 }
 
 [System.Serializable]
@@ -86,4 +88,5 @@ public enum LocomotionType
     Run0 = 1,
     Climb0 = 2,
     Crouch0 = 3,
+    Fall0 = 4,
 }

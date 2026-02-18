@@ -5,9 +5,7 @@ public class CharacterCore : MonoBehaviour
 {
     [SerializeField] private InputSourceMode mode;
     [SerializeField] private float rotationSpeed = 50f;
-    [SerializeField] private float jumpHeight = 3f;
     [SerializeField] private AdvancedCharacterControllerData controllerData;
-    [SerializeField] private JumpConfigs jumpConfigs;
     [SerializeField] private AudioSet footSteps;
     
     public AdvancedCharacterController Controller { get; private set; }
@@ -63,14 +61,14 @@ public class CharacterCore : MonoBehaviour
         var moveSpeed = _moveSpeed.GetSpeed(_animationContainer.GetMoveSpeedData(_locomotionSelector.GetLocomotionType()));
         
         Controller.Move(InputHandler.MoveInput, moveSpeed, 1f);
-        Controller.JumpAndGravity(InputHandler.JumpPressed, jumpHeight);
+        Controller.JumpAndGravity(InputHandler.JumpPressed, _animationContainer.JumpConfigs[0].JumpHeight);
         Controller.Rotation(InputHandler.Rotation, rotationSpeed);
         
         PlayablesAnimatorController.UpdateLocomotion(Controller.HorizontalVelocity.normalized);
 
         if (Controller.IsJumping())
         {
-            PlayablesAnimatorController.PlayOneShotAnimationClip(jumpConfigs.Jump0);
+            PlayablesAnimatorController.PlayOneShotAnimationClip(_animationContainer.JumpConfigs[0].JumpStart0);
         }
     }
 

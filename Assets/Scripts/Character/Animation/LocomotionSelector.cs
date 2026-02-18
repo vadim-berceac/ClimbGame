@@ -12,6 +12,11 @@ public class LocomotionSelector
 
     public LocomotionType GetLocomotionType()
     {
+        if (_characterController.IsFalling())
+        {
+            return LocomotionType.Fall0;
+        }
+        
         if (_characterController.IsClimbing() || _characterController.IsOnClimbableSurface())
         {
             return LocomotionType.Climb0;
