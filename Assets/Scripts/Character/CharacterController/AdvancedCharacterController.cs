@@ -17,6 +17,7 @@ public class AdvancedCharacterController
     private const float RotationSnapThreshold      = 0.1f;
     private const float TerminalVelocity           = -53f;
     private const float FallGravityMultiplier      = 2f;
+    private const float WallSnapGap                = 0.02f; // желаемый зазор между капсулой и стеной
 
     #endregion
 
@@ -323,8 +324,10 @@ public class AdvancedCharacterController
 
         if (_isOnClimbableSurface)
         {
-            _velocity.x = 0f;
-            _velocity.z = 0f;
+            // Прижимаем к стене даже в состоянии покоя
+            var snap    = CalculateWallSnapVelocity();
+            _velocity.x = snap.x;
+            _velocity.z = snap.z;
             return;
         }
 
@@ -368,8 +371,11 @@ public class AdvancedCharacterController
             desired += _transform.right * _moveInput.x;
 
         var climbSpeed = _smoothedTargetSpeed * _climbSpeedMultiplier;
-        var projected = ProjectOnSurface(desired.normalized, _climbNormal);
-        var velocity = projected * climbSpeed;
+        var projected  = ProjectOnSurface(desired.normalized, _climbNormal);
+        var velocity   = projected * climbSpeed;
+
+        // Прижимаем к стене во время карабканья
+        velocity += CalculateWallSnapVelocity();
 
         if (_moveInput.y > 0.1f && IsAtLedge())
         {
@@ -379,20 +385,53 @@ public class AdvancedCharacterController
         return velocity;
     }
 
+    /// <summary>
+    /// Считает скорость прижатия к стене на основе реального зазора между капсулой и поверхностью.
+    ///
+    /// SphereCast с радиусом R возвращает hit.distance = расстояние, пройденное центром сферы до касания.
+    /// Значит стена находится на расстоянии (hit.distance + R) от начала луча вдоль forward.
+    /// Капсула персонажа имеет радиус _controller.radius, поэтому идеальное расстояние до стены — это тоже _controller.radius.
+    /// Реальный зазор между поверхностью капсулы и стеной:
+    ///   gap = (hit.distance + castRadius) - _controller.radius
+    ///       = hit.distance - (_controller.radius - castRadius)
+    ///       = hit.distance - _controller.radius * 0.5f   (т.к. castRadius = _controller.radius * 0.5f)
+    /// Чтобы закрыть этот зазор за один кадр, нужна скорость = gap / deltaTime.
+    /// </summary>
+    private Vector3 CalculateWallSnapVelocity()
+    {
+        var castRadius = _controller.radius * 0.5f;
+        var rayOrigin  = _transform.position + Vector3.up * _climbRayOffset;
+
+        if (!Physics.SphereCast(rayOrigin, castRadius, _transform.forward,
+                out var hit, _climbCheckDistance, _groundMask))
+            return Vector3.zero;
+
+        // Расстояние от поверхности капсулы до стены
+        var gap = hit.distance - (_controller.radius - castRadius);
+
+        // Если уже достаточно близко — ничего не делаем
+        if (gap <= WallSnapGap)
+            return Vector3.zero;
+
+        // Скорость, чтобы закрыть зазор за один кадр, с разумным ограничением
+        var snapSpeed = Mathf.Min((gap - WallSnapGap) / Time.deltaTime, 20f);
+        return _transform.forward * snapSpeed;
+    }
+
     private bool IsAtLedge()
     {
         var upper = _transform.position + Vector3.up * _climbRayOffset;
         var lower = _transform.position + Vector3.up * (_climbRayOffset * 0.5f);
 
-        var noUpperHit = !Physics.Raycast(upper, _transform.forward, _climbCheckDistance, _groundMask);
-        var hasLowerHit = Physics.Raycast(lower, _transform.forward, _climbCheckDistance, _groundMask);
+        var noUpperHit  = !Physics.Raycast(upper, _transform.forward, _climbCheckDistance, _groundMask);
+        var hasLowerHit =  Physics.Raycast(lower, _transform.forward, _climbCheckDistance, _groundMask);
 
         return noUpperHit && hasLowerHit;
     }
 
     private Vector3 CalculateLedgeClimbVelocity(float climbSpeed)
     {
-        return climbSpeed * LedgeClimbMultiplier * _transform.up +
+        return climbSpeed * LedgeClimbMultiplier       * _transform.up +
                climbSpeed * LedgeForwardPushMultiplier * _transform.forward;
     }
 
@@ -444,15 +483,15 @@ public class AdvancedCharacterController
         _isOnClimbableSurface = false;
         _isClimbing = false;
         _velocity.y = Mathf.Sqrt(_jumpHeight * -2f * _gravity);
-        _velocity += _smoothedTargetSpeed * 0.5f * -_transform.forward;
-        _isJumping = true;
+        _velocity  += _smoothedTargetSpeed * 0.5f * -_transform.forward;
+        _isJumping  = true;
         _jumpRequested = true;
     }
 
     private void JumpFromGround()
     {
-        _velocity.y = Mathf.Sqrt(_jumpHeight * -2f * _gravity);
-        _isJumping = true;
+        _velocity.y    = Mathf.Sqrt(_jumpHeight * -2f * _gravity);
+        _isJumping     = true;
         _jumpRequested = true;
     }
 
@@ -471,7 +510,7 @@ public class AdvancedCharacterController
 
         if (_isGrounded && _velocity.y <= 0f)
         {
-            _isJumping = false;
+            _isJumping     = false;
             _jumpRequested = false;
         }
     }
@@ -512,7 +551,7 @@ public class AdvancedCharacterController
     private void AlignToSurface()
     {
         var targetForward = -_climbNormal;
-        var targetUp = CalculateSurfaceUp();
+        var targetUp      = CalculateSurfaceUp();
 
         var targetRot = Quaternion.LookRotation(targetForward, targetUp);
         _transform.rotation = Quaternion.Slerp(
@@ -578,10 +617,10 @@ public class AdvancedCharacterController
         if (fwd.sqrMagnitude < 0.01f) return;
 
         fwd.Normalize();
-        _targetWallRotation = Quaternion.LookRotation(fwd);
-        _startRotation = _transform.rotation;
+        _targetWallRotation   = Quaternion.LookRotation(fwd);
+        _startRotation        = _transform.rotation;
         _wallRotationProgress = 0f;
-        _isRotatingToWall = true;
+        _isRotatingToWall     = true;
     }
 
     #endregion
@@ -591,7 +630,7 @@ public class AdvancedCharacterController
     private bool OnSlope()
     {
         var origin = _transform.position + Vector3.up * 0.1f;
-        var dist = _controller.height / 2f + 0.5f;
+        var dist   = _controller.height / 2f + 0.5f;
 
         if (!Physics.Raycast(origin, Vector3.down, out _slopeHit, dist, _groundMask))
             return false;

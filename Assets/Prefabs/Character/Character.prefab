@@ -274,7 +274,7 @@ MonoBehaviour:
   rotationSpeed: 50
   jumpHeight: 2
   controllerData:
-    <GroundCheckDistance>k__BackingField: 0.3
+    <GroundCheckDistance>k__BackingField: 0.14
     <GroundMask>k__BackingField:
       serializedVersion: 2
       m_Bits: 1

@@ -14,10 +14,10 @@ public class CharacterCore : MonoBehaviour
     public PlayablesAnimatorController PlayablesAnimatorController { get; private set; }
     private AnimationContainer _animationContainer;
     private MoveSpeed _moveSpeed;
+    private LocomotionSelector _locomotionSelector;
+    private LocomotionType _currentLocomotionType;
     
     public InputHandler InputHandler { get; private set; }
-    
-    private LocomotionType _currentLocomotion;
     private bool _isInteracting;
     
     [Inject]
@@ -31,8 +31,9 @@ public class CharacterCore : MonoBehaviour
         _animationContainer = animationContainer;
         PlayablesAnimatorController = 
             new PlayablesAnimatorController(this, animator, audioSource, _animationContainer.LocomotionConfigs);
-        _currentLocomotion = _animationContainer.DefaultLocomotion;
-        PlayablesAnimatorController.SetLocomotion(_currentLocomotion);
+        _currentLocomotionType = _animationContainer.DefaultLocomotion;
+        _locomotionSelector = new LocomotionSelector(Controller, InputHandler);
+        PlayablesAnimatorController.SetLocomotion(_currentLocomotionType);
         PlayablesAnimatorController.ConnectFootSteps(footSteps);
         _moveSpeed = new MoveSpeed(InputHandler);
     }
@@ -51,7 +52,15 @@ public class CharacterCore : MonoBehaviour
 
     private void Update()
     {
-        var moveSpeed = _moveSpeed.GetSpeed(_animationContainer.GetMoveSpeedData(_currentLocomotion));
+        var locomotionType = _locomotionSelector.GetLocomotionType();
+    
+        if (locomotionType != _currentLocomotionType)
+        {
+            _currentLocomotionType = locomotionType;
+            PlayablesAnimatorController.SetLocomotion(_currentLocomotionType);
+        }
+
+        var moveSpeed = _moveSpeed.GetSpeed(_animationContainer.GetMoveSpeedData(_locomotionSelector.GetLocomotionType()));
         
         Controller.Move(InputHandler.MoveInput, moveSpeed, 1f);
         Controller.JumpAndGravity(InputHandler.JumpPressed, jumpHeight);

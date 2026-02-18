@@ -8,6 +8,8 @@ public class InputHandler
     public Vector2 LookInput => _currentInputSource?.OnLook ?? Vector2.zero;
     public Vector3 Rotation => _currentInputSource?.Rotation ?? Vector3.zero;
     public bool JumpPressed => _currentInputSource?.OnJump ?? false;
+    public bool RunPressed => _currentInputSource?.OnRun ?? false;
+    public bool CrouchPressed => _currentInputSource?.OnCrouch ?? false;
     
     private IInputSource _currentInputSource;
     

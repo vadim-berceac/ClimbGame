@@ -10,6 +10,8 @@ public class PlayerInput : InputSource
    private InputAction _move;
    private InputAction _look;
    private InputAction _jump;
+   private InputAction _run;
+   private InputAction _crouch;
 
    private InputAction _nextCharacter;
    
@@ -39,6 +41,8 @@ public class PlayerInput : InputSource
       _move = inputAsset.FindAction("Move");
       _look = inputAsset.FindAction("Look");
       _jump = inputAsset.FindAction("Jump");
+      _run = inputAsset.FindAction("Run");
+      _crouch = inputAsset.FindAction("Crouch");
       
       _nextCharacter = inputAsset.FindAction("Next");
    }
@@ -54,6 +58,12 @@ public class PlayerInput : InputSource
       _jump.performed += OnJumpCTX;
       _jump.canceled += OnJumpCTXCancel;
       
+      _run.performed += OnRunCTX;
+      _run.canceled += OnRunCTXCancel;
+      
+      _crouch.performed += OnCrouchCTX;
+      _crouch.canceled += OnCrouchCTXCancel;
+      
       _nextCharacter.performed += OnNextCTX;
    }
 
@@ -67,6 +77,12 @@ public class PlayerInput : InputSource
       
       _jump.performed -= OnJumpCTX;
       _jump.canceled -= OnJumpCTXCancel;
+      
+      _run.performed -= OnRunCTX;
+      _run.canceled -= OnRunCTXCancel;
+      
+      _crouch.performed -= OnCrouchCTX;
+      _crouch.canceled -= OnCrouchCTXCancel;
       
       _nextCharacter.performed -= OnNextCTX;
    }
@@ -104,6 +120,26 @@ public class PlayerInput : InputSource
    private void OnJumpCTXCancel(InputAction.CallbackContext ctx)
    {
       OnJump = false;
+   }
+   
+   private void OnRunCTX(InputAction.CallbackContext ctx)
+   {
+      OnRun = true;
+   }
+   
+   private void OnRunCTXCancel(InputAction.CallbackContext ctx)
+   {
+      OnRun = false;
+   }
+   
+   private void OnCrouchCTX(InputAction.CallbackContext ctx)
+   {
+      OnCrouch = true;
+   }
+   
+   private void OnCrouchCTXCancel(InputAction.CallbackContext ctx)
+   {
+      OnCrouch = false;
    }
 
    private void OnDisable()
