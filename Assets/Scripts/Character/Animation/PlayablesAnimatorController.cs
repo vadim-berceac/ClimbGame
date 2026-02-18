@@ -23,12 +23,16 @@ public class PlayablesAnimatorController
 
     private AnimationClipPlayable _oneShotAnimationClip;
     private ScriptPlayable<FootstepsPlayablesBehavior> _footstepsPlayable;
+    private ScriptPlayable<AnimationFrameEventsBehavior> _frameEventsPlayable;
 
     private Coroutine _blendInHandle;
     private Coroutine _blendOutHandle;
 
     private float _smoothedForward = 0f;
     private float _smoothedStrafe  = 0f;
+    
+    //test events
+    private GameObject _testGameObject;
 
     public PlayablesAnimatorController(MonoBehaviour coroutineRunner, Animator animator, AudioSource audioSource,
         LocomotionConfigs[] locomotionConfigs)
@@ -39,7 +43,7 @@ public class PlayablesAnimatorController
         _playableGraph = PlayableGraph.Create("AnimatorController");
         var output = AnimationPlayableOutput.Create(_playableGraph, "Animation", animator);
 
-        _animationMixerTopLevel = AnimationMixerPlayable.Create(_playableGraph, 2);
+        _animationMixerTopLevel = AnimationMixerPlayable.Create(_playableGraph, 3);
         output.SetSourcePlayable(_animationMixerTopLevel);
 
         _animationMixerLocomotion      = AnimationMixerPlayable.Create(_playableGraph, 5);
@@ -63,6 +67,9 @@ public class PlayablesAnimatorController
         _footstepsPlayable = ScriptPlayable<FootstepsPlayablesBehavior>.Create(_playableGraph);
 
         _playableGraph.Play();
+        // test
+        _frameEventsPlayable = ScriptPlayable<AnimationFrameEventsBehavior>.Create(_playableGraph);
+        _animationMixerTopLevel.ConnectInput(2, _frameEventsPlayable, 0, 0f);
     }
 
     public void SetLocomotion(LocomotionType locomotionType)
@@ -105,7 +112,59 @@ public class PlayablesAnimatorController
 
         _locomotionBlendHandle = _coroutineRunner.StartCoroutine(BlendLocomotion(LocomotionBlendDuration));
     }
+/// <summary>
+/// test - переписать!!!
+/// </summary>
+/// <param name="testGameObject"></param>
+    public void SetTestGameObject(GameObject testGameObject)
+    {
+        _testGameObject = testGameObject;
+    }
+    
+    private void TestFrames()
+    {
+        _oneShotAnimationClip.RegisterFrameEvent(
+            behavior:        _frameEventsPlayable.GetBehaviour(),
+            fromFrame:       2,
+            toFrame:         30,
+            weightProvider:  () => _animationMixerTopLevel.GetInputWeight(1),
+            onEnter:         () => _testGameObject.SetActive(true),
+            onExit:          () => _testGameObject.SetActive(false)
+        );
+    }
+    
+    public void RegisterLocomotionFrameEvent(
+        LocomotionType locomotionType,
+        LocomotionClipType clipType,
+        int fromFrame,
+        int toFrame,
+        Action onEnter        = null,
+        Action onExit         = null,
+        Action onTick         = null,
+        float weightThreshold = 0.3f)
+    {
+        var baked = _bakedLocomotions.FirstOrDefault(b => b.Locomotion == locomotionType);
+        if (baked.Equals(default(BakedLocomotion))) return;
 
+        // Топология графа — зона ответственности контроллера
+        var slotIndex = (int)clipType;
+        Func<float> weightProvider = () =>
+        {
+            var isCurr      = _currentBakedLocomotion.Equals(baked);
+            var blendWeight = _animationMixerLocomotionBlend.GetInputWeight(isCurr ? 1 : 0);
+            var mixer       = isCurr ? _animationMixerLocomotion : _animationMixerLocomotionPrev;
+            return blendWeight * mixer.GetInputWeight(slotIndex);
+        };
+
+        baked.RegisterFrameEvent(
+            _frameEventsPlayable.GetBehaviour(),
+            clipType,
+            fromFrame, toFrame,
+            weightProvider,
+            onEnter, onExit, onTick,
+            weightThreshold);
+    }
+//
     private IEnumerator BlendLocomotion(float duration)
     {
         var elapsed = 0f;
@@ -201,6 +260,7 @@ public class PlayablesAnimatorController
         var blendDuration = Mathf.Max(0.1f, Mathf.Min(animationClip.length * 0.1f, animationClip.length / 2));
         BlendIn(blendDuration);
         BlendOut(blendDuration, animationClip.length - blendDuration);
+        TestFrames(); // тест
     }
 
     private void BlendIn(float duration)
@@ -251,6 +311,7 @@ public class PlayablesAnimatorController
 
     public void Destroy()
     {
+        _frameEventsPlayable.GetBehaviour().UnregisterAll();
         if (_blendInHandle         != null) _coroutineRunner?.StopCoroutine(_blendInHandle);
         if (_blendOutHandle        != null) _coroutineRunner?.StopCoroutine(_blendOutHandle);
         if (_locomotionBlendHandle != null) _coroutineRunner?.StopCoroutine(_locomotionBlendHandle);

@@ -7,6 +7,7 @@ public class CharacterCore : MonoBehaviour
     [SerializeField] private float rotationSpeed = 50f;
     [SerializeField] private AdvancedCharacterControllerData controllerData;
     [SerializeField] private AudioSet footSteps;
+    [SerializeField] private GameObject testObject;
     
     public AdvancedCharacterController Controller { get; private set; }
     public PlayablesAnimatorController PlayablesAnimatorController { get; private set; }
@@ -68,6 +69,9 @@ public class CharacterCore : MonoBehaviour
 
         if (Controller.IsJumping())
         {
+            //
+            PlayablesAnimatorController.SetTestGameObject(testObject);
+            //
             PlayablesAnimatorController.PlayOneShotAnimationClip(_animationContainer.JumpConfigs[0].JumpStart0);
         }
     }

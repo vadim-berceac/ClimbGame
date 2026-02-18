@@ -35,6 +35,16 @@ public readonly struct BakedLocomotion
         StrafeRight = strafeRight;
     }
     
+    public AnimationClipPlayable GetClip(LocomotionClipType type) => type switch
+    {
+        LocomotionClipType.Idle         => Idle,
+        LocomotionClipType.MoveForward  => MoveForward,
+        LocomotionClipType.MoveBackward => MoveBackward,
+        LocomotionClipType.StrafeLeft   => StrafeLeft,
+        LocomotionClipType.StrafeRight  => StrafeRight,
+        _                               => Idle
+    };
+    
     public override bool Equals(object obj)
     {
         return obj is BakedLocomotion other && Equals(other);
@@ -89,4 +99,13 @@ public enum LocomotionType
     Climb0 = 2,
     Crouch0 = 3,
     Fall0 = 4,
+}
+
+public enum LocomotionClipType
+{
+    Idle        = 0,
+    MoveForward = 1,
+    MoveBackward = 2,
+    StrafeLeft  = 3,
+    StrafeRight = 4
 }
