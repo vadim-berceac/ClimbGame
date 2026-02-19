@@ -1,40 +1,110 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Animations;
+using UnityEngine.Events;
 
 [System.Serializable]
 public struct LocomotionConfigs
 {
-    [field: SerializeField] public LocomotionType Locomotion { get; set; }
-    [field: SerializeField] public AnimationClip Idle { get; set; }
-    [field: SerializeField] public AnimationClip MoveForward { get; set; }
-    [field: SerializeField] public AnimationClip MoveBackward { get; set; }
-    [field: SerializeField] public AnimationClip StrafeLeft { get; set; }
-    [field: SerializeField] public AnimationClip StrafeRight { get; set; }
-    [field: SerializeField] public MoveSpeedData MoveSpeedData { get; set; }
+    [field: SerializeField] public LocomotionType     Locomotion    { get; set; }
+    [field: SerializeField] public AnimationClip      Idle          { get; set; }
+    [field: SerializeField] public AnimationClip      MoveForward   { get; set; }
+    [field: SerializeField] public AnimationClip      MoveBackward  { get; set; }
+    [field: SerializeField] public AnimationClip      StrafeLeft    { get; set; }
+    [field: SerializeField] public AnimationClip      StrafeRight   { get; set; }
+    [field: SerializeField] public MoveSpeedData      MoveSpeedData { get; set; }
+    
+    [field: SerializeField] public LocomotionClipFrameRange[] FrameRanges { get; set; }
 }
 
 public readonly struct BakedLocomotion
 {
-    public readonly LocomotionType Locomotion;
+    public readonly LocomotionType    Locomotion;
+    public readonly LocomotionConfigs Configs;       // ← храним исходный конфиг
     public readonly AnimationClipPlayable Idle;
     public readonly AnimationClipPlayable MoveForward;
     public readonly AnimationClipPlayable MoveBackward;
     public readonly AnimationClipPlayable StrafeLeft;
     public readonly AnimationClipPlayable StrafeRight;
 
-    public BakedLocomotion(LocomotionType locomotion, AnimationClipPlayable idle,
-        AnimationClipPlayable moveForward, AnimationClipPlayable moveBackward,
-        AnimationClipPlayable strafeLeft, AnimationClipPlayable strafeRight)
+    public BakedLocomotion(
+        LocomotionConfigs     configs,
+        AnimationClipPlayable idle,
+        AnimationClipPlayable moveForward,
+        AnimationClipPlayable moveBackward,
+        AnimationClipPlayable strafeLeft,
+        AnimationClipPlayable strafeRight)
     {
-        Locomotion = locomotion;
-        Idle = idle;
-        MoveForward = moveForward;
+        Configs      = configs;
+        Locomotion   = configs.Locomotion;
+        Idle         = idle;
+        MoveForward  = moveForward;
         MoveBackward = moveBackward;
-        StrafeLeft = strafeLeft;
-        StrafeRight = strafeRight;
+        StrafeLeft   = strafeLeft;
+        StrafeRight  = strafeRight;
+    }
+
+    /// <summary>
+    /// Создаёт конфиги событий из сохранённых диапазонов фреймов,
+    /// привязывая к ним действия через actionProvider.
+    /// </summary>
+    /// <param name="actionProvider">
+    /// Принимает ClipType и диапазон, возвращает (onEnter, onExit, onTick).
+    /// Если вернул null-экшены — диапазон пропускается.
+    /// </param>
+    public LocomotionFrameEventConfig[] CreateEventConfigs(
+        Func<LocomotionClipType, LocomotionClipFrameRange, (Action onEnter, Action onExit, Action onTick)> actionProvider)
+    {
+        if (Configs.FrameRanges == null || Configs.FrameRanges.Length == 0)
+            return Array.Empty<LocomotionFrameEventConfig>();
+
+        var result = new List<LocomotionFrameEventConfig>(Configs.FrameRanges.Length);
+
+        foreach (var range in Configs.FrameRanges)
+        {
+            var (onEnter, onExit, onTick) = actionProvider(range.ClipType, range);
+            if (onEnter == null && onExit == null && onTick == null) continue;
+
+            result.Add(new LocomotionFrameEventConfig(
+                range.ClipType,
+                new FrameEventConfig(
+                    range.FromFrame,
+                    range.ToFrame,
+                    onEnter,
+                    onExit,
+                    onTick,
+                    range.WeightThreshold)));
+        }
+
+        return result.ToArray();
     }
     
+    public LocomotionFrameEventConfig[] CreateEventConfigs(
+        Func<string, (Action onEnter, Action onExit, Action onTick)> tagResolver)
+    {
+        if (Configs.FrameRanges == null || Configs.FrameRanges.Length == 0)
+            return Array.Empty<LocomotionFrameEventConfig>();
+
+        var result = new List<LocomotionFrameEventConfig>(Configs.FrameRanges.Length);
+        foreach (var range in Configs.FrameRanges)
+        {
+            var (onEnter, onExit, onTick) = tagResolver(range.EventTag);
+            if (onEnter == null && onExit == null && onTick == null) continue;
+
+            result.Add(new LocomotionFrameEventConfig(
+                range.ClipType,
+                new FrameEventConfig(
+                    range.FromFrame,
+                    range.ToFrame,
+                    onEnter,
+                    onExit,
+                    onTick,
+                    range.WeightThreshold)));
+        }
+        return result.ToArray();
+    }
+
     public AnimationClipPlayable GetClip(LocomotionClipType type) => type switch
     {
         LocomotionClipType.Idle         => Idle,
@@ -90,6 +160,16 @@ public struct JumpConfigs
 public struct AudioSet
 {
     [field: SerializeField] public AudioClip[] Set { get; set; }
+}
+
+[Serializable]
+public struct LocomotionClipFrameRange
+{
+    [field: SerializeField] public string             EventTag        { get; set; }
+    [field: SerializeField] public LocomotionClipType ClipType        { get; set; }
+    [field: SerializeField] public int                FromFrame       { get; set; }
+    [field: SerializeField] public int                ToFrame         { get; set; }
+    [field: SerializeField] public float              WeightThreshold { get; set; }
 }
 
 public enum LocomotionType

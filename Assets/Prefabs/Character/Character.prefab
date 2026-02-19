@@ -58,6 +58,7 @@ GameObject:
   - component: {fileID: 7307965362817367212}
   - component: {fileID: 1867500568925540207}
   - component: {fileID: 4723783291769823981}
+  - component: {fileID: 1487855393612094593}
   - component: {fileID: 3478375533377123974}
   m_Layer: 31
   m_Name: Character
@@ -258,6 +259,19 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &1487855393612094593
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1252590841341855642}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c3d24c1a2d12d3468891f1307e0473d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CharacterAnimationEvents
+  _events: []
 --- !u!114 &3478375533377123974
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -295,6 +309,7 @@ MonoBehaviour:
     - {fileID: 8300000, guid: 67c8b33e424ccdc4486edf538ab91c5a, type: 3}
     - {fileID: 8300000, guid: 274649b0e221539409070ebf6c18918b, type: 3}
     - {fileID: 8300000, guid: a3194b8bbc96ef84fab1f98f4b7dae3e, type: 3}
+  _animationEvents: {fileID: 1487855393612094593}
   testObject: {fileID: 8144730739777588766}
 --- !u!1 &2023685588104745601
 GameObject:

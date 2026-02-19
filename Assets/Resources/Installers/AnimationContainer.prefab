@@ -57,6 +57,17 @@ MonoBehaviour:
       <BackwardSpeed>k__BackingField: 2
       <StrafeLeftSpeed>k__BackingField: 2.5
       <StrafeRightSpeed>k__BackingField: 2.5
+    <FrameRanges>k__BackingField:
+    - <EventTag>k__BackingField: Test
+      <ClipType>k__BackingField: 1
+      <FromFrame>k__BackingField: 8
+      <ToFrame>k__BackingField: 10
+      <WeightThreshold>k__BackingField: 0.5
+    - <EventTag>k__BackingField: Test
+      <ClipType>k__BackingField: 1
+      <FromFrame>k__BackingField: 18
+      <ToFrame>k__BackingField: 20
+      <WeightThreshold>k__BackingField: 0.5
   - <Locomotion>k__BackingField: 1
     <Idle>k__BackingField: {fileID: -2576967968662016515, guid: a03a754b3e0cfde478f9c7e186c931bb, type: 3}
     <MoveForward>k__BackingField: {fileID: 3094330708855449807, guid: 5d335344054fe064dbb0d3b53b6e7095, type: 3}
@@ -69,6 +80,7 @@ MonoBehaviour:
       <BackwardSpeed>k__BackingField: 3.5
       <StrafeLeftSpeed>k__BackingField: 4.5
       <StrafeRightSpeed>k__BackingField: 4.5
+    <FrameRanges>k__BackingField: []
   - <Locomotion>k__BackingField: 3
     <Idle>k__BackingField: {fileID: 3094330708855449807, guid: 1206eca428c3cbc4ca8dbc01cefd0288, type: 3}
     <MoveForward>k__BackingField: {fileID: 3094330708855449807, guid: c75ab60f951ff3f429d82ba0f55807a8, type: 3}
@@ -81,6 +93,7 @@ MonoBehaviour:
       <BackwardSpeed>k__BackingField: 1.5
       <StrafeLeftSpeed>k__BackingField: 1.5
       <StrafeRightSpeed>k__BackingField: 1.5
+    <FrameRanges>k__BackingField: []
   - <Locomotion>k__BackingField: 2
     <Idle>k__BackingField: {fileID: 3094330708855449807, guid: ca9cae2a1088efd44a0796690b4f09ea, type: 3}
     <MoveForward>k__BackingField: {fileID: 3094330708855449807, guid: f1f29e7d85c4a0e49847979b55d6f791, type: 3}
@@ -93,6 +106,7 @@ MonoBehaviour:
       <BackwardSpeed>k__BackingField: 2
       <StrafeLeftSpeed>k__BackingField: 2
       <StrafeRightSpeed>k__BackingField: 2
+    <FrameRanges>k__BackingField: []
   - <Locomotion>k__BackingField: 4
     <Idle>k__BackingField: {fileID: 8908273484855622883, guid: 72bd353186f85834aa8936cc53c70752, type: 3}
     <MoveForward>k__BackingField: {fileID: 8908273484855622883, guid: 72bd353186f85834aa8936cc53c70752, type: 3}
@@ -105,6 +119,7 @@ MonoBehaviour:
       <BackwardSpeed>k__BackingField: 0
       <StrafeLeftSpeed>k__BackingField: 2
       <StrafeRightSpeed>k__BackingField: 0
+    <FrameRanges>k__BackingField: []
   defaultLocomotion: 0
   jumpConfigs:
   - <JumpStart0>k__BackingField: {fileID: 3094330708855449807, guid: c6f6799d0cc1fbf42b6c8f5c52cd9605, type: 3}

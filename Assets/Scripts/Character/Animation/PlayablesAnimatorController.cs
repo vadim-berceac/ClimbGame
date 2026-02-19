@@ -1,4 +1,3 @@
-// PlayablesAnimatorController.cs
 using System;
 using System.Collections;
 using System.Linq;
@@ -10,9 +9,9 @@ public class PlayablesAnimatorController
 {
     #region Fields
 
-    private readonly MonoBehaviour  _coroutineRunner;
-    private readonly AudioSource    _audioSource;
-    private          PlayableGraph  _playableGraph;
+    private readonly MonoBehaviour _coroutineRunner;
+    private readonly AudioSource   _audioSource;
+    private          PlayableGraph _playableGraph;
 
     // Graph nodes
     private readonly AnimationMixerPlayable _animationMixerTopLevel;
@@ -25,7 +24,8 @@ public class PlayablesAnimatorController
     private          ScriptPlayable<FootstepsPlayablesBehavior> _footstepsPlayable;
 
     // Frame events
-    private ScriptPlayable<AnimationFrameEventsBehavior> _frameEventsPlayable;
+    private ScriptPlayable<AnimationFrameEventsBehavior>        _frameEventsPlayable;
+    private Func<string, (Action onEnter, Action onExit, Action onTick)> _eventTagResolver;
 
     // Locomotion state
     private readonly BakedLocomotion[] _bakedLocomotions;
@@ -47,9 +47,9 @@ public class PlayablesAnimatorController
     #region Constructor
 
     public PlayablesAnimatorController(
-        MonoBehaviour     coroutineRunner,
-        Animator          animator,
-        AudioSource       audioSource,
+        MonoBehaviour       coroutineRunner,
+        Animator            animator,
+        AudioSource         audioSource,
         LocomotionConfigs[] locomotionConfigs)
     {
         _coroutineRunner = coroutineRunner;
@@ -73,7 +73,7 @@ public class PlayablesAnimatorController
         _scriptPlayableOutput = ScriptPlayableOutput.Create(_playableGraph, "Footsteps");
         _footstepsPlayable    = ScriptPlayable<FootstepsPlayablesBehavior>.Create(_playableGraph);
 
-        _frameEventsPlayable = ScriptPlayable<AnimationFrameEventsBehavior>.Create(_playableGraph);
+        _frameEventsPlayable  = ScriptPlayable<AnimationFrameEventsBehavior>.Create(_playableGraph);
         _animationMixerTopLevel.ConnectInput(2, _frameEventsPlayable, 0, 0f);
 
         _playableGraph.Play();
@@ -86,8 +86,8 @@ public class PlayablesAnimatorController
         var prev  = AnimationMixerPlayable.Create(_playableGraph, 5);
         var blend = AnimationMixerPlayable.Create(_playableGraph, 2);
 
-        blend.ConnectInput(0, prev,  0, 0f);
-        blend.ConnectInput(1, curr,  0, 1f);
+        blend.ConnectInput(0, prev, 0, 0f);
+        blend.ConnectInput(1, curr, 0, 1f);
 
         return (blend, curr, prev);
     }
@@ -104,19 +104,32 @@ public class PlayablesAnimatorController
 
     #region Locomotion
 
-    public void SetLocomotion(
-        LocomotionType               locomotionType,
-        params LocomotionFrameEventConfig[] frameEvents)
+    /// <summary>
+    /// Привязывает действия к тегам анимационных событий персонажа.
+    /// Должен быть установлен до первого вызова SetLocomotion.
+    /// </summary>
+    public void SetEventTagResolver(Func<string, (Action onEnter, Action onExit, Action onTick)> resolver)
+    {
+        _eventTagResolver = resolver;
+    }
+
+    public void SetLocomotion(LocomotionType locomotionType)
     {
         var next = FindBakedLocomotion(locomotionType);
-        if (next == null || next.Value.Equals(_currentBakedLocomotion)) return;
+        if (next == null || next.Value == _currentBakedLocomotion) return;
 
         StopLocomotionBlend();
         SwapLocomotionSets(next.Value);
         StartLocomotionBlend();
+        ApplyLocomotionFrameEvents(next.Value);
+    }
 
-        foreach (var config in frameEvents)
-            RegisterLocomotionFrameEventInternal(next.Value, config);
+    private void ApplyLocomotionFrameEvents(BakedLocomotion baked)
+    {
+        if (_eventTagResolver == null) return;
+
+        foreach (var config in baked.CreateEventConfigs(_eventTagResolver))
+            RegisterLocomotionFrameEventInternal(baked, config);
     }
 
     private void StopLocomotionBlend()
@@ -129,7 +142,6 @@ public class PlayablesAnimatorController
     private void SwapLocomotionSets(BakedLocomotion next)
     {
         var weights = ReadLocomotionWeights();
-
         DisconnectBothLocomotionMixers();
 
         if (!_currentBakedLocomotion.Equals(default(BakedLocomotion)))
@@ -248,12 +260,9 @@ public class PlayablesAnimatorController
 
     #region OneShot
 
-    public void PlayOneShotAnimationClip(
-        AnimationClip animationClip,
-        params FrameEventConfig[] frameEvents)
+    public void PlayOneShotAnimationClip(AnimationClip animationClip, params FrameEventConfig[] frameEvents)
     {
         if (IsAlreadyPlaying(animationClip)) return;
-
         if (OneShotIsActive()) InterruptOneShotAnimationClip();
 
         ConnectOneShotClip(animationClip);
@@ -312,11 +321,7 @@ public class PlayablesAnimatorController
     private void DisconnectOneShot() =>
         this.DisconnectPlayable(_animationMixerTopLevel, _playableGraph, 1, true);
 
-    private static IEnumerator Blend(
-        float    duration,
-        Action<float> onTick,
-        float    delay    = 0f,
-        Action   onFinish = null)
+    private static IEnumerator Blend(float duration, Action<float> onTick, float delay = 0f, Action onFinish = null)
     {
         for (var t = 0f; t < delay; t += Time.deltaTime) yield return null;
 
@@ -341,11 +346,11 @@ public class PlayablesAnimatorController
             _frameEventsPlayable.GetBehaviour(),
             config.FromFrame,
             config.ToFrame,
-            weightProvider:   () => _animationMixerTopLevel.GetInputWeight(1),
-            onEnter:          config.OnEnter,
-            onExit:           config.OnExit,
-            onTick:           config.OnTick,
-            weightThreshold:  config.WeightThreshold);
+            weightProvider:  () => _animationMixerTopLevel.GetInputWeight(1),
+            onEnter:         config.OnEnter,
+            onExit:          config.OnExit,
+            onTick:          config.OnTick,
+            weightThreshold: config.WeightThreshold);
     }
 
     private void RegisterLocomotionFrameEventInternal(BakedLocomotion baked, LocomotionFrameEventConfig config)
