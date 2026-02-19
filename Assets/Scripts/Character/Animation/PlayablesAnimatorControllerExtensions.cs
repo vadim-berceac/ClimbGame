@@ -5,21 +5,21 @@ using UnityEngine.Playables;
 public static class PlayablesAnimatorControllerExtensions
 {
     public static BakedLocomotion BakeLocomotion(this PlayablesAnimatorController controller,
-        LocomotionConfigs locomotionConfigs, PlayableGraph playableGraph)
+        LocomotionConfigs configs, PlayableGraph playableGraph)
     {
-        var idle = AnimationClipPlayable.Create(playableGraph, locomotionConfigs.Idle);
-        var moveForward = AnimationClipPlayable.Create(playableGraph, locomotionConfigs.MoveForward);
-        var moveBackward = AnimationClipPlayable.Create(playableGraph, locomotionConfigs.MoveBackward);
-        var strafeLeft = AnimationClipPlayable.Create(playableGraph, locomotionConfigs.StrafeLeft);
-        var strafeRight = AnimationClipPlayable.Create(playableGraph, locomotionConfigs.StrafeRight);
+        var idle         = AnimationClipPlayable.Create(playableGraph, configs.Idle);
+        var moveForward  = AnimationClipPlayable.Create(playableGraph, configs.MoveForward);
+        var moveBackward = AnimationClipPlayable.Create(playableGraph, configs.MoveBackward);
+        var strafeLeft   = AnimationClipPlayable.Create(playableGraph, configs.StrafeLeft);
+        var strafeRight  = AnimationClipPlayable.Create(playableGraph, configs.StrafeRight);
 
-        idle.GetAnimationClip().wrapMode = WrapMode.Loop;
-        moveForward.GetAnimationClip().wrapMode = WrapMode.Loop;
+        idle.GetAnimationClip().wrapMode         = WrapMode.Loop;
+        moveForward.GetAnimationClip().wrapMode  = WrapMode.Loop;
         moveBackward.GetAnimationClip().wrapMode = WrapMode.Loop;
-        strafeLeft.GetAnimationClip().wrapMode = WrapMode.Loop;
-        strafeRight.GetAnimationClip().wrapMode = WrapMode.Loop;
-        
-        return new BakedLocomotion(locomotionConfigs.Locomotion, idle, moveForward, moveBackward, strafeLeft, strafeRight);
+        strafeLeft.GetAnimationClip().wrapMode   = WrapMode.Loop;
+        strafeRight.GetAnimationClip().wrapMode  = WrapMode.Loop;
+
+        return new BakedLocomotion(configs, idle, moveForward, moveBackward, strafeLeft, strafeRight);
     }
 
     public static void ConnectToMixer(this PlayablesAnimatorController controller, AnimationMixerPlayable mixer, PlayableGraph graph,

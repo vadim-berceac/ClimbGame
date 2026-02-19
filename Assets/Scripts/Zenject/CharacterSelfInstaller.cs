@@ -14,5 +14,7 @@ public class CharacterSelfInstaller : MonoInstaller
         Container.Bind<Animator>().FromInstance(GetComponentInParent<Animator>()).AsSingle();
         
         Container.Bind<AudioSource>().FromInstance(GetComponentInParent<AudioSource>()).AsSingle();
+        
+        Container.Bind<CharacterAnimationEvents>().FromInstance(GetComponentInParent<CharacterAnimationEvents>()).AsSingle();
     }
 }
