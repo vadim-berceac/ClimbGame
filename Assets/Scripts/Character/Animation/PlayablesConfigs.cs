@@ -159,6 +159,7 @@ public struct JumpConfigs
 [System.Serializable]
 public struct AudioSet
 {
+    [field: SerializeField] public LocomotionType LocomotionType { get; set; }
     [field: SerializeField] public AudioClip[] Set { get; set; }
 }
 

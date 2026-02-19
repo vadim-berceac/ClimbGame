@@ -271,7 +271,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c3d24c1a2d12d3468891f1307e0473d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CharacterAnimationEvents
-  _events: []
+  _events:
+  - <Tag>k__BackingField: FootSteps
+    <OnEnter>k__BackingField:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 3728779301529158022}
+          m_TargetAssemblyTypeName: SoundEvents, Assembly-CSharp
+          m_MethodName: PlayFootStep
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+    <OnExit>k__BackingField:
+      m_PersistentCalls:
+        m_Calls: []
 --- !u!114 &3478375533377123974
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -285,8 +304,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AdvancedCharacterController
   mode: 1
-  rotationSpeed: 50
   controllerData:
+    <RotationSpeed>k__BackingField: 50
     <GroundCheckDistance>k__BackingField: 0.14
     <GroundMask>k__BackingField:
       serializedVersion: 2
@@ -297,20 +316,6 @@ MonoBehaviour:
     <ClimbCheckDistance>k__BackingField: 0.6
     <MaxClimbAngle>k__BackingField: 60
     <ClimbRayOffset>k__BackingField: -1.2
-  footSteps:
-    <Set>k__BackingField:
-    - {fileID: 8300000, guid: 72f526a6a9890f643a88e85a61c86c8a, type: 3}
-    - {fileID: 8300000, guid: 85016e0f2b01da248b9663dd49a161b0, type: 3}
-    - {fileID: 8300000, guid: 186de84b3207156479abe98f4958fed0, type: 3}
-    - {fileID: 8300000, guid: 1a91fcd19acf1e54bba0945d9f390849, type: 3}
-    - {fileID: 8300000, guid: 14e8a8d2158bec840b56c54f5266e692, type: 3}
-    - {fileID: 8300000, guid: 29841e7d5bbfb5b419c9ad16ca8bc4c1, type: 3}
-    - {fileID: 8300000, guid: dd1af302b8902684d9381de1f2d3a5af, type: 3}
-    - {fileID: 8300000, guid: 67c8b33e424ccdc4486edf538ab91c5a, type: 3}
-    - {fileID: 8300000, guid: 274649b0e221539409070ebf6c18918b, type: 3}
-    - {fileID: 8300000, guid: a3194b8bbc96ef84fab1f98f4b7dae3e, type: 3}
-  _animationEvents: {fileID: 1487855393612094593}
-  testObject: {fileID: 8144730739777588766}
 --- !u!1 &2023685588104745601
 GameObject:
   m_ObjectHideFlags: 0
@@ -341,7 +346,6 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 927841303444592875}
-  - {fileID: 2009329691408404767}
   m_Father: {fileID: 1543372263880705469}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7564397903033958470
@@ -388,95 +392,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0bd33b11468b13541af91cfa4d4f25e5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AIInput
---- !u!1 &8144730739777588766
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2009329691408404767}
-  - component: {fileID: 1398776220414745282}
-  - component: {fileID: 3885973224960011332}
-  m_Layer: 31
-  m_Name: TestCapsule
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!4 &2009329691408404767
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8144730739777588766}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 8070610269716636418}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &1398776220414745282
-MeshFilter:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8144730739777588766}
-  m_Mesh: {fileID: 10208, guid: 0000000000000000e000000000000000, type: 0}
---- !u!23 &3885973224960011332
-MeshRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8144730739777588766}
-  m_Enabled: 1
-  m_CastShadows: 1
-  m_ReceiveShadows: 1
-  m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
-  m_RayTracingMode: 2
-  m_RayTraceProcedural: 0
-  m_RayTracingAccelStructBuildFlagsOverride: 0
-  m_RayTracingAccelStructBuildFlags: 1
-  m_SmallMeshCulling: 1
-  m_ForceMeshLod: -1
-  m_MeshLodSelectionBias: 0
-  m_RenderingLayerMask: 1
-  m_RendererPriority: 0
-  m_Materials:
-  - {fileID: 2100000, guid: 38bd6dcb23c1ae646bdd8f065d60d0d6, type: 2}
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_ReceiveGI: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_StitchLightmapSeams: 1
-  m_SelectedEditorRenderState: 3
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_AdditionalVertexStreams: {fileID: 0}
 --- !u!1001 &9191460679935798210
 PrefabInstance:
   m_ObjectHideFlags: 0

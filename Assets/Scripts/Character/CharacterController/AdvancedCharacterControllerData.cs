@@ -4,6 +4,7 @@ using UnityEngine;
 public struct AdvancedCharacterControllerData
 {
     [field:Header("Movement")]
+    [field:SerializeField] public float RotationSpeed {get; set;}
     
     [field:Header("Jump")]
     [field:SerializeField] public float GroundCheckDistance {get; set;}
