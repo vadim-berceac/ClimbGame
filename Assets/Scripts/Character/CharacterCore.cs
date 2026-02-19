@@ -56,7 +56,11 @@ public class CharacterCore : MonoBehaviour
         if (locomotionType != _currentLocomotionType)
         {
             _currentLocomotionType = locomotionType;
-            PlayablesAnimatorController.SetLocomotion(_currentLocomotionType);
+            PlayablesAnimatorController.SetLocomotion(_currentLocomotionType,
+                new LocomotionFrameEventConfig(LocomotionClipType.MoveForward,
+                    new FrameEventConfig(8, 10, onEnter: () => testObject.SetActive(true), onExit:  () => testObject.SetActive(false))),
+                new LocomotionFrameEventConfig(LocomotionClipType.MoveForward,
+                    new FrameEventConfig(18, 20, onEnter: () => testObject.SetActive(true), onExit:  () => testObject.SetActive(false))));
         }
 
         var moveSpeed = _moveSpeed.GetSpeed(_animationContainer.GetMoveSpeedData(_locomotionSelector.GetLocomotionType()));
@@ -69,10 +73,10 @@ public class CharacterCore : MonoBehaviour
 
         if (Controller.IsJumping())
         {
-            //
-            PlayablesAnimatorController.SetTestGameObject(testObject);
-            //
-            PlayablesAnimatorController.PlayOneShotAnimationClip(_animationContainer.JumpConfigs[0].JumpStart0);
+            PlayablesAnimatorController.PlayOneShotAnimationClip(_animationContainer.JumpConfigs[0].JumpStart0,
+                new FrameEventConfig(fromFrame: 2, toFrame: 30,
+                    onEnter: () => testObject.SetActive(true),
+                    onExit:  () => testObject.SetActive(false)));
         }
     }
 
