@@ -59,42 +59,42 @@ MonoBehaviour:
       <StrafeLeftSpeed>k__BackingField: 2.5
       <StrafeRightSpeed>k__BackingField: 2.5
     <FrameRanges>k__BackingField:
-    - <EventTag>k__BackingField: FootSteps
+    - <EventTag>k__BackingField: StepL
       <ClipType>k__BackingField: 1
       <FromFrame>k__BackingField: 3
       <ToFrame>k__BackingField: 4
       <WeightThreshold>k__BackingField: 0.5
-    - <EventTag>k__BackingField: FootSteps
+    - <EventTag>k__BackingField: StepR
       <ClipType>k__BackingField: 1
       <FromFrame>k__BackingField: 14
       <ToFrame>k__BackingField: 15
       <WeightThreshold>k__BackingField: 0.5
-    - <EventTag>k__BackingField: FootSteps
+    - <EventTag>k__BackingField: StepL
       <ClipType>k__BackingField: 2
       <FromFrame>k__BackingField: 12
       <ToFrame>k__BackingField: 13
       <WeightThreshold>k__BackingField: 0.5
-    - <EventTag>k__BackingField: FootSteps
+    - <EventTag>k__BackingField: StepR
       <ClipType>k__BackingField: 2
       <FromFrame>k__BackingField: 22
       <ToFrame>k__BackingField: 23
       <WeightThreshold>k__BackingField: 0.5
-    - <EventTag>k__BackingField: FootSteps
+    - <EventTag>k__BackingField: StepL
       <ClipType>k__BackingField: 3
       <FromFrame>k__BackingField: 9
       <ToFrame>k__BackingField: 10
       <WeightThreshold>k__BackingField: 0.5
-    - <EventTag>k__BackingField: FootSteps
+    - <EventTag>k__BackingField: StepR
       <ClipType>k__BackingField: 3
       <FromFrame>k__BackingField: 17
       <ToFrame>k__BackingField: 18
       <WeightThreshold>k__BackingField: 0.5
-    - <EventTag>k__BackingField: FootSteps
+    - <EventTag>k__BackingField: StepL
       <ClipType>k__BackingField: 4
       <FromFrame>k__BackingField: 9
       <ToFrame>k__BackingField: 10
       <WeightThreshold>k__BackingField: 0.5
-    - <EventTag>k__BackingField: FootSteps
+    - <EventTag>k__BackingField: StepR
       <ClipType>k__BackingField: 4
       <FromFrame>k__BackingField: 17
       <ToFrame>k__BackingField: 18
@@ -112,42 +112,42 @@ MonoBehaviour:
       <StrafeLeftSpeed>k__BackingField: 4.5
       <StrafeRightSpeed>k__BackingField: 4.5
     <FrameRanges>k__BackingField:
-    - <EventTag>k__BackingField: FootSteps
+    - <EventTag>k__BackingField: StepR
       <ClipType>k__BackingField: 1
       <FromFrame>k__BackingField: 2
       <ToFrame>k__BackingField: 3
       <WeightThreshold>k__BackingField: 0.5
-    - <EventTag>k__BackingField: FootSteps
+    - <EventTag>k__BackingField: StepL
       <ClipType>k__BackingField: 1
       <FromFrame>k__BackingField: 10
       <ToFrame>k__BackingField: 11
       <WeightThreshold>k__BackingField: 0.5
-    - <EventTag>k__BackingField: FootSteps
+    - <EventTag>k__BackingField: StepR
       <ClipType>k__BackingField: 2
       <FromFrame>k__BackingField: 1
       <ToFrame>k__BackingField: 2
       <WeightThreshold>k__BackingField: 0.5
-    - <EventTag>k__BackingField: FootSteps
+    - <EventTag>k__BackingField: StepL
       <ClipType>k__BackingField: 2
       <FromFrame>k__BackingField: 11
       <ToFrame>k__BackingField: 12
       <WeightThreshold>k__BackingField: 0.5
-    - <EventTag>k__BackingField: FootSteps
+    - <EventTag>k__BackingField: StepL
       <ClipType>k__BackingField: 3
       <FromFrame>k__BackingField: 2
       <ToFrame>k__BackingField: 3
       <WeightThreshold>k__BackingField: 0.5
-    - <EventTag>k__BackingField: FootSteps
+    - <EventTag>k__BackingField: StepR
       <ClipType>k__BackingField: 3
       <FromFrame>k__BackingField: 12
       <ToFrame>k__BackingField: 13
       <WeightThreshold>k__BackingField: 0.5
-    - <EventTag>k__BackingField: FootSteps
+    - <EventTag>k__BackingField: StepR
       <ClipType>k__BackingField: 4
       <FromFrame>k__BackingField: 9
       <ToFrame>k__BackingField: 10
       <WeightThreshold>k__BackingField: 0.5
-    - <EventTag>k__BackingField: FootSteps
+    - <EventTag>k__BackingField: StepL
       <ClipType>k__BackingField: 4
       <FromFrame>k__BackingField: 17
       <ToFrame>k__BackingField: 18
@@ -165,32 +165,32 @@ MonoBehaviour:
       <StrafeLeftSpeed>k__BackingField: 1.5
       <StrafeRightSpeed>k__BackingField: 1.5
     <FrameRanges>k__BackingField:
-    - <EventTag>k__BackingField: FootSteps
+    - <EventTag>k__BackingField: StepL
       <ClipType>k__BackingField: 1
       <FromFrame>k__BackingField: 1
       <ToFrame>k__BackingField: 2
       <WeightThreshold>k__BackingField: 0.5
-    - <EventTag>k__BackingField: FootSteps
+    - <EventTag>k__BackingField: StepR
       <ClipType>k__BackingField: 1
       <FromFrame>k__BackingField: 13
       <ToFrame>k__BackingField: 14
       <WeightThreshold>k__BackingField: 0.5
-    - <EventTag>k__BackingField: FootSteps
+    - <EventTag>k__BackingField: StepR
       <ClipType>k__BackingField: 2
       <FromFrame>k__BackingField: 2
       <ToFrame>k__BackingField: 3
       <WeightThreshold>k__BackingField: 0.5
-    - <EventTag>k__BackingField: FootSteps
+    - <EventTag>k__BackingField: StepL
       <ClipType>k__BackingField: 2
       <FromFrame>k__BackingField: 13
       <ToFrame>k__BackingField: 14
       <WeightThreshold>k__BackingField: 0.5
-    - <EventTag>k__BackingField: FootSteps
+    - <EventTag>k__BackingField: StepL
       <ClipType>k__BackingField: 3
       <FromFrame>k__BackingField: 3
       <ToFrame>k__BackingField: 4
       <WeightThreshold>k__BackingField: 0.5
-    - <EventTag>k__BackingField: FootSteps
+    - <EventTag>k__BackingField: StepR
       <ClipType>k__BackingField: 4
       <FromFrame>k__BackingField: 3
       <ToFrame>k__BackingField: 4
