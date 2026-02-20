@@ -74,13 +74,10 @@ public class CharacterCore : MonoBehaviour
             _animationContainer.GetMoveSpeedData(_locomotionSelector.GetLocomotionType()));
 
         Controller.Move(InputHandler.MoveInput, moveSpeed, 1f);
-        Controller.JumpAndGravity(InputHandler.JumpPressed, _animationContainer.JumpConfigs[0].JumpHeight);
+        Controller.JumpAndGravity(InputHandler.JumpPressed, _animationContainer.GetMoveSpeedData(LocomotionType.Jump0).YSpeed);
         Controller.Rotation(InputHandler.Rotation, controllerData.RotationSpeed);
 
         PlayablesAnimatorController.UpdateLocomotion(Controller.HorizontalVelocity.normalized);
-
-        if (Controller.IsJumping())
-            PlayablesAnimatorController.PlayOneShotAnimationClip(_animationContainer.JumpConfigs[0].JumpStart0);
     }
 
     private void UpdateLocomotion(bool isInitialization = false)

@@ -7,13 +7,9 @@ public class AnimationContainer : MonoBehaviour
    [SerializeField] private LocomotionConfigs[] locomotionConfigs;
    [SerializeField] private LocomotionType defaultLocomotion;
 
-   [Header("Jumping")] 
-   [SerializeField] private JumpConfigs[] jumpConfigs;
-  
    public LocomotionConfigs[] LocomotionConfigs => locomotionConfigs;
    public LocomotionType DefaultLocomotion => defaultLocomotion;
-   public JumpConfigs[] JumpConfigs => jumpConfigs;
-   
+ 
    public MoveSpeedData GetMoveSpeedData(LocomotionType locomotionType)
    {
       return locomotionConfigs.FirstOrDefault(l => l.Locomotion == locomotionType).MoveSpeedData;

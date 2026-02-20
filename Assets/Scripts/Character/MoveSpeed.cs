@@ -54,4 +54,5 @@ public struct MoveSpeedData
     [field: SerializeField] public float BackwardSpeed { get; set; }
     [field: SerializeField] public float StrafeLeftSpeed { get; set; }
     [field: SerializeField] public float StrafeRightSpeed { get; set; }
+    [field: SerializeField] public float YSpeed { get; set; }
 }
