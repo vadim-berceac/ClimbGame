@@ -26,6 +26,7 @@ public class AdvancedCharacterController
     private readonly CharacterController _controller;
     private readonly Transform _transform;
     private readonly LayerMask _groundMask;
+    private readonly LayerMask _climbMask;
 
     private readonly float _groundCheckDistance;
     private readonly float _slopeForce;
@@ -104,6 +105,7 @@ public class AdvancedCharacterController
         _climbRayOffset       = data.ClimbRayOffset;
         _climbSpeedMultiplier = data.ClimbSpeedMultipler;
         _speedChangeRate      = 10f;
+        _climbMask            = data.ClimbMask;
 
         _smoothedTargetSpeed = 0f;
     }
@@ -114,6 +116,8 @@ public class AdvancedCharacterController
 
     public void Move(Vector3 motion, float inputSpeed, float? speedChangeRate = null)
     {
+        if(!_controller.enabled) return;
+        
         _moveInput   = motion;
         _targetSpeed = inputSpeed;
 
@@ -143,6 +147,8 @@ public class AdvancedCharacterController
 
     public void JumpAndGravity(bool jumpPressed, float jumpHeight, float gravityMultiplier = 1f)
     {
+        if(!_controller.enabled) return;
+        
         _jumpHeight = jumpHeight;
         _gravity    = gravityMultiplier * Physics.gravity.y;
 
@@ -153,6 +159,8 @@ public class AdvancedCharacterController
 
     public void Rotation(Vector3 rotation, float rotationSpeed)
     {
+        if(!_controller.enabled) return;
+        
         _rotationInput = rotation;
         _rotationSpeed = rotationSpeed;
 
@@ -255,10 +263,8 @@ public class AdvancedCharacterController
         var rayOrigin = _transform.position + Vector3.up * _climbRayOffset;
 
         if (!Physics.SphereCast(rayOrigin, _controller.radius * 0.5f, _transform.forward,
-                out hit, _climbCheckDistance, _groundMask))
-        {
+                out hit, _climbCheckDistance, _climbMask))  // <--
             return false;
-        }
 
         var angle = Vector3.Angle(Vector3.up, hit.normal);
         var deviationFromVertical = Mathf.Abs(90f - angle);
@@ -403,17 +409,14 @@ public class AdvancedCharacterController
         var rayOrigin  = _transform.position + Vector3.up * _climbRayOffset;
 
         if (!Physics.SphereCast(rayOrigin, castRadius, _transform.forward,
-                out var hit, _climbCheckDistance, _groundMask))
+                out var hit, _climbCheckDistance, _climbMask)) 
             return Vector3.zero;
 
-        // Расстояние от поверхности капсулы до стены
         var gap = hit.distance - (_controller.radius - castRadius);
 
-        // Если уже достаточно близко — ничего не делаем
         if (gap <= WallSnapGap)
             return Vector3.zero;
 
-        // Скорость, чтобы закрыть зазор за один кадр, с разумным ограничением
         var snapSpeed = Mathf.Min((gap - WallSnapGap) / Time.deltaTime, 20f);
         return _transform.forward * snapSpeed;
     }
@@ -423,8 +426,8 @@ public class AdvancedCharacterController
         var upper = _transform.position + Vector3.up * _climbRayOffset;
         var lower = _transform.position + Vector3.up * (_climbRayOffset * 0.5f);
 
-        var noUpperHit  = !Physics.Raycast(upper, _transform.forward, _climbCheckDistance, _groundMask);
-        var hasLowerHit =  Physics.Raycast(lower, _transform.forward, _climbCheckDistance, _groundMask);
+        var noUpperHit  = !Physics.Raycast(upper, _transform.forward, _climbCheckDistance, _climbMask);  
+        var hasLowerHit =  Physics.Raycast(lower, _transform.forward, _climbCheckDistance, _climbMask); 
 
         return noUpperHit && hasLowerHit;
     }

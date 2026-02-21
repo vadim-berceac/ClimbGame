@@ -329,13 +329,16 @@ MonoBehaviour:
     <GroundCheckDistance>k__BackingField: 0.14
     <GroundMask>k__BackingField:
       serializedVersion: 2
-      m_Bits: 1
+      m_Bits: 1073741825
     <SlopeForce>k__BackingField: 20
     <EnableClimbing>k__BackingField: 1
     <ClimbSpeedMultipler>k__BackingField: 0.6
     <ClimbCheckDistance>k__BackingField: 0.6
     <MaxClimbAngle>k__BackingField: 60
     <ClimbRayOffset>k__BackingField: -1.2
+    <ClimbMask>k__BackingField:
+      serializedVersion: 2
+      m_Bits: 1
 --- !u!1 &2023685588104745601
 GameObject:
   m_ObjectHideFlags: 0

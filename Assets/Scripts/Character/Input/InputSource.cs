@@ -8,6 +8,7 @@ public interface IInputSource
     public bool OnJump { get; set; }
     public bool OnRun { get; set; }
     public bool OnCrouch { get; set; }
+    public bool OnInteract { get; set; }
 }
 
 public abstract class InputSource : MonoBehaviour, IInputSource
@@ -18,4 +19,6 @@ public abstract class InputSource : MonoBehaviour, IInputSource
     public bool OnJump { get; set; }
     public bool OnRun { get; set; }
     public bool OnCrouch { get; set; }
+    
+    public bool OnInteract { get; set; }
 }

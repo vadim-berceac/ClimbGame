@@ -12,6 +12,7 @@ public class VehicleCore : CoreController
     private CharacterAnimationEvents   _animationEvents;
     
     private bool _isInteracting;
+    private InputHandler _driverInput;
 
     [Inject]
     private void Construct(
@@ -38,6 +39,8 @@ public class VehicleCore : CoreController
         
         PlayablesAnimatorController.SetEventTagResolver(_animationEvents.Resolve);
 
+        _driverInput = InputHandler;
+
         UpdateLocomotion(true);
     }
 
@@ -49,10 +52,22 @@ public class VehicleCore : CoreController
         var moveSpeed = _moveSpeed.GetSpeed(locomotionConfig.MoveSpeedData);
 
         Controller.Move(clampedInput, moveSpeed, 50f);
-        Controller.JumpAndGravity(InputHandler.JumpPressed, locomotionConfig.MoveSpeedData.YSpeed);
-        Controller.Rotation(InputHandler.Rotation, controllerData.RotationSpeed);
+        Controller.JumpAndGravity(_driverInput.JumpPressed, locomotionConfig.MoveSpeedData.YSpeed);
+        Controller.Rotation(_driverInput.Rotation, controllerData.RotationSpeed);
 
         PlayablesAnimatorController.UpdateLocomotion(Controller.HorizontalVelocity.normalized);
+    }
+
+    public void SetDriverInput(InputHandler inputHandler)
+    {
+        _driverInput = inputHandler;
+        _moveSpeed = new MoveSpeed(inputHandler);
+    }
+
+    public void ResetDriver()
+    {
+        _driverInput = InputHandler;
+        _moveSpeed = new MoveSpeed(InputHandler);
     }
 
     public override void UpdateLocomotion(bool isInitialization = false)

@@ -10,6 +10,7 @@ public class InputHandler
     public bool JumpPressed => _currentInputSource?.OnJump ?? false;
     public bool RunPressed => _currentInputSource?.OnRun ?? false;
     public bool CrouchPressed => _currentInputSource?.OnCrouch ?? false;
+    public bool InteractPressed => _currentInputSource?.OnInteract ?? false;
     
     private IInputSource _currentInputSource;
     

@@ -19,4 +19,5 @@ public struct AdvancedCharacterControllerData
     [field:SerializeField] public float ClimbCheckDistance {get; set;}
     [field:SerializeField] public float MaxClimbAngle {get; set;}
     [field:SerializeField] public float ClimbRayOffset {get; set;}
+    [field:SerializeField] public LayerMask ClimbMask {get; set;}
 }
