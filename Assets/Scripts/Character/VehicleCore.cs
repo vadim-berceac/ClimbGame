@@ -1,17 +1,15 @@
 using UnityEngine;
 using Zenject;
 
-public class CharacterCore : CoreController
+public class VehicleCore : CoreController
 {
-    [SerializeField] private InputSourceMode                  mode;
+    [SerializeField] private LocomotionConfigs locomotionConfig;
     [SerializeField] private AdvancedCharacterControllerData  controllerData;
 
     private AnimationContainer         _animationContainer;
     private SoundContainer             _soundContainer;
     private MoveSpeed                  _moveSpeed;
-    private LocomotionSelector         _locomotionSelector;
     private CharacterAnimationEvents   _animationEvents;
-    private LocomotionType             _currentLocomotionType;
     
     private bool _isInteracting;
 
@@ -27,13 +25,12 @@ public class CharacterCore : CoreController
         CharacterAnimationEvents animationEvents)
     {
         InputHandler = new InputHandler(playerInput, aiInput);
-        InputHandler.SetupInput(mode);
+        InputHandler.SetupInput(InputSourceMode.Vehicle);
 
         Controller          = new AdvancedCharacterController(controller, controllerData);
         _animationContainer = animationContainer;
         _soundContainer     = soundContainer;
         _animationEvents    = animationEvents;
-        _locomotionSelector = new LocomotionSelector(Controller, InputHandler);
         _moveSpeed          = new MoveSpeed(InputHandler);
 
         PlayablesAnimatorController =
@@ -44,34 +41,15 @@ public class CharacterCore : CoreController
         UpdateLocomotion(true);
     }
 
-    // public void PlayInteractAnimation(AnimationClip animationClip)
-    // {
-    //     if (_isInteracting) return;
-    //     _isInteracting = true;
-    //
-    //     PlayablesAnimatorController.PlayOneShotAnimationClip(animationClip,
-    //         new FrameEventConfig(
-    //             fromFrame: 2,
-    //             toFrame:   30,
-    //             onEnter:   () => testObject.SetActive(true),
-    //             onExit:    () => testObject.SetActive(false)));
-    // }
-
-    private void OnValidate()
-    {
-        InputHandler?.SetupInput(mode);
-    }
-
     private void Update()
     {
         UpdateLocomotion();
 
-        var moveData = _animationContainer.GetMoveSpeedData(_locomotionSelector.GetLocomotionType());
-        var clampedInput = _moveSpeed.GetClampedInput(moveData);
-        var moveSpeed = _moveSpeed.GetSpeed(moveData);
+        var clampedInput = _moveSpeed.GetClampedInput(locomotionConfig.MoveSpeedData);
+        var moveSpeed = _moveSpeed.GetSpeed(locomotionConfig.MoveSpeedData);
 
-        Controller.Move(clampedInput, moveSpeed, 1f);
-        Controller.JumpAndGravity(InputHandler.JumpPressed, _animationContainer.GetMoveSpeedData(LocomotionType.Jump0).YSpeed);
+        Controller.Move(clampedInput, moveSpeed, 50f);
+        Controller.JumpAndGravity(InputHandler.JumpPressed, locomotionConfig.MoveSpeedData.YSpeed);
         Controller.Rotation(InputHandler.Rotation, controllerData.RotationSpeed);
 
         PlayablesAnimatorController.UpdateLocomotion(Controller.HorizontalVelocity.normalized);
@@ -79,14 +57,8 @@ public class CharacterCore : CoreController
 
     public override void UpdateLocomotion(bool isInitialization = false)
     {
-        var locomotionType = _locomotionSelector.GetLocomotionType();
-        if (locomotionType == _currentLocomotionType && !isInitialization)
-        {
-            return;
-        }
-        _currentLocomotionType = locomotionType;
-        PlayablesAnimatorController.SetLocomotion(_currentLocomotionType);
-        PlayablesAnimatorController.ConnectFootSteps(_soundContainer.GetAudioSet(_currentLocomotionType));
+        PlayablesAnimatorController.SetLocomotion(locomotionConfig.Locomotion);
+        PlayablesAnimatorController.ConnectFootSteps(_soundContainer.GetAudioSet(locomotionConfig.Locomotion));
     }
 
     private void OnDestroy()

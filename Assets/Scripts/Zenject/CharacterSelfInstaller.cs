@@ -7,7 +7,7 @@ public class CharacterSelfInstaller : MonoInstaller
     {
         Container.Bind<AIInput>().FromInstance(GetComponentInChildren<AIInput>()).AsSingle();
         
-        Container.Bind<CharacterCore>().FromInstance(GetComponentInParent<CharacterCore>()).AsSingle();
+        Container.Bind<CoreController>().FromInstance(GetComponentInParent<CoreController>()).AsSingle();
         
         Container.Bind<CharacterController>().FromInstance(GetComponentInParent<CharacterController>()).AsSingle();
         

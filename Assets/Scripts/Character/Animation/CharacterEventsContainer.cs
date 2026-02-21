@@ -11,7 +11,7 @@ public class CharacterEventsContainer : MonoBehaviour
    private ParticleSystem _stepR;
 
    [Inject]
-   private void Construct(CharacterCore characterCore, Animator animator)
+   private void Construct(CoreController characterCore, Animator animator)
    {
       _playablesAnimatorController = characterCore.PlayablesAnimatorController;
       _animator = animator;

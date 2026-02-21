@@ -3,11 +3,11 @@ using Zenject;
 
 public class AIInput : InputSource
 {
-    private CharacterCore _characterCore;
+    private CoreController _characterCore;
     private CharacterSelector _characterSelector;
 
     [Inject]
-    private void Construct(CharacterCore characterCore, CharacterSelector characterSelector)
+    private void Construct(CoreController characterCore, CharacterSelector characterSelector)
     {
         _characterCore = characterCore;
         _characterSelector = characterSelector;

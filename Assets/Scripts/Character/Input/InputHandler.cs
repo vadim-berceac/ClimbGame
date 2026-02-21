@@ -34,6 +34,10 @@ public class InputHandler
             case InputSourceMode.Player:
                 _currentInputSource = _playerSource;
                 break;
+            
+            case InputSourceMode.Vehicle:
+                _currentInputSource = null;
+                break;
         }
     }
 }
@@ -42,5 +46,6 @@ public enum InputSourceMode
 {
     None = 0,
     AI = 1,
-    Player = 2
+    Player = 2,
+    Vehicle = 3
 }
