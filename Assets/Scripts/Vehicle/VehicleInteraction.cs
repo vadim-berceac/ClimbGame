@@ -7,6 +7,7 @@ public class VehicleInteraction : MonoBehaviour
     private VehicleCore _vehicleCore;
     private bool _attached;
     private CharacterCore _characterCore;
+    private float _lastActionTime = -1f;
 
     [Inject]
     private void Construct(CoreController vehicleCore)
@@ -16,13 +17,16 @@ public class VehicleInteraction : MonoBehaviour
     
     private void OnTriggerEnter(Collider other)
     {
-        other.TryGetComponent(out _characterCore);
-        Debug.Log($"TriggerEnter: _characterCore = {_characterCore}"); // проверь что нашёл
+        if (other.TryGetComponent(out CharacterCore core))
+        {
+            _characterCore = core;
+        }
     }
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.TryGetComponent(out _characterCore))
+        if (_attached) return;
+        if (other.TryGetComponent(out CharacterCore core) && core == _characterCore)
         {
             _characterCore = null;
         }
@@ -30,20 +34,17 @@ public class VehicleInteraction : MonoBehaviour
     
     private void Update()
     {
-        if (_characterCore)
-        {
-            Debug.Log($"attached: {_attached}, InteractPressed: {_characterCore.InputHandler.InteractPressed}");
-        }
-
-        if (_characterCore && !_attached && _characterCore.InputHandler.InteractPressed)
+        if (_characterCore && !_attached && _characterCore.InputHandler.InteractPressed && Time.time > _lastActionTime + 1f)
         {
             Attach();
+            _lastActionTime = Time.time;
             return;
         }
 
-        if (_characterCore && _attached && _characterCore.InputHandler.InteractPressed)
+        if (_characterCore && _attached && _characterCore.InputHandler.InteractPressed && Time.time > _lastActionTime + 1f)
         {
             Detach();
+            _lastActionTime = Time.time;
         }
     }
 
