@@ -1,7 +1,7 @@
 
 using Zenject;
 
-public class AIInput : InputSource
+public class AIInput : MonoInputSource
 {
     private CoreController _characterCore;
     private CharacterSelector _characterSelector;

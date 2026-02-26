@@ -11,7 +11,7 @@ public interface IInputSource
     public bool OnInteract { get; set; }
 }
 
-public abstract class InputSource : MonoBehaviour, IInputSource
+public abstract class MonoInputSource : MonoBehaviour, IInputSource
 {
     public Vector2 OnMove { get; set; }
     public Vector2 OnLook { get; set; }

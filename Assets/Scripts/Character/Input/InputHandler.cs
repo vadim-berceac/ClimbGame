@@ -14,7 +14,7 @@ public class InputHandler
     
     private IInputSource _currentInputSource;
     
-    public InputHandler(IInputSource playerSource, InputSource aiSource)
+    public InputHandler(IInputSource playerSource, IInputSource aiSource)
     {
         _playerSource = playerSource;
         _aiSource = aiSource;

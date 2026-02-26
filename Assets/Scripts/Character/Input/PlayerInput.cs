@@ -3,165 +3,122 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using Zenject;
 
-public class PlayerInput : InputSource
+[CreateAssetMenu(fileName = "PlayerInputSO", menuName = "ZenjectInstallers/PlayerInputSO")]
+public class PlayerInputSO : ScriptableObject, IInputSource, ITickable
 {
-   [SerializeField] private InputActionAsset inputAsset;
+    [SerializeField] private InputActionAsset inputAsset;
 
-   private InputAction _move;
-   private InputAction _look;
-   private InputAction _jump;
-   private InputAction _run;
-   private InputAction _crouch;
-   private InputAction _interact;
+    private InputAction _move;
+    private InputAction _look;
+    private InputAction _jump;
+    private InputAction _run;
+    private InputAction _crouch;
+    private InputAction _interact;
+    private InputAction _nextCharacter;
 
-   private InputAction _nextCharacter;
-   
-   private Camera _mainCamera;
+    private Camera _mainCamera;
 
-   public Action OnCharacterSwitch;
+    public Action OnCharacterSwitch;
 
-   [Inject]
-   private void Construct(Camera mainCamera)
-   {
-      _mainCamera = mainCamera;
-   }
-   
-   private void OnEnable()
-   {
-      FindActions();
-      Subscribe();
-   }
+    public Vector2 OnMove { get; set; }
+    public Vector2 OnLook { get; set; }
+    public Vector3 Rotation { get; set; }
+    public bool OnJump { get; set; }
+    public bool OnRun { get; set; }
+    public bool OnCrouch { get; set; }
+    public bool OnInteract { get; set; }
 
-   private void Update()
-   {
-      Rotation = _mainCamera.transform.rotation.eulerAngles;
-   }
+    [Inject]
+    private void Construct(Camera mainCamera)
+    {
+        _mainCamera = mainCamera;
+    }
 
-   private void FindActions()
-   {
-      _move = inputAsset.FindAction("Move");
-      _look = inputAsset.FindAction("Look");
-      _jump = inputAsset.FindAction("Jump");
-      _run = inputAsset.FindAction("Run");
-      _crouch = inputAsset.FindAction("Crouch");
-      _interact = inputAsset.FindAction("Interact");
-      
-      _nextCharacter = inputAsset.FindAction("Next");
-   }
+    private void OnEnable()
+    {
+        FindActions();
+        Subscribe();
+    }
 
-   private void Subscribe()
-   {
-      _move.performed += OnMoveCTX;
-      _move.canceled += OnMoveCTXCancel;
-      
-      _look.performed += OnLookCTX;
-      _look.canceled += OnLookCTXCancel;
-      
-      _jump.performed += OnJumpCTX;
-      _jump.canceled += OnJumpCTXCancel;
-      
-      _run.performed += OnRunCTX;
-      _run.canceled += OnRunCTXCancel;
-      
-      _crouch.performed += OnCrouchCTX;
-      _crouch.canceled += OnCrouchCTXCancel;
-      
-      _interact.performed += OnInteractCTX;
-      _interact.canceled += OnInteractCTXCancel;
-      
-      _nextCharacter.performed += OnNextCTX;
-   }
+    private void OnDisable()
+    {
+        Unsubscribe();
+    }
 
-   private void Unsubscribe()
-   {
-      _move.performed -= OnMoveCTX;
-      _move.canceled -= OnMoveCTXCancel;
-      
-      _look.performed -= OnLookCTX;
-      _look.canceled -= OnLookCTXCancel;
-      
-      _jump.performed -= OnJumpCTX;
-      _jump.canceled -= OnJumpCTXCancel;
-      
-      _run.performed -= OnRunCTX;
-      _run.canceled -= OnRunCTXCancel;
-      
-      _crouch.performed -= OnCrouchCTX;
-      _crouch.canceled -= OnCrouchCTXCancel;
-      
-      _interact.performed -= OnInteractCTX;
-      _interact.canceled -= OnInteractCTXCancel;
-      
-      _nextCharacter.performed -= OnNextCTX;
-   }
+    public void Tick()
+    {
+        if (_mainCamera != null)
+            Rotation = _mainCamera.transform.rotation.eulerAngles;
+    }
 
-   private void OnNextCTX(InputAction.CallbackContext context)
-   {
-      OnCharacterSwitch?.Invoke();
-   }
-   
-   private void OnMoveCTX(InputAction.CallbackContext ctx)
-   {
-      OnMove = ctx.ReadValue<Vector2>();
-   }
-   
-   private void OnMoveCTXCancel(InputAction.CallbackContext ctx)
-   {
-      OnMove = Vector2.zero;
-   }
+    private void FindActions()
+    {
+        _move = inputAsset.FindAction("Move");
+        _look = inputAsset.FindAction("Look");
+        _jump = inputAsset.FindAction("Jump");
+        _run = inputAsset.FindAction("Run");
+        _crouch = inputAsset.FindAction("Crouch");
+        _interact = inputAsset.FindAction("Interact");
+        _nextCharacter = inputAsset.FindAction("Next");
+    }
 
-   private void OnLookCTX(InputAction.CallbackContext ctx)
-   {
-      OnLook = ctx.ReadValue<Vector2>();
-   }
+    private void Subscribe()
+    {
+        _move.performed += OnMoveCTX;
+        _move.canceled += OnMoveCTXCancel;
 
-   private void OnLookCTXCancel(InputAction.CallbackContext ctx)
-   {
-      OnLook = Vector2.zero;
-   }
-   
-   private void OnJumpCTX(InputAction.CallbackContext ctx)
-   {
-      OnJump = true;
-   }
-   
-   private void OnJumpCTXCancel(InputAction.CallbackContext ctx)
-   {
-      OnJump = false;
-   }
-   
-   private void OnRunCTX(InputAction.CallbackContext ctx)
-   {
-      OnRun = true;
-   }
-   
-   private void OnRunCTXCancel(InputAction.CallbackContext ctx)
-   {
-      OnRun = false;
-   }
-   
-   private void OnCrouchCTX(InputAction.CallbackContext ctx)
-   {
-      OnCrouch = true;
-   }
-   
-   private void OnCrouchCTXCancel(InputAction.CallbackContext ctx)
-   {
-      OnCrouch = false;
-   }
-   
-   private void OnInteractCTX(InputAction.CallbackContext ctx)
-   {
-      OnInteract = true;
-   }
-   
-   private void OnInteractCTXCancel(InputAction.CallbackContext ctx)
-   {
-      OnInteract = false;
-   }
+        _look.performed += OnLookCTX;
+        _look.canceled += OnLookCTXCancel;
 
-   private void OnDisable()
-   {
-      Unsubscribe();
-   }
+        _jump.performed += OnJumpCTX;
+        _jump.canceled += OnJumpCTXCancel;
+
+        _run.performed += OnRunCTX;
+        _run.canceled += OnRunCTXCancel;
+
+        _crouch.performed += OnCrouchCTX;
+        _crouch.canceled += OnCrouchCTXCancel;
+
+        _interact.performed += OnInteractCTX;
+        _interact.canceled += OnInteractCTXCancel;
+
+        _nextCharacter.performed += OnNextCTX;
+    }
+
+    private void Unsubscribe()
+    {
+        _move.performed -= OnMoveCTX;
+        _move.canceled -= OnMoveCTXCancel;
+
+        _look.performed -= OnLookCTX;
+        _look.canceled -= OnLookCTXCancel;
+
+        _jump.performed -= OnJumpCTX;
+        _jump.canceled -= OnJumpCTXCancel;
+
+        _run.performed -= OnRunCTX;
+        _run.canceled -= OnRunCTXCancel;
+
+        _crouch.performed -= OnCrouchCTX;
+        _crouch.canceled -= OnCrouchCTXCancel;
+
+        _interact.performed -= OnInteractCTX;
+        _interact.canceled -= OnInteractCTXCancel;
+
+        _nextCharacter.performed -= OnNextCTX;
+    }
+
+    private void OnNextCTX(InputAction.CallbackContext ctx) => OnCharacterSwitch?.Invoke();
+    private void OnMoveCTX(InputAction.CallbackContext ctx) => OnMove = ctx.ReadValue<Vector2>();
+    private void OnMoveCTXCancel(InputAction.CallbackContext ctx) => OnMove = Vector2.zero;
+    private void OnLookCTX(InputAction.CallbackContext ctx) => OnLook = ctx.ReadValue<Vector2>();
+    private void OnLookCTXCancel(InputAction.CallbackContext ctx) => OnLook = Vector2.zero;
+    private void OnJumpCTX(InputAction.CallbackContext ctx) => OnJump = true;
+    private void OnJumpCTXCancel(InputAction.CallbackContext ctx) => OnJump = false;
+    private void OnRunCTX(InputAction.CallbackContext ctx) => OnRun = true;
+    private void OnRunCTXCancel(InputAction.CallbackContext ctx) => OnRun = false;
+    private void OnCrouchCTX(InputAction.CallbackContext ctx) => OnCrouch = true;
+    private void OnCrouchCTXCancel(InputAction.CallbackContext ctx) => OnCrouch = false;
+    private void OnInteractCTX(InputAction.CallbackContext ctx) => OnInteract = true;
+    private void OnInteractCTXCancel(InputAction.CallbackContext ctx) => OnInteract = false;
 }

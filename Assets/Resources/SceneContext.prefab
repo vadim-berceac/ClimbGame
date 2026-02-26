@@ -77,8 +77,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c7d078fa85e31a7438626e9b598ba2f3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SceneBaseInstaller
-  playerInputPrefab: {fileID: 4548915308489316163, guid: f96bc87667108864e95391542dd2ebb7, type: 3}
   mainCameraPrefab: {fileID: 8944336655422409498, guid: 9142c228bfcc92a44949f7dda3fe9a41, type: 3}
   selectorPrefab: {fileID: 5645283547629977889, guid: 0db233047b2c9a44d8e5ab3b6da8264c, type: 3}
+  playerInputSO: {fileID: 11400000, guid: 24660d9a5c770f44d9fbec955423acd5, type: 2}
   animationContainerSO: {fileID: 11400000, guid: 3588657c65f8e5c4081f6f457b85ec55, type: 2}
   soundContainerSO: {fileID: 11400000, guid: ff99aadefbdaf434a8398a2bfc6149ba, type: 2}

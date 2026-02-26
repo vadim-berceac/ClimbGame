@@ -4,11 +4,11 @@ using Zenject;
 
 public class CharacterSwitcher : MonoBehaviour
 {
-   private PlayerInput _uiInput;
+   private PlayerInputSO _uiInput;
    private CharacterSelector _characterSelector;
 
    [Inject]
-   private void Construct(PlayerInput uiInput, CharacterSelector characterSelector)
+   private void Construct(PlayerInputSO uiInput, CharacterSelector characterSelector)
    {
       _uiInput = uiInput;
       _characterSelector = characterSelector;

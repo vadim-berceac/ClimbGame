@@ -12,7 +12,7 @@ public class CharacterSelector : MonoBehaviour
    
    private readonly List<AIInput> _inputBrainModules = new ();
    private AIInput _selectedBrain;
-   private PlayerInput _playerInput;
+   private PlayerInputSO _playerInput;
    private const float Threshold = 0.01f;
    private float _targetYaw;
    private float _targetPitch;
@@ -20,7 +20,7 @@ public class CharacterSelector : MonoBehaviour
    public static Action<AIInput> OnCharacterSelected { get; set; }
 
    [Inject]
-   private void Construct(PlayerInput playerInput)
+   private void Construct(PlayerInputSO playerInput)
    {
       _playerInput = playerInput;
    }

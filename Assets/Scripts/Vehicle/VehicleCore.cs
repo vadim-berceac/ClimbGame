@@ -16,7 +16,7 @@ public class VehicleCore : CoreController
 
     [Inject]
     private void Construct(
-        PlayerInput                       playerInput,
+        PlayerInputSO                       playerInput,
         AIInput                           aiInput,
         CharacterController               controller,
         Animator                          animator,
