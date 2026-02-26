@@ -6,8 +6,8 @@ public class VehicleCore : CoreController
     [SerializeField] private LocomotionConfigs locomotionConfig;
     [SerializeField] private AdvancedCharacterControllerData  controllerData;
 
-    private AnimationContainer         _animationContainer;
-    private SoundContainer             _soundContainer;
+    private CharacterAnimationContainer _animationContainer;
+    private CharacterSoundContainer    _soundContainer;
     private MoveSpeed                  _moveSpeed;
     private CharacterAnimationEvents   _animationEvents;
     
@@ -16,14 +16,14 @@ public class VehicleCore : CoreController
 
     [Inject]
     private void Construct(
-        PlayerInput              playerInput,
-        AIInput                  aiInput,
-        CharacterController      controller,
-        Animator                 animator,
-        AnimationContainer       animationContainer,
-        SoundContainer           soundContainer,
-        AudioSource              audioSource,
-        CharacterAnimationEvents animationEvents)
+        PlayerInput                       playerInput,
+        AIInput                           aiInput,
+        CharacterController               controller,
+        Animator                          animator,
+        CharacterAnimationContainer       animationContainer,
+        CharacterSoundContainer           soundContainer,
+        AudioSource                       audioSource,
+        CharacterAnimationEvents          animationEvents)
     {
         InputHandler = new InputHandler(playerInput, aiInput);
         InputHandler.SetupInput(InputSourceMode.Vehicle);

@@ -438,7 +438,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4248199751491158273}
   - component: {fileID: 1023586469484583220}
-  - component: {fileID: 1834186869348388251}
   - component: {fileID: 8448510217070877485}
   - component: {fileID: 8295959275839221467}
   - component: {fileID: 8805365853238404575}
@@ -489,19 +488,6 @@ MonoBehaviour:
   _installerPrefabs: []
   _autoRun: 1
   _kernel: {fileID: 0}
---- !u!114 &1834186869348388251
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7740838437816475898}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f792e179022977145b25325498addf0f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SoundEvents
-  stepVfxPrefab: {fileID: 6403252182692130976, guid: f5a2d688865cb9549ba9c2547c4a93a5, type: 3}
 --- !u!82 &8448510217070877485
 AudioSource:
   m_ObjectHideFlags: 0

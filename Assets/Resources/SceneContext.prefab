@@ -80,4 +80,5 @@ MonoBehaviour:
   playerInputPrefab: {fileID: 4548915308489316163, guid: f96bc87667108864e95391542dd2ebb7, type: 3}
   mainCameraPrefab: {fileID: 8944336655422409498, guid: 9142c228bfcc92a44949f7dda3fe9a41, type: 3}
   selectorPrefab: {fileID: 5645283547629977889, guid: 0db233047b2c9a44d8e5ab3b6da8264c, type: 3}
-  animationContainerPrefab: {fileID: 6748008794238705200, guid: d0a78e827a738584a84020526ad037cc, type: 3}
+  animationContainerSO: {fileID: 11400000, guid: 3588657c65f8e5c4081f6f457b85ec55, type: 2}
+  soundContainerSO: {fileID: 11400000, guid: ff99aadefbdaf434a8398a2bfc6149ba, type: 2}

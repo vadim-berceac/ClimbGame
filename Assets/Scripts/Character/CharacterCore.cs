@@ -6,8 +6,8 @@ public class CharacterCore : CoreController
     [SerializeField] private InputSourceMode                  mode;
     [SerializeField] private AdvancedCharacterControllerData  controllerData;
 
-    private AnimationContainer         _animationContainer;
-    private SoundContainer             _soundContainer;
+    private CharacterAnimationContainer _animationContainer;
+    private CharacterSoundContainer    _soundContainer;
     private MoveSpeed                  _moveSpeed;
     private LocomotionSelector         _locomotionSelector;
     private CharacterAnimationEvents   _animationEvents;
@@ -17,14 +17,14 @@ public class CharacterCore : CoreController
 
     [Inject]
     private void Construct(
-        PlayerInput              playerInput,
-        AIInput                  aiInput,
-        CharacterController      controller,
-        Animator                 animator,
-        AnimationContainer       animationContainer,
-        SoundContainer           soundContainer,
-        AudioSource              audioSource,
-        CharacterAnimationEvents animationEvents)
+        PlayerInput                      playerInput,
+        AIInput                          aiInput,
+        CharacterController              controller,
+        Animator                         animator,
+        CharacterAnimationContainer      animationContainer,
+        CharacterSoundContainer          soundContainer,
+        AudioSource                      audioSource,
+        CharacterAnimationEvents         animationEvents)
     {
         InputHandler = new InputHandler(playerInput, aiInput);
         InputHandler.SetupInput(mode);
