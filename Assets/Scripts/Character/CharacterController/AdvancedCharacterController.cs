@@ -17,7 +17,8 @@ public class AdvancedCharacterController
     private const float RotationSnapThreshold      = 0.1f;
     private const float TerminalVelocity           = -53f;
     private const float FallGravityMultiplier      = 2f;
-    private const float WallSnapGap                = 0.02f; // желаемый зазор между капсулой и стеной
+    private const float WallSnapGap                = 0.02f;
+    private const float CoyoteTimeDuration         = 0.1f;
 
     #endregion
 
@@ -52,6 +53,7 @@ public class AdvancedCharacterController
     private float _rotationSpeed;
     private float _jumpHeight;
     private float _gravity;
+    private float _coyoteTimeCounter;
 
     private bool _isGrounded;
     private bool _isClimbing;
@@ -190,6 +192,7 @@ public class AdvancedCharacterController
         {
             _forcedFallingFrames--;
             _isGrounded = false;
+            _coyoteTimeCounter = 0f;
             return;
         }
 
@@ -205,12 +208,16 @@ public class AdvancedCharacterController
             {
                 _velocity.y = GroundSnapVelocity;
             }
+            
+            if (_isGrounded)
+                _coyoteTimeCounter = CoyoteTimeDuration;
 
             _slopeHit = hit;
         }
         else
         {
             _isGrounded = false;
+            _coyoteTimeCounter = Mathf.Max(0f, _coyoteTimeCounter - Time.deltaTime);
         }
     }
 
@@ -263,7 +270,7 @@ public class AdvancedCharacterController
         var rayOrigin = _transform.position + Vector3.up * _climbRayOffset;
 
         if (!Physics.SphereCast(rayOrigin, _controller.radius * 0.5f, _transform.forward,
-                out hit, _climbCheckDistance, _climbMask))  // <--
+                out hit, _climbCheckDistance, _climbMask))
             return false;
 
         var angle = Vector3.Angle(Vector3.up, hit.normal);
@@ -330,7 +337,6 @@ public class AdvancedCharacterController
 
         if (_isOnClimbableSurface)
         {
-            // Прижимаем к стене даже в состоянии покоя
             var snap    = CalculateWallSnapVelocity();
             _velocity.x = snap.x;
             _velocity.z = snap.z;
@@ -380,7 +386,6 @@ public class AdvancedCharacterController
         var projected  = ProjectOnSurface(desired.normalized, _climbNormal);
         var velocity   = projected * climbSpeed;
 
-        // Прижимаем к стене во время карабканья
         velocity += CalculateWallSnapVelocity();
 
         if (_moveInput.y > 0.1f && IsAtLedge())
@@ -475,8 +480,9 @@ public class AdvancedCharacterController
         {
             JumpFromWall();
         }
-        else if (_isGrounded && !_jumpRequested)
+        else if ((_isGrounded || _coyoteTimeCounter > 0f) && !_jumpRequested)
         {
+            _coyoteTimeCounter = 0f; // сжигаем окно сразу при прыжке
             JumpFromGround();
         }
     }
