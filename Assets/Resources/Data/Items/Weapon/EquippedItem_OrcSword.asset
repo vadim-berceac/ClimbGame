@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3a8aab7939e60604a92102a27ed365ed, type: 3}
-  m_Name: EquippedItem_TestMace
+  m_Name: EquippedItem_OrcSword
   m_EditorClassIdentifier: Assembly-CSharp::EquippedItem
-  <ItemName>k__BackingField: Test Mace
+  <ItemName>k__BackingField: Orc Sword
   <Price>k__BackingField: 100
   <Icon>k__BackingField: {fileID: 0}
   <GroundPrefab>k__BackingField: {fileID: 0}
@@ -20,14 +20,14 @@ MonoBehaviour:
   <EquippedItemSlot>k__BackingField:
     <SlotType>k__BackingField: 6
     <TransformData>k__BackingField:
-      <Position>k__BackingField: {x: 0.122, y: -0.175, z: -0.168}
-      <Rotation>k__BackingField: {x: -0.6479834, y: 0.282843, z: -0.28274536, w: -0.6482071}
+      <Position>k__BackingField: {x: 0.124, y: -0.199, z: -0.165}
+      <Rotation>k__BackingField: {x: 0.25978518, y: -0.3354941, z: 0.6545325, w: -0.6257337}
       <Scale>k__BackingField: 1
       <Active>k__BackingField: 1
   <ActiveItemSlot>k__BackingField:
     <SlotType>k__BackingField: 0
     <TransformData>k__BackingField:
-      <Position>k__BackingField: {x: 0.087, y: 0.048, z: -0.334}
-      <Rotation>k__BackingField: {x: 0.72850573, y: 0.0000004424719, z: 0.00000027396436, w: 0.6850397}
+      <Position>k__BackingField: {x: 0.06, y: 0.06, z: -0.487}
+      <Rotation>k__BackingField: {x: 0.46685317, y: -0.51878345, z: 0.50133836, w: -0.5114407}
       <Scale>k__BackingField: 1
       <Active>k__BackingField: 1
