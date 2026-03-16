@@ -5,7 +5,9 @@ public class CharacterSelfInstaller : MonoInstaller
 {
     public override void InstallBindings()
     {
-        Container.Bind<AIInput>().FromInstance(GetComponentInChildren<AIInput>()).AsSingle();
+        Container.Bind<AIInput>().FromInstance(transform.parent.GetComponentInChildren<AIInput>()).AsSingle();
+        
+        Container.Bind<AnimatedModelTag>().FromInstance(transform.parent.GetComponentInChildren<AnimatedModelTag>()).AsSingle();
         
         Container.Bind<CoreController>().FromInstance(GetComponentInParent<CoreController>()).AsSingle();
         
