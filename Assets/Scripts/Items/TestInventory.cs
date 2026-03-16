@@ -14,16 +14,11 @@ public class TestInventory : MonoBehaviour
         Equip(equippedItem.EquippedItemPrefab, equippedItem.ActiveItemSlot, slots);
     }
 
-    private void Equip(GameObject prefab, SlotSettings slotSettings, CharacterSlots slots)
+    private static void Equip(GameObject prefab, SlotSettings slotSettings, CharacterSlots slots)
     {
         var item = Instantiate(prefab);
-        var scale = slotSettings.TransformData.Scale;
-        item.transform.localScale = new Vector3(scale, scale, scale);
-        item.SetActive(slotSettings.TransformData.Active);
         
         var slotTransform = slots.GetSlot(slotSettings.SlotType);
-        item.transform.SetParent(slotTransform, false);
-        item.transform.localPosition = slotSettings.TransformData.Position;
-        item.transform.localRotation = slotSettings.TransformData.Rotation;
+        slotTransform.AttachSource(item.transform, slotSettings);
     }
 }
