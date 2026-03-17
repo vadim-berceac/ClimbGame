@@ -11,7 +11,7 @@ public class AdvancedCharacterController
     private const float ClimbingRotationMultiplier = 5f;
     private const float ForcedFallSpeed            = -8f;
     private const int   ForcedFallFrames           = 10;
-    private const float GroundSnapVelocity         = -2f;
+    private const float GroundSnapVelocity         = -5f; 
     private const float LedgeClimbMultiplier       = 3.0f;
     private const float LedgeForwardPushMultiplier = 1.5f;
     private const float RotationSnapThreshold      = 0.1f;
@@ -361,6 +361,12 @@ public class AdvancedCharacterController
             var targetMove = OnSlope() ? CalculateSlopeVelocity() : CalculateNormalVelocity();
             _velocity.x = targetMove.x;
             _velocity.z = targetMove.z;
+            
+            // Когда на склоне, обновляем и Y скорость (которая включает slopeForce)
+            if (OnSlope())
+            {
+                _velocity.y = targetMove.y;
+            }
         }
     }
 
@@ -396,18 +402,6 @@ public class AdvancedCharacterController
         return velocity;
     }
 
-    /// <summary>
-    /// Считает скорость прижатия к стене на основе реального зазора между капсулой и поверхностью.
-    ///
-    /// SphereCast с радиусом R возвращает hit.distance = расстояние, пройденное центром сферы до касания.
-    /// Значит стена находится на расстоянии (hit.distance + R) от начала луча вдоль forward.
-    /// Капсула персонажа имеет радиус _controller.radius, поэтому идеальное расстояние до стены — это тоже _controller.radius.
-    /// Реальный зазор между поверхностью капсулы и стеной:
-    ///   gap = (hit.distance + castRadius) - _controller.radius
-    ///       = hit.distance - (_controller.radius - castRadius)
-    ///       = hit.distance - _controller.radius * 0.5f   (т.к. castRadius = _controller.radius * 0.5f)
-    /// Чтобы закрыть этот зазор за один кадр, нужна скорость = gap / deltaTime.
-    /// </summary>
     private Vector3 CalculateWallSnapVelocity()
     {
         var castRadius = _controller.radius * 0.5f;
@@ -482,7 +476,7 @@ public class AdvancedCharacterController
         }
         else if ((_isGrounded || _coyoteTimeCounter > 0f) && !_jumpRequested)
         {
-            _coyoteTimeCounter = 0f; // сжигаем окно сразу при прыжке
+            _coyoteTimeCounter = 0f; 
             JumpFromGround();
         }
     }
