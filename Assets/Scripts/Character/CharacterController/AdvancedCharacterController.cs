@@ -11,12 +11,11 @@ public class AdvancedCharacterController
     private const float ClimbingRotationMultiplier = 5f;
     private const float ForcedFallSpeed            = -8f;
     private const int   ForcedFallFrames           = 10;
-    private const float GroundSnapVelocity         = -5f; 
+    private const float GroundSnapVelocity         = -5f;  // скорость прижатия к земле при посадке
     private const float LedgeClimbMultiplier       = 3.0f;
     private const float LedgeForwardPushMultiplier = 1.5f;
     private const float RotationSnapThreshold      = 0.1f;
-    private const float TerminalVelocity           = -53f;
-    private const float FallGravityMultiplier      = 2f;
+    private const float TerminalVelocity           = -53f;  // максимальная скорость падения
     private const float WallSnapGap                = 0.02f;
     private const float CoyoteTimeDuration         = 0.1f;
 
@@ -54,6 +53,8 @@ public class AdvancedCharacterController
     private float _jumpHeight;
     private float _gravity;
     private float _coyoteTimeCounter;
+    
+    private bool _wasGroundedLastFrame; 
 
     private bool _isGrounded;
     private bool _isClimbing;
@@ -110,6 +111,7 @@ public class AdvancedCharacterController
         _climbMask            = data.ClimbMask;
 
         _smoothedTargetSpeed = 0f;
+        _wasGroundedLastFrame = false;
     }
 
     #endregion
@@ -147,7 +149,7 @@ public class AdvancedCharacterController
         _controller.Move(_velocity * dt);
     }
 
-    public void JumpAndGravity(bool jumpPressed, float jumpHeight, float gravityMultiplier = 1f)
+    public void JumpAndGravity(bool jumpPressed, float jumpHeight, float gravityMultiplier = 2f)
     {
         if(!_controller.enabled) return;
         
@@ -204,11 +206,6 @@ public class AdvancedCharacterController
             var surfaceAngle = Vector3.Angle(Vector3.up, hit.normal);
             _isGrounded = surfaceAngle <= _controller.slopeLimit;
 
-            if (_isGrounded && _velocity.y < 0 && _velocity.y > -10f)
-            {
-                _velocity.y = GroundSnapVelocity;
-            }
-            
             if (_isGrounded)
                 _coyoteTimeCounter = CoyoteTimeDuration;
 
@@ -219,6 +216,13 @@ public class AdvancedCharacterController
             _isGrounded = false;
             _coyoteTimeCounter = Mathf.Max(0f, _coyoteTimeCounter - Time.deltaTime);
         }
+       
+        if (_wasGroundedLastFrame && !_isGrounded && _velocity.y < 0 && !_isJumping)
+        {
+            _velocity.y = 0f;
+        }
+        
+        _wasGroundedLastFrame = _isGrounded;
     }
 
     #endregion
@@ -361,11 +365,13 @@ public class AdvancedCharacterController
             var targetMove = OnSlope() ? CalculateSlopeVelocity() : CalculateNormalVelocity();
             _velocity.x = targetMove.x;
             _velocity.z = targetMove.z;
-            
-            // Когда на склоне, обновляем и Y скорость (которая включает slopeForce)
+       
             if (OnSlope())
             {
-                _velocity.y = targetMove.y;
+                if (!_isJumping)
+                {
+                    _velocity.y = targetMove.y;
+                }
             }
         }
     }
@@ -453,7 +459,10 @@ public class AdvancedCharacterController
         var slopeDir = Vector3.ProjectOnPlane(dir, _slopeHit.normal).normalized;
         var vel      = _smoothedTargetSpeed * slopeDir;
 
-        if (_isGrounded) vel.y -= _slopeForce;
+        if (_isGrounded) 
+        {
+            vel.y -= _slopeForce;
+        }
 
         return vel;
     }
@@ -526,10 +535,10 @@ public class AdvancedCharacterController
         {
             _velocity.y = 0f;
         }
+      
         else
         {
-            var mult = (_velocity.y < 0f && !_isJumping) ? FallGravityMultiplier : 1f;
-            _velocity.y += _gravity * mult * Time.deltaTime;
+            _velocity.y += _gravity * Time.deltaTime;
 
             if (_velocity.y < TerminalVelocity)
                 _velocity.y = TerminalVelocity;
