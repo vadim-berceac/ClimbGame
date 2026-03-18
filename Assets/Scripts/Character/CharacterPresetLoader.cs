@@ -10,13 +10,20 @@ public class CharacterPresetLoader : MonoBehaviour
     private Animator _animator;
     private CharacterSlots _characterSlots;
     private AnimatedModelTag _animatedModelTag;
+    private CharacterEventsContainer _characterEventsContainer;
 
     [Inject]
-    private void Construct(Animator animator, CharacterSlots characterSlots, AnimatedModelTag animatedModelTag)
+    private void Construct(
+        Animator animator,
+        CharacterSlots characterSlots,
+        AnimatedModelTag animatedModelTag,
+        CharacterEventsContainer characterEventsContainer
+        )
     {
         _animator = animator;
         _characterSlots = characterSlots;
         _animatedModelTag = animatedModelTag;
+        _characterEventsContainer = characterEventsContainer;
 
         InitializeModel(skinData);
     }
@@ -26,6 +33,7 @@ public class CharacterPresetLoader : MonoBehaviour
         SetModel(data);
         SetSkinItemSlots(data);
         SetSize(data);
+        SetFootStepsVFX(data);
         SetName(data);
     }
 
@@ -63,6 +71,18 @@ public class CharacterPresetLoader : MonoBehaviour
             
             _characterSlots.AddSlot(slotData.SlotType, slot.transform);
         }
+    }
+    
+    private void SetFootStepsVFX(CharacterSkin data)
+    {
+        var stepL = Instantiate(data.StepVfxPrefab,
+            _animator.GetBoneTransform(data.LFoot.Bone)).GetComponent<ParticleSystem>();
+        var stepR = Instantiate(data.StepVfxPrefab,
+            _animator.GetBoneTransform(data.RFoot.Bone)).GetComponent<ParticleSystem>();
+        stepL.gameObject.transform.localPosition = data.LFoot.PositionOffset;
+        stepR.gameObject.transform.localPosition = data.RFoot.PositionOffset;
+        
+        _characterEventsContainer.SetupFootSteps(stepL, stepR);
     }
 
     private void SetSize(CharacterSkin data)

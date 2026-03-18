@@ -19,6 +19,8 @@ public class CharacterSelfInstaller : MonoInstaller
         
         Container.Bind<CharacterAnimationEvents>().FromInstance(GetComponentInParent<CharacterAnimationEvents>()).AsSingle();
         
+        Container.Bind<CharacterEventsContainer>().FromInstance(GetComponentInParent<CharacterEventsContainer>()).AsSingle();
+        
         Container.Bind<CharacterPresetLoader>().FromInstance(GetComponentInParent<CharacterPresetLoader>()).AsSingle();
         
         Container.Bind<CharacterSlots>().AsSingle();

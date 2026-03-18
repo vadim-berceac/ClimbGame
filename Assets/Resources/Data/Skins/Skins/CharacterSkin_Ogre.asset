@@ -18,3 +18,10 @@ MonoBehaviour:
   <SkinItemSlots>k__BackingField: {fileID: 11400000, guid: 8064a812b2cdaf64ba41377e2d8264f2, type: 2}
   <SkinSize>k__BackingField: {x: 1.2, y: 1.2, z: 1.2}
   <SkinPositionOffset>k__BackingField: {x: 0, y: -1, z: 0}
+  <StepVfxPrefab>k__BackingField: {fileID: 6403252182692130976, guid: f5a2d688865cb9549ba9c2547c4a93a5, type: 3}
+  <LFoot>k__BackingField:
+    <Bone>k__BackingField: 5
+    <PositionOffset>k__BackingField: {x: -0.076, y: 0, z: -0.048}
+  <RFoot>k__BackingField:
+    <Bone>k__BackingField: 6
+    <PositionOffset>k__BackingField: {x: 0.076, y: 0, z: 0.048}
