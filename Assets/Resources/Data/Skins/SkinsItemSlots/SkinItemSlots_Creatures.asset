@@ -47,14 +47,14 @@ MonoBehaviour:
       <Rotation>k__BackingField: {x: 0, y: 0, z: 0, w: 0}
       <Scale>k__BackingField: 1
       <Active>k__BackingField: 1
-    <ParentBone>k__BackingField: 8
+    <ParentBone>k__BackingField: 7
   - <SlotType>k__BackingField: 5
     <TransformData>k__BackingField:
       <Position>k__BackingField: {x: 0, y: 0, z: 0}
       <Rotation>k__BackingField: {x: 0, y: 0, z: 0, w: 0}
       <Scale>k__BackingField: 1
       <Active>k__BackingField: 1
-    <ParentBone>k__BackingField: 54
+    <ParentBone>k__BackingField: 7
   - <SlotType>k__BackingField: 6
     <TransformData>k__BackingField:
       <Position>k__BackingField: {x: 0.056, y: -0.045, z: -0.065}
