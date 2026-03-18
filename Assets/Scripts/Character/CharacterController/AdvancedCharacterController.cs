@@ -11,11 +11,11 @@ public class AdvancedCharacterController
     private const float ClimbingRotationMultiplier = 5f;
     private const float ForcedFallSpeed            = -8f;
     private const int   ForcedFallFrames           = 10;
-    private const float GroundSnapVelocity         = -5f;  // скорость прижатия к земле при посадке
+    private const float GroundSnapVelocity         = -5f; 
     private const float LedgeClimbMultiplier       = 3.0f;
     private const float LedgeForwardPushMultiplier = 1.5f;
     private const float RotationSnapThreshold      = 0.1f;
-    private const float TerminalVelocity           = -53f;  // максимальная скорость падения
+    private const float TerminalVelocity           = -53f; 
     private const float WallSnapGap                = 0.02f;
     private const float CoyoteTimeDuration         = 0.1f;
 
@@ -204,7 +204,8 @@ public class AdvancedCharacterController
         if (Physics.SphereCast(origin, _controller.radius, Vector3.down, out var hit, distance, _groundMask))
         {
             var surfaceAngle = Vector3.Angle(Vector3.up, hit.normal);
-            _isGrounded = surfaceAngle <= _controller.slopeLimit;
+          
+            _isGrounded = surfaceAngle <= MinClimbAngle && !_isClimbing && !_isOnClimbableSurface;
 
             if (_isGrounded)
                 _coyoteTimeCounter = CoyoteTimeDuration;

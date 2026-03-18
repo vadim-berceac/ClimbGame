@@ -130,7 +130,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f792e179022977145b25325498addf0f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SoundEvents
-  stepVfxPrefab: {fileID: 6403252182692130976, guid: f5a2d688865cb9549ba9c2547c4a93a5, type: 3}
 --- !u!82 &7307965362817367212
 AudioSource:
   m_ObjectHideFlags: 0

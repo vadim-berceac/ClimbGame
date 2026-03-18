@@ -70,8 +70,8 @@ public class CharacterCore : CoreController
         var clampedInput = _moveSpeed.GetClampedInput(moveData);
         var moveSpeed = _moveSpeed.GetSpeed(moveData);
 
-        Controller.Move(clampedInput, moveSpeed, 1f);
         Controller.JumpAndGravity(InputHandler.JumpPressed, _animationContainer.GetMoveSpeedData(LocomotionType.Jump0).YSpeed);
+        Controller.Move(clampedInput, moveSpeed, 1f);
         Controller.Rotation(InputHandler.Rotation, controllerData.RotationSpeed);
 
         PlayablesAnimatorController.UpdateLocomotion(Controller.HorizontalVelocity.normalized);
