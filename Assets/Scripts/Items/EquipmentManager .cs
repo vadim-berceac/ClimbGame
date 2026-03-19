@@ -3,36 +3,47 @@ using UnityEngine;
 
 public class EquipmentManager
 {
-    // нужно переписать на работу с инстансами, а не датой предметов!
     private readonly Dictionary<ItemSlotType, EquippedSlot> _equippedItems = new();
 
-    public void Equip(EquippedItem item, CharacterSlots slots)
+    public void Equip(ItemInstance item, CharacterSlots slots)
     {
-        var slotTransform = slots.GetSlot(item.EquippedItemSlot.SlotType);
+        var equippedItem = item.GetData<EquippedItem>();
         
-        if (!slotTransform || !item.EquippedItemPrefab)
+        if (equippedItem == null || !equippedItem.EquippedItemPrefab)
+        {
+            Debug.LogWarning("[EquipmentManager] Предмет не является экипируемым или не имеет префаба");
             return;
+        }
 
-        UnEquip(item.EquippedItemSlot.SlotType);
+        UnEquip(equippedItem.EquippedItemSlot.SlotType);
 
-        var instance = GameObject.Instantiate(item.EquippedItemPrefab);
-        slotTransform.AttachSource(instance.transform, item.EquippedItemSlot);
+        var instance = GameObject.Instantiate(equippedItem.EquippedItemPrefab);
+        var slotTransform = slots.GetSlot(equippedItem.EquippedItemSlot.SlotType);
+        slotTransform.AttachSource(instance.transform, equippedItem.EquippedItemSlot);
         
-        _equippedItems[item.EquippedItemSlot.SlotType] = new EquippedSlot
+        _equippedItems[equippedItem.EquippedItemSlot.SlotType] = new EquippedSlot
         {
             Instance = instance,
-            Item = item
+            Item = equippedItem
         };
     }
 
-    public bool SetItemActive(EquippedItem item, CharacterSlots slots)
+    public bool SetItemActive(ItemInstance item, CharacterSlots slots)
     {
-        return TryMoveItem(item.EquippedItemSlot, item.ActiveItemSlot, slots);
+        var equippedItem = item.GetData<EquippedItem>();
+        if (equippedItem == null)
+            return false;
+
+        return TryMoveItem(equippedItem.EquippedItemSlot, equippedItem.ActiveItemSlot, slots);
     }
 
-    public bool SetItemEquipped(EquippedItem item, CharacterSlots slots)
+    public bool SetItemEquipped(ItemInstance item, CharacterSlots slots)
     {
-        return TryMoveItem(item.ActiveItemSlot, item.EquippedItemSlot, slots);
+        var equippedItem = item.GetData<EquippedItem>();
+        if (equippedItem == null)
+            return false;
+
+        return TryMoveItem(equippedItem.ActiveItemSlot, equippedItem.EquippedItemSlot, slots);
     }
 
     private bool TryMoveItem(SlotSettings fromSlot, SlotSettings toSlot, CharacterSlots slots)

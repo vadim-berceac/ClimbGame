@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3011f812fffbc5048ba7e01411f07774, type: 3}
   m_Name: Goblin
   m_EditorClassIdentifier: Assembly-CSharp::CharacterData
-  <Name>k__BackingField: Kyle
+  <Name>k__BackingField: Goblin
   <CurrentWeapon>k__BackingField: {fileID: 11400000, guid: 4f8c5080d6bbc6843a2b95a2c45031d7, type: 2}
   <Skin>k__BackingField: {fileID: 11400000, guid: ae338437cfa52144291364b48536310a, type: 2}

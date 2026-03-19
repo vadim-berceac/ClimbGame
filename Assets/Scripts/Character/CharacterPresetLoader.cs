@@ -11,7 +11,7 @@ public class CharacterPresetLoader : MonoBehaviour
     private CharacterSlots _characterSlots;
     private AnimatedModelTag _animatedModelTag;
     private CharacterEventsContainer _characterEventsContainer;
-    private EquipmentManager _equipmentManager;
+    private Inventory _inventory;
 
     [Inject]
     private void Construct(
@@ -19,14 +19,15 @@ public class CharacterPresetLoader : MonoBehaviour
         CharacterSlots characterSlots,
         AnimatedModelTag animatedModelTag,
         CharacterEventsContainer characterEventsContainer,
-        EquipmentManager equipmentManager
+        EquipmentManager equipmentManager,
+        Inventory inventory
         )
     {
         _animator = animator;
         _characterSlots = characterSlots;
         _animatedModelTag = animatedModelTag;
         _characterEventsContainer = characterEventsContainer;
-        _equipmentManager = equipmentManager;
+        _inventory = inventory;
 
         InitializeModel(characterData);
         InitializeItems(characterData.CurrentWeapon);
@@ -45,15 +46,11 @@ public class CharacterPresetLoader : MonoBehaviour
     {
         if (item == null) return;
         
-        _equipmentManager.Equip(item, _characterSlots);
-        _equipmentManager.SetItemActive(item, _characterSlots);
+        _inventory.AddInstance(item);
+        _inventory.SetPrimaryWeapon(_inventory.GetItemInstance(item));
+        _inventory.DrawWeapon();
     }
     
-    // private void InitializeItems(ItemInstance item)
-    // {
-    //    Нужно доделать обертку над EquippedItem - чтобы инициировать предметы из конкретных инстасов, а не из паттернов
-    // }
-
     private void SetModel(CharacterSkin data)
     {
         if (data.CharacterSkinPrefab == null || data.Avatar == null ) return;
