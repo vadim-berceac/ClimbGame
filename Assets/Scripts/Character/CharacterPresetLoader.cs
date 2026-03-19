@@ -3,7 +3,7 @@ using Zenject;
 
 public class CharacterPresetLoader : MonoBehaviour
 {
-    [SerializeField] private CharacterSkin skinData;
+    [SerializeField] private CharacterData characterData;
 
     private GameObject _currentSkin;
     
@@ -11,30 +11,42 @@ public class CharacterPresetLoader : MonoBehaviour
     private CharacterSlots _characterSlots;
     private AnimatedModelTag _animatedModelTag;
     private CharacterEventsContainer _characterEventsContainer;
+    private Inventory _inventory;
 
     [Inject]
     private void Construct(
         Animator animator,
         CharacterSlots characterSlots,
         AnimatedModelTag animatedModelTag,
-        CharacterEventsContainer characterEventsContainer
+        CharacterEventsContainer characterEventsContainer,
+        Inventory inventory
         )
     {
         _animator = animator;
         _characterSlots = characterSlots;
         _animatedModelTag = animatedModelTag;
         _characterEventsContainer = characterEventsContainer;
+        _inventory = inventory;
 
-        InitializeModel(skinData);
+        InitializeModel(characterData);
+        InitializeItems(characterData.CurrentWeapon);
     }
 
-    private void InitializeModel(CharacterSkin data)
+    private void InitializeModel(CharacterData data)
     {
-        SetModel(data);
-        SetSkinItemSlots(data);
-        SetSize(data);
-        SetFootStepsVFX(data);
+        SetModel(data.Skin);
+        SetSkinItemSlots(data.Skin);
+        SetSize(data.Skin);
+        SetFootStepsVFX(data.Skin);
         SetName(data);
+    }
+
+    private void InitializeItems(EquippedItem item)
+    {
+        if (item == null) return;
+        
+        _inventory.Equip(item.EquippedItemPrefab, item.EquippedItemSlot, _characterSlots);
+        _inventory.Equip(item.EquippedItemPrefab, item.ActiveItemSlot, _characterSlots);
     }
 
     private void SetModel(CharacterSkin data)
@@ -90,8 +102,8 @@ public class CharacterPresetLoader : MonoBehaviour
         gameObject.transform.localScale = data.SkinSize;
     }
 
-    private void SetName(CharacterSkin data)
+    private void SetName(CharacterData data)
     {
-        gameObject.name = data.SkinName;
+        gameObject.name = data.Name;
     }
 }

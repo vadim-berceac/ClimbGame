@@ -61,7 +61,6 @@ GameObject:
   - component: {fileID: 4723783291769823981}
   - component: {fileID: 1487855393612094593}
   - component: {fileID: 3478375533377123974}
-  - component: {fileID: 973261774038600232}
   m_Layer: 31
   m_Name: Character
   m_TagString: Untagged
@@ -117,7 +116,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0598ae370e4a7da49a7bc1b7b8695cce, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CharacterPresetLoader
-  skinData: {fileID: 11400000, guid: 67525d35cded8ce4ca6ef949ef5f8e46, type: 2}
+  characterData: {fileID: 0}
 --- !u!114 &3728779301529158022
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -353,19 +352,6 @@ MonoBehaviour:
     <ClimbMask>k__BackingField:
       serializedVersion: 2
       m_Bits: 1
---- !u!114 &973261774038600232
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1252590841341855642}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ca970a1484cf85549a4a538638868a39, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::TestInventory
-  equippedItem: {fileID: 11400000, guid: 4f8c5080d6bbc6843a2b95a2c45031d7, type: 2}
 --- !u!1 &2023685588104745601
 GameObject:
   m_ObjectHideFlags: 0

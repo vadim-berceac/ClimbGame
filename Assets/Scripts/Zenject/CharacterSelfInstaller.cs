@@ -24,5 +24,7 @@ public class CharacterSelfInstaller : MonoInstaller
         Container.Bind<CharacterPresetLoader>().FromInstance(GetComponentInParent<CharacterPresetLoader>()).AsSingle();
         
         Container.Bind<CharacterSlots>().AsSingle();
+        
+        Container.Bind<Inventory>().AsSingle();
     }
 }
