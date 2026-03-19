@@ -1,4 +1,3 @@
-// CharacterAnimationEvents.cs — per-character, живёт на персонаже
 using System;
 using UnityEngine;
 using UnityEngine.Events;

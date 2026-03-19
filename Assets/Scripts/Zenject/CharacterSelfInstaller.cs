@@ -25,6 +25,6 @@ public class CharacterSelfInstaller : MonoInstaller
         
         Container.Bind<CharacterSlots>().AsSingle();
         
-        Container.Bind<Inventory>().AsSingle();
+        Container.Bind<EquipmentManager>().AsSingle();
     }
 }

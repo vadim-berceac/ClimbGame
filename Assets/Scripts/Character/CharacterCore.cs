@@ -72,8 +72,11 @@ public class CharacterCore : CoreController
 
         Controller.JumpAndGravity(InputHandler.JumpPressed, _animationContainer.GetMoveSpeedData(LocomotionType.Jump0).YSpeed);
         Controller.Move(clampedInput, moveSpeed, 1f);
-        Controller.Rotation(InputHandler.Rotation, controllerData.RotationSpeed);
 
+        if (InputHandler.Rotation != Vector3.zero)
+        {
+            Controller.Rotation(InputHandler.Rotation, controllerData.RotationSpeed);
+        }
         PlayablesAnimatorController.UpdateLocomotion(Controller.HorizontalVelocity.normalized);
     }
 
