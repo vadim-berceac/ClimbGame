@@ -339,6 +339,7 @@ MonoBehaviour:
   mode: 1
   controllerData:
     <RotationSpeed>k__BackingField: 50
+    <SpeedChangeRate>k__BackingField: 10
     <GroundCheckDistance>k__BackingField: 0.14
     <GroundMask>k__BackingField:
       serializedVersion: 2
@@ -347,7 +348,7 @@ MonoBehaviour:
     <EnableClimbing>k__BackingField: 1
     <ClimbSpeedMultipler>k__BackingField: 0.6
     <ClimbCheckDistance>k__BackingField: 0.6
-    <MaxClimbAngle>k__BackingField: 60
+    <MaxClimbAngle>k__BackingField: 25
     <ClimbRayOffset>k__BackingField: -1.2
     <ClimbMask>k__BackingField:
       serializedVersion: 2

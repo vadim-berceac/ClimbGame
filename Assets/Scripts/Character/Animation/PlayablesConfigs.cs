@@ -8,6 +8,7 @@ using UnityEngine.Events;
 public struct LocomotionConfigs
 {
     [field: SerializeField] public LocomotionType     Locomotion    { get; set; }
+    [field: SerializeField] public LocomotionDirection Direction    { get; set; }
     [field: SerializeField] public AnimationClip      Idle          { get; set; }
     [field: SerializeField] public AnimationClip      MoveForward   { get; set; }
     [field: SerializeField] public AnimationClip      MoveBackward  { get; set; }
@@ -20,8 +21,9 @@ public struct LocomotionConfigs
 
 public readonly struct BakedLocomotion
 {
-    public readonly LocomotionType    Locomotion;
-    public readonly LocomotionConfigs Configs;       // ← храним исходный конфиг
+    public readonly LocomotionType        Locomotion;
+    public readonly LocomotionDirection   Direction;
+    public readonly LocomotionConfigs     Configs;       // ← храним исходный конфиг
     public readonly AnimationClipPlayable Idle;
     public readonly AnimationClipPlayable MoveForward;
     public readonly AnimationClipPlayable MoveBackward;
@@ -38,6 +40,7 @@ public readonly struct BakedLocomotion
     {
         Configs      = configs;
         Locomotion   = configs.Locomotion;
+        Direction    = configs.Direction;
         Idle         = idle;
         MoveForward  = moveForward;
         MoveBackward = moveBackward;
@@ -182,4 +185,11 @@ public enum LocomotionClipType
     MoveBackward = 2,
     StrafeLeft  = 3,
     StrafeRight = 4
+}
+
+public enum LocomotionDirection
+{
+    Horizontal = 0,
+    Vertical = 1,
+    Spherical = 2 // для плавания и полета
 }

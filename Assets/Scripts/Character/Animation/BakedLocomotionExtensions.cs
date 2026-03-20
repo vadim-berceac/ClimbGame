@@ -22,15 +22,4 @@ public static class BakedLocomotionExtensions
             onEnter, onExit, onTick,
             weightThreshold);
     }
-
-    public static AnimationClipPlayable GetClip(this BakedLocomotion baked, LocomotionClipType type) =>
-        type switch
-        {
-            LocomotionClipType.Idle          => baked.Idle,
-            LocomotionClipType.MoveForward   => baked.MoveForward,
-            LocomotionClipType.MoveBackward  => baked.MoveBackward,
-            LocomotionClipType.StrafeLeft    => baked.StrafeLeft,
-            LocomotionClipType.StrafeRight   => baked.StrafeRight,
-            _                                => baked.Idle
-        };
 }

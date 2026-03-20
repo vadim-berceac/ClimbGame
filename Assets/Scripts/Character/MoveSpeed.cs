@@ -44,15 +44,14 @@ public class MoveSpeed
         return _weightedSpeed;
     }
 
-    // Возвращает вектор с уже обнулёнными осями, если соответствующая скорость == 0
     public Vector3 GetClampedInput(MoveSpeedData currentMoveSpeedData)
     {
         var input = _handler.MoveInput;
 
-        bool strafeRightBlocked = input.x > 0f && currentMoveSpeedData.StrafeRightSpeed == 0f;
-        bool strafeLeftBlocked  = input.x < 0f && currentMoveSpeedData.StrafeLeftSpeed  == 0f;
-        bool forwardBlocked     = input.y > 0f && currentMoveSpeedData.ForwardSpeed      == 0f;
-        bool backwardBlocked    = input.y < 0f && currentMoveSpeedData.BackwardSpeed     == 0f;
+        var strafeRightBlocked = input.x > 0f && currentMoveSpeedData.StrafeRightSpeed == 0f;
+        var strafeLeftBlocked  = input.x < 0f && currentMoveSpeedData.StrafeLeftSpeed  == 0f;
+        var forwardBlocked     = input.y > 0f && currentMoveSpeedData.ForwardSpeed     == 0f;
+        var backwardBlocked    = input.y < 0f && currentMoveSpeedData.BackwardSpeed    == 0f;
 
         if (strafeRightBlocked || strafeLeftBlocked) input.x = 0f;
         if (forwardBlocked     || backwardBlocked)   input.y = 0f;

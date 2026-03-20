@@ -104,10 +104,6 @@ public class PlayablesAnimatorController
 
     #region Locomotion
 
-    /// <summary>
-    /// Привязывает действия к тегам анимационных событий персонажа.
-    /// Должен быть установлен до первого вызова SetLocomotion.
-    /// </summary>
     public void SetEventTagResolver(Func<string, (Action onEnter, Action onExit, Action onTick)> resolver)
     {
         _eventTagResolver = resolver;
@@ -202,11 +198,30 @@ public class PlayablesAnimatorController
         _locomotionBlendHandle = null;
     }
 
-    public void UpdateLocomotion(Vector2 input)
+    public void UpdateLocomotion(Vector3 velocity)
     {
+        var input = _currentBakedLocomotion.Direction == LocomotionDirection.Horizontal 
+            ? new Vector2(velocity.x, velocity.z)
+            : new Vector2(velocity.x, velocity.y);
         _smoothedForward = Mathf.Lerp(_smoothedForward, input.y, 9f * Time.deltaTime);
         _smoothedStrafe  = Mathf.Lerp(_smoothedStrafe,  input.x, 9f * Time.deltaTime);
 
+        var direction = _currentBakedLocomotion.Equals(default) 
+            ? LocomotionDirection.Horizontal 
+            : _currentBakedLocomotion.Direction;
+
+        if (direction == LocomotionDirection.Vertical)
+        {
+            UpdateLocomotionVertical();
+        }
+        else
+        {
+            UpdateLocomotionHorizontal();
+        }
+    }
+
+    private void UpdateLocomotionHorizontal()
+    {
         var moveStrength = Mathf.Clamp01(
             new Vector2(Mathf.Abs(_smoothedStrafe), Mathf.Abs(_smoothedForward)).magnitude);
 
@@ -220,6 +235,33 @@ public class PlayablesAnimatorController
         var (wFwd, wBwd, wLeft, wRight) = ComputeDirectionWeights(moveStrength);
 
         NormalizeLocomotionWeights(ref idleWeight, ref wFwd, ref wBwd, ref wLeft, ref wRight);
+        SetLocomotionWeights(idleWeight, wFwd, wBwd, wLeft, wRight);
+    }
+
+    private void UpdateLocomotionVertical()
+    {
+        // Используем Y для forward/backward, X для left/right независимо
+        var moveStrengthForwardBack = Mathf.Abs(_smoothedForward);
+        var moveStrengthStrafe = Mathf.Abs(_smoothedStrafe);
+        var moveStrength = Mathf.Clamp01(
+            new Vector2(moveStrengthStrafe, moveStrengthForwardBack).magnitude);
+
+        if (moveStrength < 0.015f)
+        {
+            SetLocomotionWeights(1f, 0f, 0f, 0f, 0f);
+            return;
+        }
+
+        var idleWeight = 1f - moveStrength;
+        
+        var wFwd = Mathf.Max(0f, _smoothedForward);
+        var wBwd = Mathf.Max(0f, -_smoothedForward);
+       
+        var wLeft = Mathf.Max(0f, -_smoothedStrafe);
+        var wRight = Mathf.Max(0f, _smoothedStrafe);
+
+        NormalizeLocomotionWeights(ref idleWeight, ref wFwd, ref wBwd, ref wLeft, ref wRight);
+        
         SetLocomotionWeights(idleWeight, wFwd, wBwd, wLeft, wRight);
     }
 

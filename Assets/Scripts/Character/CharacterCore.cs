@@ -71,13 +71,13 @@ public class CharacterCore : CoreController
         var moveSpeed = _moveSpeed.GetSpeed(moveData);
 
         Controller.JumpAndGravity(InputHandler.JumpPressed, _animationContainer.GetMoveSpeedData(LocomotionType.Jump0).YSpeed);
-        Controller.Move(clampedInput, moveSpeed, 1f);
+        Controller.Move(clampedInput, moveSpeed, controllerData.SpeedChangeRate);
 
         if (InputHandler.Rotation != Vector3.zero)
         {
             Controller.Rotation(InputHandler.Rotation, controllerData.RotationSpeed);
         }
-        PlayablesAnimatorController.UpdateLocomotion(Controller.HorizontalVelocity.normalized);
+        PlayablesAnimatorController.UpdateLocomotion(Controller.Velocity);
     }
 
     public override void UpdateLocomotion(bool isInitialization = false)
