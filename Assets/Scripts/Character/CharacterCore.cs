@@ -18,6 +18,7 @@ public class CharacterCore : CoreController
     private float _currentSpeed;
     
     public bool IsInteracting => PlayablesAnimatorController.OneShotIsActive();
+    public LocomotionType CurrentLocomotionType => _locomotionSelector.GetLocomotionType();
 
     [Inject]
     private void Construct(
@@ -65,7 +66,7 @@ public class CharacterCore : CoreController
         
         if (IsInteracting) return;
         
-        _moveData = _animationContainer.GetMoveSpeedData(_locomotionSelector.GetLocomotionType());
+        _moveData = _animationContainer.GetMoveSpeedData(CurrentLocomotionType);
         _clampedInput = _moveSpeed.GetClampedInput(_moveData);
         _currentSpeed = _moveSpeed.GetSpeed(_moveData);
         
@@ -89,6 +90,11 @@ public class CharacterCore : CoreController
         _currentLocomotionType = locomotionType;
         PlayablesAnimatorController.SetLocomotion(_currentLocomotionType);
         PlayablesAnimatorController.ConnectFootSteps(_soundContainer.GetAudioSet(_currentLocomotionType));
+    }
+
+    public void Sit(bool value)
+    {
+        Controller.Sit(value);
     }
 
     private void OnDestroy()

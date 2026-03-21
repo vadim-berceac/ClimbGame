@@ -240,6 +240,7 @@ GameObject:
   m_Component:
   - component: {fileID: 90018213}
   - component: {fileID: 90018214}
+  - component: {fileID: 90018216}
   - component: {fileID: 90018215}
   m_Layer: 29
   m_Name: InteractorTest
@@ -276,20 +277,33 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e461d1ab109bf4047a6b19656e6c4ad4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Interactable
-  <InteractClip>k__BackingField: {fileID: 3094330708855449807, guid: ddbde77d15ccd5d42864ee5474f49d51, type: 3}
+  <InteractClip>k__BackingField: {fileID: 3094330708855449807, guid: f22f96823aeb8f54681ad8172d7d983a, type: 3}
   <InteractEventField>k__BackingField:
     Begin: 0
-    End: 0
+    End: 30
     OnEnter:
       m_PersistentCalls:
         m_Calls: []
     OnExit:
       m_PersistentCalls:
-        m_Calls: []
+        m_Calls:
+        - m_Target: {fileID: 90018216}
+          m_TargetAssemblyTypeName: SitChair, Assembly-CSharp
+          m_MethodName: Sit
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 1
+          m_CallState: 2
     OnTick:
       m_PersistentCalls:
         m_Calls: []
     WeightThreshold: 0.5
+  <AllowMultipleInteractions>k__BackingField: 1
 --- !u!65 &90018215
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -311,6 +325,18 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 3, y: 2, z: 3}
   m_Center: {x: 0, y: 1, z: 0}
+--- !u!114 &90018216
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 90018212}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9972154d9f370a4b8f6d37d234d3770, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SitChair
 --- !u!1 &145240246
 GameObject:
   m_ObjectHideFlags: 0

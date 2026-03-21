@@ -17,6 +17,11 @@ public class LocomotionSelector
             return LocomotionType.Fall0;
         }
         
+        if (_characterController.IsSiting())
+        {
+            return LocomotionType.Sit0;
+        }
+        
         if (_characterController.IsJumping())
         {
             return LocomotionType.Jump0;
