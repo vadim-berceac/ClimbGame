@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.Serialization;
 using Zenject;
 
 public class CharacterCore : CoreController
@@ -13,9 +12,12 @@ public class CharacterCore : CoreController
     private LocomotionSelector         _locomotionSelector;
     private CharacterAnimationEvents   _animationEvents;
     private LocomotionType             _currentLocomotionType;
+
+    private MoveSpeedData _moveData;
+    private Vector3 _clampedInput;
+    private float _currentSpeed;
     
-    public bool IsInteracting { get; private set; }
-    public bool CanMove { get; private set; } = true;
+    public bool IsInteracting => PlayablesAnimatorController.OneShotIsActive();
 
     [Inject]
     private void Construct(
@@ -46,24 +48,10 @@ public class CharacterCore : CoreController
         SetLocomotion(true);
     }
 
-    public void PlayInteractAnimation(AnimationClip animationClip, bool canMove)
+    public void PlayInteractAnimation(AnimationClip animationClip, FrameEventConfig frameEventConfig)
     {
         if (IsInteracting) return;
-        IsInteracting = true;
-        CanMove = false;
-        PlayablesAnimatorController.PlayOneShotAnimationClip(animationClip,
-            new FrameEventConfig(
-                fromFrame: 0,
-                toFrame:  20,
-                onExit: () => InteractEnd()
-            ));
-    }
-
-    private void InteractEnd()
-    {
-        Debug.Log("AnimFinish");
-        IsInteracting = false;
-        CanMove = true;
+        PlayablesAnimatorController.PlayOneShotAnimationClip(animationClip, frameEventConfig);
     }
 
     private void OnValidate()
@@ -74,14 +62,15 @@ public class CharacterCore : CoreController
     private void Update()
     {
         SetLocomotion();
-        if(!CanMove) return;
         
-        var moveData = _animationContainer.GetMoveSpeedData(_locomotionSelector.GetLocomotionType());
-        var clampedInput = _moveSpeed.GetClampedInput(moveData);
-        var moveSpeed = _moveSpeed.GetSpeed(moveData);
+        if (IsInteracting) return;
+        
+        _moveData = _animationContainer.GetMoveSpeedData(_locomotionSelector.GetLocomotionType());
+        _clampedInput = _moveSpeed.GetClampedInput(_moveData);
+        _currentSpeed = _moveSpeed.GetSpeed(_moveData);
         
         Controller.JumpAndGravity(InputHandler.JumpPressed, _animationContainer.GetMoveSpeedData(LocomotionType.Jump0).YSpeed);
-        Controller.Move(clampedInput, moveSpeed, controllerData.SpeedChangeRate);
+        Controller.Move(_clampedInput, _currentSpeed, controllerData.SpeedChangeRate);
 
         if (InputHandler.Rotation != Vector3.zero)
         {

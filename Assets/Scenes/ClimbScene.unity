@@ -241,7 +241,7 @@ GameObject:
   - component: {fileID: 90018213}
   - component: {fileID: 90018214}
   - component: {fileID: 90018215}
-  m_Layer: 4
+  m_Layer: 29
   m_Name: InteractorTest
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -276,8 +276,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e461d1ab109bf4047a6b19656e6c4ad4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Interactable
-  <InteractClip>k__BackingField: {fileID: 3094330708855449807, guid: 4e96c7df0f905f046a8cfe9d7a6a4093, type: 3}
-  <CanMove>k__BackingField: 0
+  <InteractClip>k__BackingField: {fileID: 3094330708855449807, guid: ddbde77d15ccd5d42864ee5474f49d51, type: 3}
+  <InteractEventField>k__BackingField:
+    Begin: 0
+    End: 0
+    OnEnter:
+      m_PersistentCalls:
+        m_Calls: []
+    OnExit:
+      m_PersistentCalls:
+        m_Calls: []
+    OnTick:
+      m_PersistentCalls:
+        m_Calls: []
+    WeightThreshold: 0.5
 --- !u!65 &90018215
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -428,7 +440,8 @@ GameObject:
   - component: {fileID: 277617388}
   - component: {fileID: 277617390}
   - component: {fileID: 277617389}
-  m_Layer: 4
+  - component: {fileID: 277617391}
+  m_Layer: 29
   m_Name: Sphere
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -506,6 +519,27 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 277617387}
   m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!135 &277617391
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 277617387}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 0.5
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1001 &400520423
 PrefabInstance:
   m_ObjectHideFlags: 0

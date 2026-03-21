@@ -615,10 +615,11 @@ public class AdvancedCharacterController
             return;
         }
 
-        _transform.rotation = Quaternion.Slerp(
+        var maxAngleDelta = _rotationSpeed * Time.deltaTime;
+        _transform.rotation = Quaternion.RotateTowards(
             _transform.rotation,
             targetRot,
-            Time.deltaTime * _rotationSpeed
+            maxAngleDelta
         );
     }
 

@@ -338,12 +338,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AdvancedCharacterController
   mode: 1
   controllerData:
-    <RotationSpeed>k__BackingField: 50
+    <RotationSpeed>k__BackingField: 120
     <SpeedChangeRate>k__BackingField: 10
     <GroundCheckDistance>k__BackingField: 0.14
     <GroundMask>k__BackingField:
       serializedVersion: 2
-      m_Bits: 1073741825
+      m_Bits: 1610612737
     <SlopeForce>k__BackingField: 20
     <EnableClimbing>k__BackingField: 1
     <ClimbSpeedMultipler>k__BackingField: 0.6

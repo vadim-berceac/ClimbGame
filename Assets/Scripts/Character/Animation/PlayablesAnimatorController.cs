@@ -37,6 +37,7 @@ public class PlayablesAnimatorController
     private AnimationClipPlayable _oneShotClip;
     private Coroutine             _blendInHandle;
     private Coroutine             _blendOutHandle;
+    private bool                  _oneShotActive;
 
     // Locomotion smoothing
     private float _smoothedForward;
@@ -308,6 +309,7 @@ public class PlayablesAnimatorController
         if (OneShotIsActive()) InterruptOneShotAnimationClip();
 
         ConnectOneShotClip(animationClip);
+        _oneShotActive = true; 
 
         var blendDuration = ComputeBlendDuration(animationClip.length);
         BlendIn(blendDuration);
@@ -320,8 +322,7 @@ public class PlayablesAnimatorController
     private bool IsAlreadyPlaying(AnimationClip clip) =>
         _oneShotClip.IsValid() && _oneShotClip.GetAnimationClip() == clip;
 
-    private bool OneShotIsActive() =>
-        _blendInHandle != null && _blendOutHandle != null;
+    public bool OneShotIsActive() => _oneShotActive;
 
     private void ConnectOneShotClip(AnimationClip animationClip)
     {
@@ -339,7 +340,7 @@ public class PlayablesAnimatorController
         {
             _animationMixerTopLevel.SetInputWeight(0, 1f - t);
             _animationMixerTopLevel.SetInputWeight(1, t);
-        }));
+        }, onFinish: () => _blendInHandle = null)); 
     }
 
     private void BlendOut(float duration, float delay)
@@ -348,7 +349,12 @@ public class PlayablesAnimatorController
         {
             _animationMixerTopLevel.SetInputWeight(0, t);
             _animationMixerTopLevel.SetInputWeight(1, 1f - t);
-        }, delay, DisconnectOneShot));
+        }, delay, () =>
+        {
+            DisconnectOneShot();
+            _blendOutHandle = null;
+            _oneShotActive = false;  
+        }));
     }
 
     private void InterruptOneShotAnimationClip()
@@ -358,6 +364,9 @@ public class PlayablesAnimatorController
         _animationMixerTopLevel.SetInputWeight(0, 1f);
         _animationMixerTopLevel.SetInputWeight(1, 0f);
         DisconnectOneShot();
+        _blendInHandle = null;
+        _blendOutHandle = null;
+        _oneShotActive = false; 
     }
 
     private void DisconnectOneShot() =>
@@ -455,6 +464,7 @@ public class PlayablesAnimatorController
         if (_playableGraph.IsValid()) _playableGraph.Destroy();
 
         _blendInHandle = _blendOutHandle = _locomotionBlendHandle = null;
+        _oneShotActive = false;
     }
 
     #endregion
