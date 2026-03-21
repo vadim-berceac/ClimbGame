@@ -6,7 +6,7 @@ public interface ICoreController
     public PlayablesAnimatorController  PlayablesAnimatorController { get; set; }
     public InputHandler                 InputHandler { get; set; }
     
-    public void UpdateLocomotion(bool isInitialization = false){}
+    public void SetLocomotion(bool isInitialization = false){}
 }
 
 public abstract class CoreController : MonoBehaviour, ICoreController
@@ -15,5 +15,5 @@ public abstract class CoreController : MonoBehaviour, ICoreController
     public PlayablesAnimatorController  PlayablesAnimatorController { get; set; }
     public InputHandler                 InputHandler { get; set; }
 
-    public abstract void UpdateLocomotion(bool isInitialization = false);
+    public abstract void SetLocomotion(bool isInitialization = false);
 }

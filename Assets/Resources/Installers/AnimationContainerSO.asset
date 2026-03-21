@@ -172,8 +172,8 @@ MonoBehaviour:
     - <Locomotion>k__BackingField: 2
       <Direction>k__BackingField: 1
       <Idle>k__BackingField: {fileID: 7400000, guid: a1aedfb454f005e41ad049d0a5504803, type: 2}
-      <MoveForward>k__BackingField: {fileID: -203655887218126122, guid: 844bbc57db156654394c236eac431283, type: 3}
-      <MoveBackward>k__BackingField: {fileID: -203655887218126122, guid: f78d9bd23a40b184aa461e14ba18d4fa, type: 3}
+      <MoveForward>k__BackingField: {fileID: -203655887218126122, guid: 5b10301547c29a64ab98af180d597484, type: 3}
+      <MoveBackward>k__BackingField: {fileID: -203655887218126122, guid: 6a164ec67d9f30c4da30801279baacd9, type: 3}
       <StrafeLeft>k__BackingField: {fileID: 3094330708855449807, guid: 7a68386faaa232d41be76b2b2cc204a3, type: 3}
       <StrafeRight>k__BackingField: {fileID: 3094330708855449807, guid: e5d2d18723842ce4bad7520fc2736d2b, type: 3}
       <MoveSpeedData>k__BackingField:

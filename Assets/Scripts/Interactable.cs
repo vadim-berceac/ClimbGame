@@ -3,11 +3,13 @@ using UnityEngine;
 public interface IInteractable
 {
     public AnimationClip InteractClip { get; set; }
+    public bool CanMove { get; set; }
 }
 
 public class Interactable : MonoBehaviour, IInteractable
 {
     [field: SerializeField] public AnimationClip InteractClip { get; set; }
+    [field: SerializeField] public bool CanMove { get; set; } = true;
     
     private CharacterCore _characterCore;
 
@@ -26,10 +28,11 @@ public class Interactable : MonoBehaviour, IInteractable
 
     private void Update()
     {
-        if (_characterCore)
+        if (_characterCore != null && 
+            !_characterCore.IsInteracting && 
+            _characterCore.InputHandler.InteractPressed)
         {
-            //и произведено взаимодействие
-            //передаем анимацию
+            _characterCore.PlayInteractAnimation(InteractClip, CanMove);
         }
     }
 }

@@ -41,12 +41,12 @@ public class VehicleCore : CoreController
 
         _driverInput = InputHandler;
 
-        UpdateLocomotion(true);
+        SetLocomotion(true);
     }
 
     private void Update()
     {
-        UpdateLocomotion();
+        SetLocomotion();
 
         var clampedInput = _moveSpeed.GetClampedInput(locomotionConfig.MoveSpeedData);
         var moveSpeed = _moveSpeed.GetSpeed(locomotionConfig.MoveSpeedData);
@@ -70,7 +70,7 @@ public class VehicleCore : CoreController
         _moveSpeed = new MoveSpeed(InputHandler);
     }
 
-    public override void UpdateLocomotion(bool isInitialization = false)
+    public override void SetLocomotion(bool isInitialization = false)
     {
         PlayablesAnimatorController.SetLocomotion(locomotionConfig.Locomotion);
         PlayablesAnimatorController.ConnectFootSteps(_soundContainer.GetAudioSet(locomotionConfig.Locomotion));

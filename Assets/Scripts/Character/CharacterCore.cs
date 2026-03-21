@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 using Zenject;
 
 public class CharacterCore : CoreController
@@ -13,7 +14,8 @@ public class CharacterCore : CoreController
     private CharacterAnimationEvents   _animationEvents;
     private LocomotionType             _currentLocomotionType;
     
-    private bool _isInteracting;
+    public bool IsInteracting { get; private set; }
+    public bool CanMove { get; private set; } = true;
 
     [Inject]
     private void Construct(
@@ -41,21 +43,28 @@ public class CharacterCore : CoreController
         
         PlayablesAnimatorController.SetEventTagResolver(_animationEvents.Resolve);
 
-        UpdateLocomotion(true);
+        SetLocomotion(true);
     }
 
-    // public void PlayInteractAnimation(AnimationClip animationClip)
-    // {
-    //     if (_isInteracting) return;
-    //     _isInteracting = true;
-    //
-    //     PlayablesAnimatorController.PlayOneShotAnimationClip(animationClip,
-    //         new FrameEventConfig(
-    //             fromFrame: 2,
-    //             toFrame:   30,
-    //             onEnter:   () => testObject.SetActive(true),
-    //             onExit:    () => testObject.SetActive(false)));
-    // }
+    public void PlayInteractAnimation(AnimationClip animationClip, bool canMove)
+    {
+        if (IsInteracting) return;
+        IsInteracting = true;
+        CanMove = false;
+        PlayablesAnimatorController.PlayOneShotAnimationClip(animationClip,
+            new FrameEventConfig(
+                fromFrame: 0,
+                toFrame:  20,
+                onExit: () => InteractEnd()
+            ));
+    }
+
+    private void InteractEnd()
+    {
+        Debug.Log("AnimFinish");
+        IsInteracting = false;
+        CanMove = true;
+    }
 
     private void OnValidate()
     {
@@ -64,12 +73,13 @@ public class CharacterCore : CoreController
 
     private void Update()
     {
-        UpdateLocomotion();
-
+        SetLocomotion();
+        if(!CanMove) return;
+        
         var moveData = _animationContainer.GetMoveSpeedData(_locomotionSelector.GetLocomotionType());
         var clampedInput = _moveSpeed.GetClampedInput(moveData);
         var moveSpeed = _moveSpeed.GetSpeed(moveData);
-
+        
         Controller.JumpAndGravity(InputHandler.JumpPressed, _animationContainer.GetMoveSpeedData(LocomotionType.Jump0).YSpeed);
         Controller.Move(clampedInput, moveSpeed, controllerData.SpeedChangeRate);
 
@@ -80,7 +90,7 @@ public class CharacterCore : CoreController
         PlayablesAnimatorController.UpdateLocomotion(Controller.Velocity);
     }
 
-    public override void UpdateLocomotion(bool isInitialization = false)
+    public override void SetLocomotion(bool isInitialization = false)
     {
         var locomotionType = _locomotionSelector.GetLocomotionType();
         if (locomotionType == _currentLocomotionType && !isInitialization)
