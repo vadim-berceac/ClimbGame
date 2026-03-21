@@ -34,9 +34,9 @@ public class FrameEventConfigFieldDrawer : PropertyDrawer
         var maxFrame = 0;
         var clipInfo = "";
 
-        if (targetObject != null && targetObject.InteractClip != null)
+        if (targetObject != null && targetObject.EnterClip != null)
         {
-            var clip = targetObject.InteractClip;
+            var clip = targetObject.EnterClip;
             maxFrame = Mathf.FloorToInt(clip.length * FPS);
             clipInfo = $" (0-{maxFrame} frames @ {FPS}fps)";
         }

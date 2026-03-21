@@ -316,7 +316,10 @@ public class PlayablesAnimatorController
         BlendOut(blendDuration, animationClip.length - blendDuration);
 
         foreach (var config in frameEvents)
-            RegisterOneShotFrameEvent(config);
+        {
+            if (config != null)
+                RegisterOneShotFrameEvent(config);
+        }
     }
 
     private bool IsAlreadyPlaying(AnimationClip clip) =>

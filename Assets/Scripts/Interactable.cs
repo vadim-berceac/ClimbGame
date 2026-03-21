@@ -5,32 +5,39 @@ using System.Linq;
 
 public interface IInteractable
 {
-    public AnimationClip InteractClip { get; set; }
-    public FrameEventConfig InteractEvent { get; set; }
+    public AnimationClip EnterClip { get; set; }
+    public AnimationClip ExitClip { get; set; }
+    public FrameEventConfig EnterInteractEvent { get; set; }
     public bool AllowMultipleInteractions { get; set; }
 }
 
 public class Interactable : MonoBehaviour, IInteractable
 {
-    [field: SerializeField] public AnimationClip InteractClip { get; set; }
-    [field: SerializeField] public FrameEventConfigField InteractEventField { get; set; } = new();
+    [field: SerializeField] public AnimationClip EnterClip { get; set; }
+    [field: SerializeField] public AnimationClip ExitClip { get; set; }
+    [field: SerializeField] public FrameEventConfigField InteractEnterEventField { get; set; } = new();
+    [field: SerializeField] public FrameEventConfigField InteractExitEventField { get; set; } = new();
     [field: SerializeField] public bool AllowMultipleInteractions { get; set; } = true;
     
-    public FrameEventConfig InteractEvent { get; set; }
+    public FrameEventConfig EnterInteractEvent { get; set; }
+    public FrameEventConfig ExitInteractEvent { get; set; }
     
     public CharacterCore OccupyingCharacter { get; private set; }
 
     private readonly HashSet<CharacterCore> _charactersInZone = new();
     private readonly Dictionary<CharacterCore, bool> _interactedDict = new();
+    private readonly Dictionary<CharacterCore, bool> _isExitingDict = new();
 
     private void Start()
     {
-        InteractEvent = InteractEventField.ToFrameEventConfig();
+        EnterInteractEvent = InteractEnterEventField.ToFrameEventConfig();
+        ExitInteractEvent = InteractExitEventField.ToFrameEventConfig();
     }
 
     public void ResetInteraction()
     {
         _interactedDict.Clear();
+        _isExitingDict.Clear();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -39,6 +46,7 @@ public class Interactable : MonoBehaviour, IInteractable
         {
             _charactersInZone.Add(character);
             _interactedDict[character] = false;
+            _isExitingDict[character] = false;
         }
     }
 
@@ -47,6 +55,7 @@ public class Interactable : MonoBehaviour, IInteractable
         if (other.TryGetComponent(out CharacterCore character) && _charactersInZone.Remove(character))
         {
             _interactedDict.Remove(character);
+            _isExitingDict.Remove(character);
 
             if (OccupyingCharacter == character)
             {
@@ -77,11 +86,21 @@ public class Interactable : MonoBehaviour, IInteractable
 
         if (CanInteract(character))
         {
-            Interact(character);
+            if (!HasInteracted(character))
+            {
+                // Первый раз - проигрываем EnterClip
+                Interact(character);
+            }
+            else if (HasInteracted(character) && !IsExiting(character) && !character.IsInteracting)
+            {
+                // Повторное нажатие после EnterClip - проигрываем ExitClip
+                ExitInteract(character);
+            }
             return;
         }
         
-        if (HasInteracted(character) && !character.IsInteracting)
+        // Очищаем состояние только после завершения ExitClip
+        if (IsExiting(character) && !character.IsInteracting)
         {
             ResetCharacterInteraction(character);
         }
@@ -95,7 +114,14 @@ public class Interactable : MonoBehaviour, IInteractable
         }
 
         _interactedDict[character] = true;
-        character.PlayInteractAnimation(InteractClip, InteractEvent);
+        _isExitingDict[character] = false;
+        character.PlayInteractAnimation(EnterClip, EnterInteractEvent);
+    }
+
+    private void ExitInteract(CharacterCore character)
+    {
+        _isExitingDict[character] = true;
+        character.PlayInteractAnimation(ExitClip, ExitInteractEvent);
     }
 
     #endregion
@@ -110,9 +136,11 @@ public class Interactable : MonoBehaviour, IInteractable
     private bool CanInteract(CharacterCore character)
         => !character.IsInteracting && character.InputHandler.InteractPressed;
 
-    
     private bool HasInteracted(CharacterCore character)
         => _interactedDict.TryGetValue(character, out var interacted) && interacted;
+
+    private bool IsExiting(CharacterCore character)
+        => _isExitingDict.TryGetValue(character, out var isExiting) && isExiting;
 
     #endregion
 
@@ -125,12 +153,14 @@ public class Interactable : MonoBehaviour, IInteractable
         {
             _charactersInZone.Remove(dead);
             _interactedDict.Remove(dead);
+            _isExitingDict.Remove(dead);
         }
     }
   
     private void ResetCharacterInteraction(CharacterCore character)
     {
         _interactedDict[character] = false;
+        _isExitingDict[character] = false;
 
         if (OccupyingCharacter == character)
         {
