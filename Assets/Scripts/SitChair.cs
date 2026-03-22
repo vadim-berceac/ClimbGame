@@ -19,6 +19,6 @@ public class SitChair : MonoBehaviour
         }
         
         _interactable.OccupyingCharacter.Sit(false);
-        _interactable.ResetInteraction();
+        _interactable.ResetInteraction(_interactable.OccupyingCharacter); 
     }
 }

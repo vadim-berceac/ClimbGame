@@ -13,6 +13,14 @@ public interface IInteractable
 
 public class Interactable : MonoBehaviour, IInteractable
 {
+    private enum InteractionState
+    {
+        None,       
+        Entering,   
+        Idle,      
+        Exiting    
+    }
+
     [field: SerializeField] public AnimationClip EnterClip { get; set; }
     [field: SerializeField] public AnimationClip ExitClip { get; set; }
     [field: SerializeField] public FrameEventConfigField InteractEnterEventField { get; set; } = new();
@@ -25,8 +33,9 @@ public class Interactable : MonoBehaviour, IInteractable
     public CharacterCore OccupyingCharacter { get; private set; }
 
     private readonly HashSet<CharacterCore> _charactersInZone = new();
-    private readonly Dictionary<CharacterCore, bool> _interactedDict = new();
-    private readonly Dictionary<CharacterCore, bool> _isExitingDict = new();
+    private readonly Dictionary<CharacterCore, InteractionState> _stateDict = new();
+    private readonly HashSet<CharacterCore> _justExitedDict = new();
+    private readonly Dictionary<CharacterCore, InteractionState> _lastAnimationStateDict = new(); 
 
     private void Start()
     {
@@ -36,8 +45,19 @@ public class Interactable : MonoBehaviour, IInteractable
 
     public void ResetInteraction()
     {
-        _interactedDict.Clear();
-        _isExitingDict.Clear();
+        _stateDict.Clear();
+        _justExitedDict.Clear();
+        _lastAnimationStateDict.Clear();
+    }
+
+    public void ResetInteraction(CharacterCore character)
+    {
+        if (character != null)
+        {
+            _stateDict.Remove(character);
+            _justExitedDict.Remove(character);
+            _lastAnimationStateDict.Remove(character);
+        }
     }
 
     private void OnTriggerEnter(Collider other)
@@ -45,8 +65,8 @@ public class Interactable : MonoBehaviour, IInteractable
         if (other.TryGetComponent(out CharacterCore character))
         {
             _charactersInZone.Add(character);
-            _interactedDict[character] = false;
-            _isExitingDict[character] = false;
+            _stateDict[character] = InteractionState.None;
+            _lastAnimationStateDict[character] = InteractionState.None;
         }
     }
 
@@ -54,8 +74,9 @@ public class Interactable : MonoBehaviour, IInteractable
     {
         if (other.TryGetComponent(out CharacterCore character) && _charactersInZone.Remove(character))
         {
-            _interactedDict.Remove(character);
-            _isExitingDict.Remove(character);
+            _stateDict.Remove(character);
+            _justExitedDict.Remove(character);
+            _lastAnimationStateDict.Remove(character);
 
             if (OccupyingCharacter == character)
             {
@@ -72,6 +93,8 @@ public class Interactable : MonoBehaviour, IInteractable
         {
             ProcessCharacterInteraction(character);
         }
+
+        _justExitedDict.Clear();
     }
 
     #region Interaction Logic
@@ -81,52 +104,103 @@ public class Interactable : MonoBehaviour, IInteractable
         if (IsBlockedByOccupancy(character))
             return;
 
-        if (!AllowMultipleInteractions && HasInteracted(character))
-            return;
+        var currentState = GetState(character);
+
+        if (!character.IsInteracting)
+        {
+            if (currentState == InteractionState.Entering)
+            {
+                SetState(character, InteractionState.Idle);
+            }
+            else if (currentState == InteractionState.Exiting)
+            {
+                SetState(character, InteractionState.None);
+                _justExitedDict.Add(character);
+            }
+        }
+
+        currentState = GetState(character);
 
         if (CanInteract(character))
         {
-            if (!HasInteracted(character))
+            if (currentState == InteractionState.None && !_justExitedDict.Contains(character))
             {
-                // Первый раз - проигрываем EnterClip
                 Interact(character);
             }
-            else if (HasInteracted(character) && !IsExiting(character) && !character.IsInteracting)
+            else if (currentState == InteractionState.Idle)
             {
-                // Повторное нажатие после EnterClip - проигрываем ExitClip
                 ExitInteract(character);
             }
-            return;
         }
-        
-        // Очищаем состояние только после завершения ExitClip
-        if (IsExiting(character) && !character.IsInteracting)
-        {
-            ResetCharacterInteraction(character);
-        }
+
+        SyncAnimationWithState(character);
     }
 
     private void Interact(CharacterCore character)
     {
-        if (OccupyingCharacter == null)
-        {
-            OccupyingCharacter = character;
-        }
-
-        _interactedDict[character] = true;
-        _isExitingDict[character] = false;
-        character.PlayInteractAnimation(EnterClip, EnterInteractEvent);
+        OccupyingCharacter = character;
+        SetState(character, InteractionState.Entering);
     }
 
     private void ExitInteract(CharacterCore character)
     {
-        _isExitingDict[character] = true;
-        character.PlayInteractAnimation(ExitClip, ExitInteractEvent);
+        OccupyingCharacter = character;
+        SetState(character, InteractionState.Exiting);
+    }
+
+    private void SyncAnimationWithState(CharacterCore character)
+    {
+        var currentState = GetState(character);
+        var lastState = _lastAnimationStateDict.TryGetValue(character, out var state) ? state : InteractionState.None;
+
+        if (currentState != lastState)
+        {
+            bool isValidTransition = IsValidStateTransition(lastState, currentState);
+            
+            if (!isValidTransition)
+            {
+                SetState(character, lastState);
+                return;
+            }
+
+            if (currentState == InteractionState.Entering)
+            {
+                character.PlayInteractAnimation(EnterClip, EnterInteractEvent);
+            }
+            else if (currentState == InteractionState.Exiting)
+            {
+                character.PlayInteractAnimation(ExitClip, ExitInteractEvent);
+            }
+
+            _lastAnimationStateDict[character] = currentState;
+        }
+    }
+
+    private bool IsValidStateTransition(InteractionState from, InteractionState to)
+    {
+        return (from, to) switch
+        {
+            (InteractionState.None, InteractionState.Entering) => true,
+            (InteractionState.Entering, InteractionState.Idle) => true,
+            (InteractionState.Idle, InteractionState.Exiting) => true,
+            (InteractionState.Exiting, InteractionState.None) => true,
+            _ => false
+        };
     }
 
     #endregion
 
-    #region State Checks
+    #region State Management
+
+    private InteractionState GetState(CharacterCore character)
+    {
+        return _stateDict.TryGetValue(character, out var state) ? state : InteractionState.None;
+    }
+
+    private void SetState(CharacterCore character, InteractionState state)
+    {
+        _stateDict[character] = state;
+    }
 
     private bool IsBlockedByOccupancy(CharacterCore character)
         => !AllowMultipleInteractions 
@@ -135,12 +209,6 @@ public class Interactable : MonoBehaviour, IInteractable
 
     private bool CanInteract(CharacterCore character)
         => !character.IsInteracting && character.InputHandler.InteractPressed;
-
-    private bool HasInteracted(CharacterCore character)
-        => _interactedDict.TryGetValue(character, out var interacted) && interacted;
-
-    private bool IsExiting(CharacterCore character)
-        => _isExitingDict.TryGetValue(character, out var isExiting) && isExiting;
 
     #endregion
 
@@ -152,19 +220,9 @@ public class Interactable : MonoBehaviour, IInteractable
         foreach (var dead in deadCharacters)
         {
             _charactersInZone.Remove(dead);
-            _interactedDict.Remove(dead);
-            _isExitingDict.Remove(dead);
-        }
-    }
-  
-    private void ResetCharacterInteraction(CharacterCore character)
-    {
-        _interactedDict[character] = false;
-        _isExitingDict[character] = false;
-
-        if (OccupyingCharacter == character)
-        {
-            OccupyingCharacter = null;
+            _stateDict.Remove(dead);
+            _justExitedDict.Remove(dead);
+            _lastAnimationStateDict.Remove(dead);
         }
     }
 
