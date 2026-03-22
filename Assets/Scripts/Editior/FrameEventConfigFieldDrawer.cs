@@ -13,7 +13,7 @@ public class FrameEventConfigFieldDrawer : PropertyDrawer
         var lineHeight = EditorGUIUtility.singleLineHeight;
         var lineSpacing = EditorGUIUtility.standardVerticalSpacing;
         
-        var height = (lineHeight + lineSpacing) * 4;
+        var height = (lineHeight + lineSpacing) * 5; 
        
         var onEnterProp = property.FindPropertyRelative(nameof(FrameEventConfigField.OnEnter));
         var onExitProp = property.FindPropertyRelative(nameof(FrameEventConfigField.OnExit));
@@ -30,19 +30,20 @@ public class FrameEventConfigFieldDrawer : PropertyDrawer
     {
         EditorGUI.BeginProperty(position, label, property);
 
-        var targetObject = property.serializedObject.targetObject as Interactable;
+        var clipProp = property.FindPropertyRelative(nameof(FrameEventConfigField.Clip));
+        var clip = clipProp.objectReferenceValue as AnimationClip;
+        
         var maxFrame = 0;
         var clipInfo = "";
 
-        if (targetObject != null && targetObject.EnterClip != null)
+        if (clip != null)
         {
-            var clip = targetObject.EnterClip;
             maxFrame = Mathf.FloorToInt(clip.length * FPS);
             clipInfo = $" (0-{maxFrame} frames @ {FPS}fps)";
         }
         else
         {
-            clipInfo = " (Assign InteractClip)";
+            clipInfo = " (Assign Clip)";
         }
 
         var beginProp = property.FindPropertyRelative(nameof(FrameEventConfigField.Begin));
@@ -61,6 +62,10 @@ public class FrameEventConfigFieldDrawer : PropertyDrawer
         var lineHeight = EditorGUIUtility.singleLineHeight;
         var lineSpacing = EditorGUIUtility.standardVerticalSpacing;
         var currentY = position.y;
+
+        var clipRect = new Rect(position.x, currentY, position.width, lineHeight);
+        EditorGUI.PropertyField(clipRect, clipProp, new GUIContent("Clip"));
+        currentY += lineHeight + lineSpacing;
 
         var labelRect = new Rect(position.x, currentY, position.width, lineHeight);
         EditorGUI.LabelField(labelRect, label.text + clipInfo, EditorStyles.label);

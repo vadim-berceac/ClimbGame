@@ -5,8 +5,6 @@ using System.Linq;
 
 public interface IInteractable
 {
-    public AnimationClip EnterClip { get; set; }
-    public AnimationClip ExitClip { get; set; }
     public FrameEventConfig EnterInteractEvent { get; set; }
     public bool AllowMultipleInteractions { get; set; }
 }
@@ -21,8 +19,6 @@ public class Interactable : MonoBehaviour, IInteractable
         Exiting    
     }
 
-    [field: SerializeField] public AnimationClip EnterClip { get; set; }
-    [field: SerializeField] public AnimationClip ExitClip { get; set; }
     [field: SerializeField] public FrameEventConfigField InteractEnterEventField { get; set; } = new();
     [field: SerializeField] public FrameEventConfigField InteractExitEventField { get; set; } = new();
     [field: SerializeField] public bool AllowMultipleInteractions { get; set; } = true;
@@ -165,11 +161,17 @@ public class Interactable : MonoBehaviour, IInteractable
 
             if (currentState == InteractionState.Entering)
             {
-                character.PlayInteractAnimation(EnterClip, EnterInteractEvent);
+                if (InteractEnterEventField.Clip != null)
+                {
+                    character.PlayInteractAnimation(InteractEnterEventField.Clip, EnterInteractEvent);
+                }
             }
             else if (currentState == InteractionState.Exiting)
             {
-                character.PlayInteractAnimation(ExitClip, ExitInteractEvent);
+                if (InteractExitEventField.Clip != null)
+                {
+                    character.PlayInteractAnimation(InteractExitEventField.Clip, ExitInteractEvent);
+                }
             }
 
             _lastAnimationStateDict[character] = currentState;
@@ -232,6 +234,7 @@ public class Interactable : MonoBehaviour, IInteractable
 [System.Serializable]
 public class FrameEventConfigField
 {
+    [SerializeField] public AnimationClip Clip;
     [SerializeField] public int Begin;
     [SerializeField] public int End;
     [SerializeField] public UnityEvent OnEnter;

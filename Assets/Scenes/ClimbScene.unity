@@ -230,17 +230,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 908935089}
   m_LocalEulerAnglesHint: {x: -91.213, y: 109.597, z: 0}
---- !u!114 &90018216 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1949299333161363611, guid: f69847f567b1d6146a81ac244aad74f7, type: 3}
-  m_PrefabInstance: {fileID: 5788594015574579294}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f9972154d9f370a4b8f6d37d234d3770, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SitChair
 --- !u!1 &145240246
 GameObject:
   m_ObjectHideFlags: 0
@@ -1728,6 +1717,67 @@ Transform:
   m_Children: []
   m_Father: {fileID: 908935089}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &3148830585281867898
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1195613515103576464, guid: 60d12b7e24d86bd4a91d135c54da227c, type: 3}
+      propertyPath: <InteractExitEventField>k__BackingField.End
+      value: 22
+      objectReference: {fileID: 0}
+    - target: {fileID: 7132434418272750805, guid: 60d12b7e24d86bd4a91d135c54da227c, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -9.45
+      objectReference: {fileID: 0}
+    - target: {fileID: 7132434418272750805, guid: 60d12b7e24d86bd4a91d135c54da227c, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7132434418272750805, guid: 60d12b7e24d86bd4a91d135c54da227c, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -8.04
+      objectReference: {fileID: 0}
+    - target: {fileID: 7132434418272750805, guid: 60d12b7e24d86bd4a91d135c54da227c, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7132434418272750805, guid: 60d12b7e24d86bd4a91d135c54da227c, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7132434418272750805, guid: 60d12b7e24d86bd4a91d135c54da227c, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7132434418272750805, guid: 60d12b7e24d86bd4a91d135c54da227c, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7132434418272750805, guid: 60d12b7e24d86bd4a91d135c54da227c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7132434418272750805, guid: 60d12b7e24d86bd4a91d135c54da227c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7132434418272750805, guid: 60d12b7e24d86bd4a91d135c54da227c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8385997230557941517, guid: 60d12b7e24d86bd4a91d135c54da227c, type: 3}
+      propertyPath: m_Name
+      value: Taburet
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 60d12b7e24d86bd4a91d135c54da227c, type: 3}
 --- !u!1001 &3210317574546347424
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1837,38 +1887,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7051343872364007423, guid: f69847f567b1d6146a81ac244aad74f7, type: 3}
-      propertyPath: <InteractExitEventField>k__BackingField.End
-      value: 20
-      objectReference: {fileID: 0}
-    - target: {fileID: 7051343872364007423, guid: f69847f567b1d6146a81ac244aad74f7, type: 3}
-      propertyPath: <InteractExitEventField>k__BackingField.OnExit.m_PersistentCalls.m_Calls.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7051343872364007423, guid: f69847f567b1d6146a81ac244aad74f7, type: 3}
-      propertyPath: <InteractExitEventField>k__BackingField.OnExit.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7051343872364007423, guid: f69847f567b1d6146a81ac244aad74f7, type: 3}
-      propertyPath: <InteractExitEventField>k__BackingField.OnExit.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 90018216}
-    - target: {fileID: 7051343872364007423, guid: f69847f567b1d6146a81ac244aad74f7, type: 3}
-      propertyPath: <InteractExitEventField>k__BackingField.OnExit.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 7051343872364007423, guid: f69847f567b1d6146a81ac244aad74f7, type: 3}
-      propertyPath: <InteractExitEventField>k__BackingField.OnExit.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: Sit
-      objectReference: {fileID: 0}
-    - target: {fileID: 7051343872364007423, guid: f69847f567b1d6146a81ac244aad74f7, type: 3}
-      propertyPath: <InteractExitEventField>k__BackingField.OnExit.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
-      value: SitChair, Assembly-CSharp
-      objectReference: {fileID: 0}
-    - target: {fileID: 7051343872364007423, guid: f69847f567b1d6146a81ac244aad74f7, type: 3}
-      propertyPath: <InteractExitEventField>k__BackingField.OnExit.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
-      value: UnityEngine.Object, UnityEngine
-      objectReference: {fileID: 0}
     - target: {fileID: 8204740260215134641, guid: f69847f567b1d6146a81ac244aad74f7, type: 3}
       propertyPath: m_Name
       value: Torch
@@ -1943,6 +1961,7 @@ SceneRoots:
   - {fileID: 908935089}
   - {fileID: 960984601}
   - {fileID: 5788594015574579294}
+  - {fileID: 3148830585281867898}
   - {fileID: 3210317574546347424}
   - {fileID: 1641136872}
   - {fileID: 400520423}

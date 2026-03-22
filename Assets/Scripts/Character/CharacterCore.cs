@@ -92,9 +92,10 @@ public class CharacterCore : CoreController
         PlayablesAnimatorController.ConnectFootSteps(_soundContainer.GetAudioSet(_currentLocomotionType));
     }
 
-    public void Sit(bool value)
+    public void Sit(bool value, LocomotionType locomotionType)
     {
         Controller.Sit(value);
+        _locomotionSelector.SetSitLocomotion(locomotionType);
     }
 
     private void OnDestroy()

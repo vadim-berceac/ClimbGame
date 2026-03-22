@@ -176,7 +176,9 @@ public enum LocomotionType
     Crouch0 = 3,
     Fall0 = 4,
     Jump0 = 5,
-    Sit0 = 6
+    Sit0 = 6,
+    Sit1 = 7,
+    Sit2 = 8,
 }
 
 public enum LocomotionClipType

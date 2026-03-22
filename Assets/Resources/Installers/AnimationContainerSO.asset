@@ -229,4 +229,19 @@ MonoBehaviour:
         <StrafeRightSpeed>k__BackingField: 0
         <YSpeed>k__BackingField: 0
       <FrameRanges>k__BackingField: []
+    - <Locomotion>k__BackingField: 8
+      <Direction>k__BackingField: 0
+      <Idle>k__BackingField: {fileID: 3094330708855449807, guid: 3b4a867ff369674489690238e4644dca, type: 3}
+      <MoveForward>k__BackingField: {fileID: 3094330708855449807, guid: 3b4a867ff369674489690238e4644dca, type: 3}
+      <MoveBackward>k__BackingField: {fileID: 3094330708855449807, guid: 3b4a867ff369674489690238e4644dca, type: 3}
+      <StrafeLeft>k__BackingField: {fileID: 3094330708855449807, guid: 3b4a867ff369674489690238e4644dca, type: 3}
+      <StrafeRight>k__BackingField: {fileID: 3094330708855449807, guid: 3b4a867ff369674489690238e4644dca, type: 3}
+      <MoveSpeedData>k__BackingField:
+        <IdleSpeed>k__BackingField: 0
+        <ForwardSpeed>k__BackingField: 0
+        <BackwardSpeed>k__BackingField: 0
+        <StrafeLeftSpeed>k__BackingField: 0
+        <StrafeRightSpeed>k__BackingField: 0
+        <YSpeed>k__BackingField: 0
+      <FrameRanges>k__BackingField: []
     defaultLocomotion: 0

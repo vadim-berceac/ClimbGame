@@ -4,6 +4,8 @@ public class LocomotionSelector
     private readonly AdvancedCharacterController _characterController;
     private readonly InputHandler _inputHandler;
     
+    private LocomotionType _currentSitLocomotion;
+    
     public LocomotionSelector(AdvancedCharacterController character, InputHandler inputHandler)
     {
         _characterController = character;
@@ -19,7 +21,7 @@ public class LocomotionSelector
         
         if (_characterController.IsSiting())
         {
-            return LocomotionType.Sit0;
+            return _currentSitLocomotion;
         }
         
         if (_characterController.IsJumping())
@@ -43,5 +45,10 @@ public class LocomotionSelector
         }
 
         return LocomotionType.Walk0;
+    }
+
+    public void SetSitLocomotion(LocomotionType locomotion)
+    {
+        _currentSitLocomotion = locomotion;
     }
 }
