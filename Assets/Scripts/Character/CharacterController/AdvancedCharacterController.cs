@@ -87,7 +87,7 @@ public class AdvancedCharacterController
     public bool   IsOnClimbableSurface() => _isOnClimbableSurface;
     public bool   IsJumping()            => _isJumping;
     public bool   IsFalling()            => !_isGrounded && !_isOnClimbableSurface && _velocity.y < -JumpVelocityThreshold;
-    public bool   IsSiting()             => _isSiting;
+    public bool   IsInteract()             => _isSiting;
     public bool   IsAirborne()           => !_isGrounded && !_isClimbing && !_isOnClimbableSurface;
     public Vector3 Velocity              => _transform.InverseTransformDirection(_velocity);
     public Vector2 HorizontalVelocity    => new (Velocity.x, Velocity.z);
@@ -120,7 +120,7 @@ public class AdvancedCharacterController
 
     #region Public Methods
 
-    public void Sit(bool isSiting)
+    public void Interact(bool isSiting)
     {
         _isSiting = isSiting;
     }

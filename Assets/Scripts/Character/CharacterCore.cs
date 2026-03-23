@@ -3,10 +3,11 @@ using Zenject;
 
 public class CharacterCore : CoreController
 {
+    [field:SerializeField] public bool HasPick {get; private set;}// для теста
     [SerializeField] private InputSourceMode                  mode;
     [SerializeField] private AdvancedCharacterControllerData  controllerData;
 
-    private CharacterAnimationContainer _animationContainer;
+    private CharacterAnimationContainer _animationContainer;  
     private CharacterSoundContainer    _soundContainer;
     private MoveSpeed                  _moveSpeed;
     private LocomotionSelector         _locomotionSelector;
@@ -92,10 +93,10 @@ public class CharacterCore : CoreController
         PlayablesAnimatorController.ConnectFootSteps(_soundContainer.GetAudioSet(_currentLocomotionType));
     }
 
-    public void Sit(bool value, LocomotionType locomotionType)
+    public void Interact(bool value, LocomotionType locomotionType)
     {
-        Controller.Sit(value);
-        _locomotionSelector.SetSitLocomotion(locomotionType);
+        Controller.Interact(value);
+        _locomotionSelector.SetInteractLocomotion(locomotionType);
     }
 
     private void OnDestroy()

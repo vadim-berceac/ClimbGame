@@ -47,6 +47,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e461d1ab109bf4047a6b19656e6c4ad4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Interactable
+  <InteractConditions>k__BackingField:
+  - {fileID: 11400000, guid: 5996a4b7d02c820408c44c74324dd38f, type: 2}
   <Rotation>k__BackingField:
     <RotateToCenter>k__BackingField: 1
     <RotateToCenterPoint>k__BackingField: {x: 0, y: 0, z: 0}

@@ -12,6 +12,7 @@ public interface IInteractable
 
 public class Interactable : MonoBehaviour, IInteractable
 {
+    [field: SerializeField] public InteractCondition[] InteractConditions { get; set; }
     [field: SerializeField] public RotationSettings Rotation { get; set; }
     [field: SerializeField] public MoveSettings Move { get; set; }
     [field: SerializeField] public TimerSettings Timer { get; set; }
@@ -61,6 +62,18 @@ public class Interactable : MonoBehaviour, IInteractable
             _lastAnimationStateDict.Remove(character);
             _interactionTimerDict.Remove(character);
         }
+    }
+
+    private bool CheckConditions(CharacterCore character)
+    {
+        if (InteractConditions == null || InteractConditions.Length == 0) return true;
+
+        foreach (var con in InteractConditions)
+        {
+            if (!con.Check(character)) return false;
+        }
+        
+        return true;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -116,7 +129,7 @@ public class Interactable : MonoBehaviour, IInteractable
             if (currentState == InteractionState.Entering)
             {
                 SetState(character, InteractionState.Idle);
-                // Инициализируем таймер при начале Idle состояния
+                
                 if (Timer.EnableTimer)
                 {
                     _interactionTimerDict[character] = Timer.InteractionDuration;
@@ -134,7 +147,9 @@ public class Interactable : MonoBehaviour, IInteractable
 
         if (CanInteract(character))
         {
-            if (currentState == InteractionState.None && !_justExitedDict.Contains(character))
+            if (currentState == InteractionState.None 
+                && !_justExitedDict.Contains(character)
+                && CheckConditions(character))
             {
                 Interact(character);
             }

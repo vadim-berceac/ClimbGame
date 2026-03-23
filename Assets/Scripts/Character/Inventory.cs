@@ -23,7 +23,7 @@ public class Inventory
 
     public void SetPrimaryWeapon(ItemInstance itemInstance)
     {
-        if (itemInstance == null || !(itemInstance.GetData() is EquippedItem))
+        if (itemInstance == null || (itemInstance.GetData() is not EquippedItem))
         {
             return;
         }

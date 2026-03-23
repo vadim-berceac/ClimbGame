@@ -16,11 +16,11 @@ public class LocoMotionSwitcher : MonoBehaviour, IInteractableAction
     {
         if (_interactable.OccupyingCharacter.CurrentLocomotionType != sittingLocomotion)
         {
-            _interactable.OccupyingCharacter.Sit(true, sittingLocomotion);
+            _interactable.OccupyingCharacter.Interact(true, sittingLocomotion);
             return;
         }
         
-        _interactable.OccupyingCharacter.Sit(false, LocomotionType.Walk0);
+        _interactable.OccupyingCharacter.Interact(false, LocomotionType.Walk0);
         _interactable.ResetInteraction(_interactable.OccupyingCharacter); 
     }
 }
