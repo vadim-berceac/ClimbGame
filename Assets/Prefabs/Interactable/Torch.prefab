@@ -270,6 +270,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e461d1ab109bf4047a6b19656e6c4ad4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Interactable
+  <Rotation>k__BackingField:
+    <RotateToCenter>k__BackingField: 1
+    <RotateToCenterPoint>k__BackingField: {x: 0, y: 0, z: 0}
+    <YOffset>k__BackingField: 0
+    <RotateTime>k__BackingField: 0.2
+  <Move>k__BackingField:
+    <NeedToMove>k__BackingField: 0
+    <MovePoint>k__BackingField: {x: 0, y: 0, z: 0}
+    <MoveTime>k__BackingField: 0
   <InteractEnterEventField>k__BackingField:
     Clip: {fileID: 3094330708855449807, guid: 93f637b1ace6efd409cf0546eb8cde85, type: 3}
     Begin: 0

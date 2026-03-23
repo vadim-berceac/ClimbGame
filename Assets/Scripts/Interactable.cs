@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using System.Collections.Generic;
 using System.Linq;
+using DG.Tweening;
 
 public interface IInteractable
 {
@@ -11,6 +12,8 @@ public interface IInteractable
 
 public class Interactable : MonoBehaviour, IInteractable
 {
+    [field: SerializeField] public RotationSettings Rotation { get; set; }
+    [field: SerializeField] public MoveSettings Move { get; set; }
     private enum InteractionState
     {
         None,       
@@ -22,7 +25,6 @@ public class Interactable : MonoBehaviour, IInteractable
     [field: SerializeField] public FrameEventConfigField InteractEnterEventField { get; set; } = new();
     [field: SerializeField] public FrameEventConfigField InteractExitEventField { get; set; } = new();
     [field: SerializeField] public bool AllowMultipleInteractions { get; set; } = true;
-    
     public FrameEventConfig EnterInteractEvent { get; set; }
     public FrameEventConfig ExitInteractEvent { get; set; }
     
@@ -136,8 +138,31 @@ public class Interactable : MonoBehaviour, IInteractable
     {
         OccupyingCharacter = character;
         SetState(character, InteractionState.Entering);
+        MoveTo(character);
+        Rotate(character);
     }
 
+    private void Rotate(CharacterCore character)
+    {
+        if(!Rotation.RotateToCenter) return;
+    
+        var worldTargetPoint = transform.TransformPoint(Rotation.RotateToCenterPoint);
+        var direction = worldTargetPoint - character.transform.position;
+    
+        var yAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg;
+        yAngle += Rotation.YOffset; 
+    
+        character.transform.DORotate(new Vector3(0, yAngle, 0), Rotation.RotateTime);
+    }
+    
+    private void MoveTo(CharacterCore character)
+    {
+        if (!Move.NeedToMove) return;
+    
+        var worldTargetPoint = transform.TransformPoint(Move.MovePoint);
+        character.transform.DOMove(worldTargetPoint, Move.MoveTime);
+    }
+    
     private void ExitInteract(CharacterCore character)
     {
         OccupyingCharacter = character;
@@ -250,4 +275,21 @@ public class FrameEventConfigField
         () => OnTick?.Invoke(),
         WeightThreshold
     );
+}
+
+[System.Serializable]
+public struct RotationSettings
+{
+    [field: SerializeField] public bool RotateToCenter { get; set; }
+    [field: SerializeField] public Vector3 RotateToCenterPoint { get; set; }
+    [field: SerializeField] public float YOffset { get; set; } 
+    [field: SerializeField] public float RotateTime { get; set; }
+}
+
+[System.Serializable]
+public struct MoveSettings
+{
+    [field: SerializeField] public bool NeedToMove { get; set; }
+    [field: SerializeField] public Vector3 MovePoint { get; set; }
+    [field: SerializeField] public float MoveTime { get; set; }
 }
