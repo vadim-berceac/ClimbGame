@@ -1729,14 +1729,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Pillow
       objectReference: {fileID: 0}
-    - target: {fileID: 4766302845508626838, guid: cd24cdfe04b1d60489769e6ae2a9d382, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 0.46
-      objectReference: {fileID: 0}
-    - target: {fileID: 4766302845508626838, guid: cd24cdfe04b1d60489769e6ae2a9d382, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0.208
-      objectReference: {fileID: 0}
     - target: {fileID: 6457894291261115964, guid: cd24cdfe04b1d60489769e6ae2a9d382, type: 3}
       propertyPath: m_LocalPosition.x
       value: -9.45

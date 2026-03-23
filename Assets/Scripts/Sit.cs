@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [RequireComponent(typeof(Interactable))]
-public class Sit : MonoBehaviour
+public class Sit : MonoBehaviour, IInteractableAction
 {
     [SerializeField] private LocomotionType sittingLocomotion;
     
