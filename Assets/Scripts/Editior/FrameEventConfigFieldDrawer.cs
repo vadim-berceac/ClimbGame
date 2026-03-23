@@ -12,17 +12,14 @@ public class FrameEventConfigFieldDrawer : PropertyDrawer
     {
         var lineHeight = EditorGUIUtility.singleLineHeight;
         var lineSpacing = EditorGUIUtility.standardVerticalSpacing;
-        
-        // Высота для самого foldout
         var height = lineHeight + lineSpacing;
         
-        // Если foldout открыт, добавляем высоту содержимого
-        string foldoutKey = GetFoldoutKey(property);
-        bool isFoldoutOpen = EditorPrefs.GetBool(foldoutKey, true);
+        var foldoutKey = GetFoldoutKey(property);
+        var isFoldoutOpen = EditorPrefs.GetBool(foldoutKey, true);
         
         if (isFoldoutOpen)
         {
-            height += (lineHeight + lineSpacing) * 5; // Clip, Begin, End, Weight, и пространство
+            height += (lineHeight + lineSpacing) * 5; 
             
             var onEnterProp = property.FindPropertyRelative(nameof(FrameEventConfigField.OnEnter));
             var onExitProp = property.FindPropertyRelative(nameof(FrameEventConfigField.OnExit));
@@ -43,23 +40,20 @@ public class FrameEventConfigFieldDrawer : PropertyDrawer
         var lineHeight = EditorGUIUtility.singleLineHeight;
         var lineSpacing = EditorGUIUtility.standardVerticalSpacing;
         var currentY = position.y;
-        
-        // Получаем состояние foldout'а
-        string foldoutKey = GetFoldoutKey(property);
-        bool isFoldoutOpen = EditorPrefs.GetBool(foldoutKey, true);
+       
+        var foldoutKey = GetFoldoutKey(property);
+        var isFoldoutOpen = EditorPrefs.GetBool(foldoutKey, true);
         
         var clipProp = property.FindPropertyRelative(nameof(FrameEventConfigField.Clip));
         var clip = clipProp.objectReferenceValue as AnimationClip;
         
         var clipInfo = clip != null ? $" ({clip.name})" : " (Assign Clip)";
         
-        // Рисуем foldout
         var foldoutRect = new Rect(position.x, currentY, position.width, lineHeight);
         isFoldoutOpen = EditorGUI.Foldout(foldoutRect, isFoldoutOpen, label.text + clipInfo, true);
         EditorPrefs.SetBool(foldoutKey, isFoldoutOpen);
         currentY += lineHeight + lineSpacing;
-        
-        // Если foldout открыт, отрисовываем содержимое
+       
         if (isFoldoutOpen)
         {
             EditorGUI.indentLevel++;
@@ -82,44 +76,37 @@ public class FrameEventConfigFieldDrawer : PropertyDrawer
                 beginProp.intValue = Mathf.Clamp(beginProp.intValue, 0, maxFrame);
                 endProp.intValue = Mathf.Clamp(endProp.intValue, beginProp.intValue, maxFrame);
             }
-            
-            // Clip
+           
             var clipRect = new Rect(position.x, currentY, position.width, lineHeight);
             EditorGUI.PropertyField(clipRect, clipProp, new GUIContent("Clip"));
             currentY += lineHeight + lineSpacing;
-            
-            // Begin
+          
             var beginRect = new Rect(position.x, currentY, position.width, lineHeight);
             EditorGUI.BeginDisabledGroup(maxFrame == 0);
             beginProp.intValue = EditorGUI.IntSlider(beginRect, "Begin", beginProp.intValue, 0, maxFrame);
             EditorGUI.EndDisabledGroup();
             currentY += lineHeight + lineSpacing;
             
-            // End
             var endRect = new Rect(position.x, currentY, position.width, lineHeight);
             EditorGUI.BeginDisabledGroup(maxFrame == 0);
             endProp.intValue = EditorGUI.IntSlider(endRect, "End", endProp.intValue, beginProp.intValue, maxFrame);
             EditorGUI.EndDisabledGroup();
             currentY += lineHeight + lineSpacing;
-            
-            // Weight Threshold
+           
             var weightRect = new Rect(position.x, currentY, position.width, lineHeight);
             EditorGUI.PropertyField(weightRect, weightProp, new GUIContent("Weight Threshold"));
             currentY += lineHeight + lineSpacing;
-            
-            // On Enter
+           
             var onEnterHeight = EditorGUI.GetPropertyHeight(onEnterProp);
             var onEnterRect = new Rect(position.x, currentY, position.width, onEnterHeight);
             EditorGUI.PropertyField(onEnterRect, onEnterProp, new GUIContent("On Enter"), true);
             currentY += onEnterHeight + lineSpacing;
-            
-            // On Exit
+           
             var onExitHeight = EditorGUI.GetPropertyHeight(onExitProp);
             var onExitRect = new Rect(position.x, currentY, position.width, onExitHeight);
             EditorGUI.PropertyField(onExitRect, onExitProp, new GUIContent("On Exit"), true);
             currentY += onExitHeight + lineSpacing;
             
-            // On Tick
             var onTickHeight = EditorGUI.GetPropertyHeight(onTickProp);
             var onTickRect = new Rect(position.x, currentY, position.width, onTickHeight);
             EditorGUI.PropertyField(onTickRect, onTickProp, new GUIContent("On Tick"), true);
@@ -129,10 +116,7 @@ public class FrameEventConfigFieldDrawer : PropertyDrawer
         
         EditorGUI.EndProperty();
     }
-    
-    /// <summary>
-    /// Генерирует уникальный ключ для сохранения состояния foldout'а в EditorPrefs
-    /// </summary>
+  
     private string GetFoldoutKey(SerializedProperty property)
     {
         return $"FrameEventConfigField_Foldout_{property.propertyPath}";

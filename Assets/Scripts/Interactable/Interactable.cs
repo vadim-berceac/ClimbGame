@@ -14,6 +14,8 @@ public class Interactable : MonoBehaviour, IInteractable
 {
     [field: SerializeField] public RotationSettings Rotation { get; set; }
     [field: SerializeField] public MoveSettings Move { get; set; }
+    [field: SerializeField] public TimerSettings Timer { get; set; }
+    
     private enum InteractionState
     {
         None,       
@@ -33,7 +35,8 @@ public class Interactable : MonoBehaviour, IInteractable
     private readonly HashSet<CharacterCore> _charactersInZone = new();
     private readonly Dictionary<CharacterCore, InteractionState> _stateDict = new();
     private readonly HashSet<CharacterCore> _justExitedDict = new();
-    private readonly Dictionary<CharacterCore, InteractionState> _lastAnimationStateDict = new(); 
+    private readonly Dictionary<CharacterCore, InteractionState> _lastAnimationStateDict = new();
+    private readonly Dictionary<CharacterCore, float> _interactionTimerDict = new();
 
     private void Start()
     {
@@ -46,6 +49,7 @@ public class Interactable : MonoBehaviour, IInteractable
         _stateDict.Clear();
         _justExitedDict.Clear();
         _lastAnimationStateDict.Clear();
+        _interactionTimerDict.Clear();
     }
 
     public void ResetInteraction(CharacterCore character)
@@ -55,6 +59,7 @@ public class Interactable : MonoBehaviour, IInteractable
             _stateDict.Remove(character);
             _justExitedDict.Remove(character);
             _lastAnimationStateDict.Remove(character);
+            _interactionTimerDict.Remove(character);
         }
     }
 
@@ -65,6 +70,7 @@ public class Interactable : MonoBehaviour, IInteractable
             _charactersInZone.Add(character);
             _stateDict[character] = InteractionState.None;
             _lastAnimationStateDict[character] = InteractionState.None;
+            _interactionTimerDict[character] = 0f;
         }
     }
 
@@ -75,6 +81,7 @@ public class Interactable : MonoBehaviour, IInteractable
             _stateDict.Remove(character);
             _justExitedDict.Remove(character);
             _lastAnimationStateDict.Remove(character);
+            _interactionTimerDict.Remove(character);
 
             if (OccupyingCharacter == character)
             {
@@ -109,11 +116,17 @@ public class Interactable : MonoBehaviour, IInteractable
             if (currentState == InteractionState.Entering)
             {
                 SetState(character, InteractionState.Idle);
+                // Инициализируем таймер при начале Idle состояния
+                if (Timer.EnableTimer)
+                {
+                    _interactionTimerDict[character] = Timer.InteractionDuration;
+                }
             }
             else if (currentState == InteractionState.Exiting)
             {
                 SetState(character, InteractionState.None);
                 _justExitedDict.Add(character);
+                _interactionTimerDict[character] = 0f;
             }
         }
 
@@ -131,7 +144,28 @@ public class Interactable : MonoBehaviour, IInteractable
             }
         }
 
+        // Обновляем таймер если персонаж в состоянии Idle
+        if (Timer.EnableTimer && currentState == InteractionState.Idle)
+        {
+            UpdateInteractionTimer(character);
+        }
+
         SyncAnimationWithState(character);
+    }
+
+    private void UpdateInteractionTimer(CharacterCore character)
+    {
+        if (!_interactionTimerDict.TryGetValue(character, out var remainingTime))
+            return;
+
+        remainingTime -= Time.deltaTime;
+        _interactionTimerDict[character] = remainingTime;
+
+        // Если таймер истек, выходим из взаимодействия
+        if (remainingTime <= 0f)
+        {
+            ExitInteract(character);
+        }
     }
 
     private void Interact(CharacterCore character)
@@ -264,6 +298,7 @@ public class Interactable : MonoBehaviour, IInteractable
             _stateDict.Remove(dead);
             _justExitedDict.Remove(dead);
             _lastAnimationStateDict.Remove(dead);
+            _interactionTimerDict.Remove(dead);
         }
     }
 
@@ -308,4 +343,11 @@ public struct MoveSettings
     [field: SerializeField] public bool NeedToMove { get; set; }
     [field: SerializeField] public Vector3 MovePoint { get; set; }
     [field: SerializeField] public float MoveTime { get; set; }
+}
+
+[System.Serializable]
+public struct TimerSettings
+{
+    [field: SerializeField] public bool EnableTimer { get; set; }
+    [field: SerializeField] public float InteractionDuration { get; set; }
 }

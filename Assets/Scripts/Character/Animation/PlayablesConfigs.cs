@@ -179,6 +179,8 @@ public enum LocomotionType
     Sit0 = 6,
     Sit1 = 7,
     Sit2 = 8,
+    Mining0 = 9,
+    Mining1 = 10,
 }
 
 public enum LocomotionClipType

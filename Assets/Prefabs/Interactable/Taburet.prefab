@@ -169,8 +169,11 @@ MonoBehaviour:
     <NeedToMove>k__BackingField: 1
     <MovePoint>k__BackingField: {x: 0, y: 1.1, z: 0.5}
     <MoveTime>k__BackingField: 0.4
+  <Timer>k__BackingField:
+    <EnableTimer>k__BackingField: 0
+    <InteractionDuration>k__BackingField: 0
   <InteractEnterEventField>k__BackingField:
-    Clip: {fileID: 3094330708855449807, guid: 0cfacedf0cbf5c141bc5014585e25fce, type: 3}
+    Clip: {fileID: 3094330708855449807, guid: 6a66181994202fe44b90298ffc2c3a0d, type: 3}
     Begin: 0
     End: 13
     OnEnter:
@@ -196,9 +199,9 @@ MonoBehaviour:
         m_Calls: []
     WeightThreshold: 0.5
   <InteractExitEventField>k__BackingField:
-    Clip: {fileID: 3094330708855449807, guid: 34a7428c6a9988444b5e3f6d9968d984, type: 3}
+    Clip: {fileID: 3094330708855449807, guid: 68a718562c62a9641aa368d50f789492, type: 3}
     Begin: 0
-    End: 22
+    End: 21
     OnEnter:
       m_PersistentCalls:
         m_Calls: []
