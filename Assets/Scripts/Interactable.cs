@@ -145,12 +145,26 @@ public class Interactable : MonoBehaviour, IInteractable
     private void Rotate(CharacterCore character)
     {
         if(!Rotation.RotateToCenter) return;
+
+        float yAngle;
     
-        var worldTargetPoint = transform.TransformPoint(Rotation.RotateToCenterPoint);
-        var direction = worldTargetPoint - character.transform.position;
+        if (Rotation.UseObjectForward)
+        {
+            yAngle = transform.eulerAngles.y;
+        
+            if (Rotation.ReverseObjectForward)
+            {
+                yAngle += 180f; 
+            }
+        }
+        else
+        {
+            var worldTargetPoint = transform.TransformPoint(Rotation.RotateToCenterPoint);
+            var direction = worldTargetPoint - character.transform.position;
+            yAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg;
+        }
     
-        var yAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg;
-        yAngle += Rotation.YOffset; 
+        yAngle += Rotation.YOffset;
     
         character.transform.DORotate(new Vector3(0, yAngle, 0), Rotation.RotateTime);
     }
@@ -284,6 +298,8 @@ public struct RotationSettings
     [field: SerializeField] public Vector3 RotateToCenterPoint { get; set; }
     [field: SerializeField] public float YOffset { get; set; } 
     [field: SerializeField] public float RotateTime { get; set; }
+    [field: SerializeField] public bool UseObjectForward { get; set; }      
+    [field: SerializeField] public bool ReverseObjectForward { get; set; }  
 }
 
 [System.Serializable]
