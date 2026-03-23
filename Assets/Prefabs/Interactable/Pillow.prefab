@@ -56,12 +56,12 @@ MonoBehaviour:
     <ReverseObjectForward>k__BackingField: 0
   <Move>k__BackingField:
     <NeedToMove>k__BackingField: 1
-    <MovePoint>k__BackingField: {x: 0, y: 1.1, z: 0.35}
+    <MovePoint>k__BackingField: {x: 0, y: 1, z: 0.35}
     <MoveTime>k__BackingField: 0.4
   <InteractEnterEventField>k__BackingField:
     Clip: {fileID: 3094330708855449807, guid: cd590eef1904e1b40b0e98917cce01a7, type: 3}
     Begin: 0
-    End: 21
+    End: 13
     OnEnter:
       m_PersistentCalls:
         m_Calls: []
@@ -143,8 +143,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 2, y: 2, z: 2}
-  m_Center: {x: 0, y: 1, z: 0}
+  m_Size: {x: 2, y: 2, z: 1.5}
+  m_Center: {x: 0, y: 1, z: 0.75}
 --- !u!1 &9037527939068747569
 GameObject:
   m_ObjectHideFlags: 0
@@ -173,7 +173,7 @@ Transform:
   m_GameObject: {fileID: 9037527939068747569}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.208, z: 0}
+  m_LocalPosition: {x: 0, y: 0.08, z: 0}
   m_LocalScale: {x: 0.6, y: 0.46, z: 0.6}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -212,7 +212,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: fbf7696d37173ae468277f3a5e2b4336, type: 2}
+  - {fileID: 2100000, guid: 8e86a95dce316a140a0dcffec9450b7e, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

@@ -275,6 +275,8 @@ MonoBehaviour:
     <RotateToCenterPoint>k__BackingField: {x: 0, y: 0, z: 0}
     <YOffset>k__BackingField: 0
     <RotateTime>k__BackingField: 0.2
+    <UseObjectForward>k__BackingField: 0
+    <ReverseObjectForward>k__BackingField: 0
   <Move>k__BackingField:
     <NeedToMove>k__BackingField: 0
     <MovePoint>k__BackingField: {x: 0, y: 0, z: 0}
@@ -282,7 +284,7 @@ MonoBehaviour:
   <InteractEnterEventField>k__BackingField:
     Clip: {fileID: 3094330708855449807, guid: 93f637b1ace6efd409cf0546eb8cde85, type: 3}
     Begin: 0
-    End: 23
+    End: 13
     OnEnter:
       m_PersistentCalls:
         m_Calls: []
@@ -308,7 +310,7 @@ MonoBehaviour:
   <InteractExitEventField>k__BackingField:
     Clip: {fileID: 3094330708855449807, guid: b64140b43e4559b4194b522596f62db1, type: 3}
     Begin: 0
-    End: 36
+    End: 22
     OnEnter:
       m_PersistentCalls:
         m_Calls: []

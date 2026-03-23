@@ -16,7 +16,7 @@ MonoBehaviour:
   <CharacterSkinPrefab>k__BackingField: {fileID: 4140606786917716049, guid: 025f646f446621b43965278205040aa3, type: 3}
   <Avatar>k__BackingField: {fileID: 9000000, guid: 5b428ac4870d5aa43a515ec52454e895, type: 3}
   <SkinItemSlots>k__BackingField: {fileID: 11400000, guid: 8064a812b2cdaf64ba41377e2d8264f2, type: 2}
-  <SkinSize>k__BackingField: {x: 1.5, y: 1.5, z: 1.5}
+  <SkinSize>k__BackingField: {x: 1.3, y: 1.3, z: 1.3}
   <SkinPositionOffset>k__BackingField: {x: 0, y: -1, z: 0}
   <StepVfxPrefab>k__BackingField: {fileID: 6403252182692130976, guid: f5a2d688865cb9549ba9c2547c4a93a5, type: 3}
   <LFoot>k__BackingField:

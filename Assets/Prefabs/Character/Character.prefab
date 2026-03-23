@@ -245,7 +245,7 @@ CharacterController:
   m_Enabled: 1
   serializedVersion: 3
   m_Height: 2
-  m_Radius: 0.5
+  m_Radius: 0.32
   m_SlopeLimit: 45
   m_StepOffset: 0.3
   m_SkinWidth: 0.03
@@ -340,10 +340,10 @@ MonoBehaviour:
   controllerData:
     <RotationSpeed>k__BackingField: 120
     <SpeedChangeRate>k__BackingField: 10
-    <GroundCheckDistance>k__BackingField: 0.14
+    <GroundCheckDistance>k__BackingField: 0.15
     <GroundMask>k__BackingField:
       serializedVersion: 2
-      m_Bits: 1610612737
+      m_Bits: 1073741825
     <SlopeForce>k__BackingField: 20
     <EnableClimbing>k__BackingField: 1
     <ClimbSpeedMultipler>k__BackingField: 0.6
