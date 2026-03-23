@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Ghoul
   m_EditorClassIdentifier: Assembly-CSharp::CharacterData
   <Name>k__BackingField: Ghoul
-  <CurrentWeapon>k__BackingField: {fileID: 11400000, guid: 4f8c5080d6bbc6843a2b95a2c45031d7, type: 2}
+  <CurrentWeapon>k__BackingField: {fileID: 0}
   <Skin>k__BackingField: {fileID: 11400000, guid: b0cf79833e1bf1f44ab7071618e57e63, type: 2}
