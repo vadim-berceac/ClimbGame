@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Ogre
   m_EditorClassIdentifier: Assembly-CSharp::CharacterData
   <Name>k__BackingField: Ogre
-  <CurrentWeapon>k__BackingField: {fileID: 11400000, guid: 4f8c5080d6bbc6843a2b95a2c45031d7, type: 2}
+  <CurrentWeapon>k__BackingField: {fileID: 0}
   <Skin>k__BackingField: {fileID: 11400000, guid: cb7db701cd32a704caed53fbeba64457, type: 2}

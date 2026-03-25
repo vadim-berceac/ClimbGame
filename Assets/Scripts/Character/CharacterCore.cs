@@ -3,7 +3,8 @@ using Zenject;
 
 public class CharacterCore : CoreController
 {
-    [field:SerializeField] public bool HasPick {get; private set;}// для теста
+    [field:SerializeField] public bool HasPick {get; private set;} // для теста
+    [field:SerializeField] public bool HasLumberAxe {get; private set;}// для теста
     [SerializeField] private InputSourceMode                  mode;
     [SerializeField] private AdvancedCharacterControllerData  controllerData;
 
@@ -20,6 +21,7 @@ public class CharacterCore : CoreController
     
     public bool IsInteracting => PlayablesAnimatorController.OneShotIsActive();
     public LocomotionType CurrentLocomotionType => _locomotionSelector.GetLocomotionType();
+    public CharacterSlots CharacterSlots {get; private set;}
 
     [Inject]
     private void Construct(
@@ -30,7 +32,8 @@ public class CharacterCore : CoreController
         CharacterAnimationContainer      animationContainer,
         CharacterSoundContainer          soundContainer,
         AudioSource                      audioSource,
-        CharacterAnimationEvents         animationEvents)
+        CharacterAnimationEvents         animationEvents,
+        CharacterSlots                   slots)
     {
         InputHandler = new InputHandler(playerInput, aiInput);
         InputHandler.SetupInput(mode);
@@ -39,6 +42,7 @@ public class CharacterCore : CoreController
         _animationContainer = animationContainer;
         _soundContainer     = soundContainer;
         _animationEvents    = animationEvents;
+        CharacterSlots      = slots;
         _locomotionSelector = new LocomotionSelector(Controller, InputHandler);
         _moveSpeed          = new MoveSpeed(InputHandler);
 

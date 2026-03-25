@@ -9,9 +9,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1214635881506826189}
+  - component: {fileID: 1748736895450406666}
   - component: {fileID: 4224635004096598194}
   - component: {fileID: 9137094182530251940}
-  - component: {fileID: 1748736895450406666}
+  - component: {fileID: 205135300246954760}
   m_Layer: 29
   m_Name: Ore0
   m_TagString: Untagged
@@ -35,6 +36,27 @@ Transform:
   - {fileID: 9005481639025790501}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &1748736895450406666
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 361684188463438104}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 2.2, y: 2, z: 2.2}
+  m_Center: {x: 0, y: 1, z: 0}
 --- !u!114 &4224635004096598194
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -70,12 +92,24 @@ MonoBehaviour:
     End: 11
     OnEnter:
       m_PersistentCalls:
-        m_Calls: []
+        m_Calls:
+        - m_Target: {fileID: 205135300246954760}
+          m_TargetAssemblyTypeName: ItemSpawner, Assembly-CSharp
+          m_MethodName: Execute
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
     OnExit:
       m_PersistentCalls:
         m_Calls:
         - m_Target: {fileID: 9137094182530251940}
-          m_TargetAssemblyTypeName: Sit, Assembly-CSharp
+          m_TargetAssemblyTypeName: LocoMotionSwitcher, Assembly-CSharp
           m_MethodName: Execute
           m_Mode: 1
           m_Arguments:
@@ -112,6 +146,18 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+        - m_Target: {fileID: 205135300246954760}
+          m_TargetAssemblyTypeName: ItemSpawner, Assembly-CSharp
+          m_MethodName: Execute
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
     OnTick:
       m_PersistentCalls:
         m_Calls: []
@@ -130,27 +176,26 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SitChair
   sittingLocomotion: 9
---- !u!65 &1748736895450406666
-BoxCollider:
+--- !u!114 &205135300246954760
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 361684188463438104}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 2.2, y: 2, z: 2.2}
-  m_Center: {x: 0, y: 1, z: 0}
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5a28467eb2dfb3246937dd31f34a7b9b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ItemSpawner
+  itemPrefab: {fileID: 745545728878636847, guid: d570f1298ab416e40881c6019b714dc5, type: 3}
+  equippedItemSlot:
+    <SlotType>k__BackingField: 0
+    <TransformData>k__BackingField:
+      <Position>k__BackingField: {x: 0.058, y: 0.013, z: 0.003}
+      <Rotation>k__BackingField: {x: -0.6536387, y: 0.19791855, z: -0.1889617, w: 0.70560473}
+      <Scale>k__BackingField: 1
+      <Active>k__BackingField: 1
 --- !u!1001 &3278115966108678340
 PrefabInstance:
   m_ObjectHideFlags: 0

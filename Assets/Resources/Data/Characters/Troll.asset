@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Troll
   m_EditorClassIdentifier: Assembly-CSharp::CharacterData
   <Name>k__BackingField: Troll
-  <CurrentWeapon>k__BackingField: {fileID: 11400000, guid: 4f8c5080d6bbc6843a2b95a2c45031d7, type: 2}
+  <CurrentWeapon>k__BackingField: {fileID: 0}
   <Skin>k__BackingField: {fileID: 11400000, guid: 8dd801e264c6fce4b91d2cbddbc15bb5, type: 2}

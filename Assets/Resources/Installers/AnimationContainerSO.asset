@@ -289,4 +289,34 @@ MonoBehaviour:
         <StrafeRightSpeed>k__BackingField: 0
         <YSpeed>k__BackingField: 0
       <FrameRanges>k__BackingField: []
+    - <Locomotion>k__BackingField: 11
+      <Direction>k__BackingField: 0
+      <Idle>k__BackingField: {fileID: 3094330708855449807, guid: ec628aa279e34cc45bb768374e04ece8, type: 3}
+      <MoveForward>k__BackingField: {fileID: 3094330708855449807, guid: ec628aa279e34cc45bb768374e04ece8, type: 3}
+      <MoveBackward>k__BackingField: {fileID: 3094330708855449807, guid: ec628aa279e34cc45bb768374e04ece8, type: 3}
+      <StrafeLeft>k__BackingField: {fileID: 3094330708855449807, guid: ec628aa279e34cc45bb768374e04ece8, type: 3}
+      <StrafeRight>k__BackingField: {fileID: 3094330708855449807, guid: ec628aa279e34cc45bb768374e04ece8, type: 3}
+      <MoveSpeedData>k__BackingField:
+        <IdleSpeed>k__BackingField: 0
+        <ForwardSpeed>k__BackingField: 0
+        <BackwardSpeed>k__BackingField: 0
+        <StrafeLeftSpeed>k__BackingField: 0
+        <StrafeRightSpeed>k__BackingField: 0
+        <YSpeed>k__BackingField: 0
+      <FrameRanges>k__BackingField: []
+    - <Locomotion>k__BackingField: 12
+      <Direction>k__BackingField: 0
+      <Idle>k__BackingField: {fileID: 3094330708855449807, guid: 00972592459908a4787c36c051ccf6c5, type: 3}
+      <MoveForward>k__BackingField: {fileID: 3094330708855449807, guid: 00972592459908a4787c36c051ccf6c5, type: 3}
+      <MoveBackward>k__BackingField: {fileID: 3094330708855449807, guid: 00972592459908a4787c36c051ccf6c5, type: 3}
+      <StrafeLeft>k__BackingField: {fileID: 3094330708855449807, guid: 00972592459908a4787c36c051ccf6c5, type: 3}
+      <StrafeRight>k__BackingField: {fileID: 3094330708855449807, guid: 00972592459908a4787c36c051ccf6c5, type: 3}
+      <MoveSpeedData>k__BackingField:
+        <IdleSpeed>k__BackingField: 0
+        <ForwardSpeed>k__BackingField: 0
+        <BackwardSpeed>k__BackingField: 0
+        <StrafeLeftSpeed>k__BackingField: 0
+        <StrafeRightSpeed>k__BackingField: 0
+        <YSpeed>k__BackingField: 0
+      <FrameRanges>k__BackingField: []
     defaultLocomotion: 0

@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: ZombieF
   m_EditorClassIdentifier: Assembly-CSharp::CharacterData
   <Name>k__BackingField: Zombie Female
-  <CurrentWeapon>k__BackingField: {fileID: 11400000, guid: 4f8c5080d6bbc6843a2b95a2c45031d7, type: 2}
+  <CurrentWeapon>k__BackingField: {fileID: 0}
   <Skin>k__BackingField: {fileID: 11400000, guid: b7a24ce82ce58e34fbbfd06cd29357b3, type: 2}

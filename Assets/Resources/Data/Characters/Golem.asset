@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Golem
   m_EditorClassIdentifier: Assembly-CSharp::CharacterData
   <Name>k__BackingField: Golem
-  <CurrentWeapon>k__BackingField: {fileID: 11400000, guid: 4f8c5080d6bbc6843a2b95a2c45031d7, type: 2}
+  <CurrentWeapon>k__BackingField: {fileID: 0}
   <Skin>k__BackingField: {fileID: 11400000, guid: 5d7c089eae8582a47bd38df290613a70, type: 2}
