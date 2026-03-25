@@ -38,11 +38,15 @@ public class Interactable : MonoBehaviour, IInteractable
     private readonly HashSet<CharacterCore> _justExitedDict = new();
     private readonly Dictionary<CharacterCore, InteractionState> _lastAnimationStateDict = new();
     private readonly Dictionary<CharacterCore, float> _interactionTimerDict = new();
+    
+    public IDamageable Damageable { get; set; }
 
     private void Start()
     {
         EnterInteractEvent = InteractEnterEventField.ToFrameEventConfig();
         ExitInteractEvent = InteractExitEventField.ToFrameEventConfig();
+        
+       Damageable ??= GetComponent<IDamageable>();
     }
 
     public void ResetInteraction()
@@ -64,13 +68,13 @@ public class Interactable : MonoBehaviour, IInteractable
         }
     }
 
-    private bool CheckConditions(CharacterCore character)
+    private bool CheckConditions(CharacterCore character, Interactable interactable)
     {
         if (InteractConditions == null || InteractConditions.Length == 0) return true;
 
         foreach (var con in InteractConditions)
         {
-            if (!con.Check(character)) return false;
+            if (!con.Check(character, interactable)) return false;
         }
         
         return true;
@@ -109,7 +113,7 @@ public class Interactable : MonoBehaviour, IInteractable
 
         foreach (var character in _charactersInZone)
         {
-            ProcessCharacterInteraction(character);
+            ProcessCharacterInteraction(character, this);
         }
 
         _justExitedDict.Clear();
@@ -117,7 +121,7 @@ public class Interactable : MonoBehaviour, IInteractable
 
     #region Interaction Logic
 
-    private void ProcessCharacterInteraction(CharacterCore character)
+    private void ProcessCharacterInteraction(CharacterCore character, Interactable interactable)
     {
         if (IsBlockedByOccupancy(character))
             return;
@@ -149,7 +153,7 @@ public class Interactable : MonoBehaviour, IInteractable
         {
             if (currentState == InteractionState.None 
                 && !_justExitedDict.Contains(character)
-                && CheckConditions(character))
+                && CheckConditions(character, interactable))
             {
                 Interact(character);
             }
@@ -158,8 +162,7 @@ public class Interactable : MonoBehaviour, IInteractable
                 ExitInteract(character);
             }
         }
-
-        // Обновляем таймер если персонаж в состоянии Idle
+        
         if (Timer.EnableTimer && currentState == InteractionState.Idle)
         {
             UpdateInteractionTimer(character);
