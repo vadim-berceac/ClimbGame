@@ -336,6 +336,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b1c6debe02314b94d97dd01aca10e31b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AdvancedCharacterController
+  <HasPick>k__BackingField: 0
+  <HasLumberAxe>k__BackingField: 0
   mode: 1
   controllerData:
     <RotationSpeed>k__BackingField: 120
@@ -343,7 +345,7 @@ MonoBehaviour:
     <GroundCheckDistance>k__BackingField: 0.15
     <GroundMask>k__BackingField:
       serializedVersion: 2
-      m_Bits: 1073741825
+      m_Bits: 1610612737
     <SlopeForce>k__BackingField: 20
     <EnableClimbing>k__BackingField: 1
     <ClimbSpeedMultipler>k__BackingField: 0.6
