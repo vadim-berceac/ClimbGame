@@ -17,6 +17,8 @@ public class CharacterSelector : MonoBehaviour
    private float _targetYaw;
    private float _targetPitch;
    
+   public CharacterCore SelectedCharacter => (CharacterCore)_selectedBrain.CharacterCore ?? null;
+   
    public static Action<AIInput> OnCharacterSelected { get; set; }
 
    [Inject]

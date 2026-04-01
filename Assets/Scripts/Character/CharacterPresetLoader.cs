@@ -5,6 +5,7 @@ public class CharacterPresetLoader : MonoBehaviour
 {
     [SerializeField] private CharacterData characterData;
 
+    private DiContainer _container;
     private GameObject _currentSkin;
     
     private Animator _animator;
@@ -12,9 +13,13 @@ public class CharacterPresetLoader : MonoBehaviour
     private AnimatedModelTag _animatedModelTag;
     private CharacterEventsContainer _characterEventsContainer;
     private Inventory _inventory;
+    
+    [Inject]
+    private IInstantiator _instantiator;
 
     [Inject]
     private void Construct(
+        DiContainer diContainer,
         Animator animator,
         CharacterSlots characterSlots,
         AnimatedModelTag animatedModelTag,
@@ -23,6 +28,7 @@ public class CharacterPresetLoader : MonoBehaviour
         Inventory inventory
         )
     {
+        _container = diContainer;
         _animator = animator;
         _characterSlots = characterSlots;
         _animatedModelTag = animatedModelTag;
@@ -40,6 +46,7 @@ public class CharacterPresetLoader : MonoBehaviour
         SetSize(data.Skin);
         SetFootStepsVFX(data.Skin);
         SetName(data);
+        CreateNamePlate(data);
     }
 
     private void InitializeItems(EquippedItem item)
@@ -107,5 +114,16 @@ public class CharacterPresetLoader : MonoBehaviour
     private void SetName(CharacterData data)
     {
         gameObject.name = data.Name;
+    }
+
+    private void CreateNamePlate(CharacterData data)
+    {
+        if(data.Skin.NamePlatePrefab == null) return;
+    
+        var namePlateObj = _container.InstantiatePrefab(data.Skin.NamePlatePrefab, transform);
+        var namePlate = namePlateObj.GetComponent<Nameplate>();
+    
+        namePlate.SetName(data.Name);
+        namePlate.SetOffset(data.Skin.NamePlateOffset);
     }
 }

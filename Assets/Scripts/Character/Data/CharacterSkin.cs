@@ -13,10 +13,13 @@ public class CharacterSkin : ScriptableObject
     [field: SerializeField] public Vector3 SkinPositionOffset { get; private set; }
     
     [field: Header("Character FootSteps")]
-    
     [field: SerializeField] public GameObject StepVfxPrefab { get; private set; }
     [field: SerializeField] public StepSetup LFoot { get; private set; }
     [field: SerializeField] public StepSetup RFoot { get; private set; }
+    
+    [field: Header("NamePlate Settings")]
+    [field: SerializeField] public GameObject NamePlatePrefab { get; private set; }
+    [field: SerializeField] public Vector3 NamePlateOffset { get; private set; }
 }
 
 [Serializable]

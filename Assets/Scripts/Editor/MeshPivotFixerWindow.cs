@@ -1,7 +1,9 @@
-using UnityEditor;
 using UnityEngine;
+using UnityEditor;
 
-public class MeshPivotFixerWindow : EditorWindow
+namespace UnityEditor
+{
+    public class MeshPivotFixerWindow : EditorWindow
 {
     private GameObject targetObject;
     private Vector3 customOffset = Vector3.zero;
@@ -299,4 +301,5 @@ public static class MeshPivotFixer
         
         return mesh?.bounds.center ?? Vector3.zero;
     }
+}
 }

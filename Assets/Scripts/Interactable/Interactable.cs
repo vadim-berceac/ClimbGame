@@ -3,6 +3,7 @@ using UnityEngine.Events;
 using System.Collections.Generic;
 using System.Linq;
 using DG.Tweening;
+using Zenject;
 
 public interface IInteractable
 {
@@ -12,6 +13,7 @@ public interface IInteractable
 
 public class Interactable : MonoBehaviour, IInteractable
 {
+    [field: SerializeField] public NamePlateSettings NamePlateSettings { get; set; }
     [field: SerializeField] public InteractCondition[] InteractConditions { get; set; }
     [field: SerializeField] public RotationSettings Rotation { get; set; }
     [field: SerializeField] public MoveSettings Move { get; set; }
@@ -39,7 +41,18 @@ public class Interactable : MonoBehaviour, IInteractable
     private readonly Dictionary<CharacterCore, InteractionState> _lastAnimationStateDict = new();
     private readonly Dictionary<CharacterCore, float> _interactionTimerDict = new();
     
-    public IDamageable Damageable { get; set; }
+    private CharacterSelector CharacterSelector { get; set; }
+    
+    public IDamageable Damageable { get; private set; }
+
+    [Inject]
+    private void Construct(
+        CharacterSelector characterSelector,
+        TextDatabase textDatabase)
+    {
+        CharacterSelector = characterSelector;
+        NamePlateSettings.Construct(textDatabase);
+    }
 
     private void Start()
     {
@@ -88,6 +101,11 @@ public class Interactable : MonoBehaviour, IInteractable
             _stateDict[character] = InteractionState.None;
             _lastAnimationStateDict[character] = InteractionState.None;
             _interactionTimerDict[character] = 0f;
+
+            if (character == CharacterSelector.SelectedCharacter)
+            {
+                NamePlateSettings.EnableNamePlate(true);
+            }
         }
     }
 
@@ -103,6 +121,11 @@ public class Interactable : MonoBehaviour, IInteractable
             if (OccupyingCharacter == character)
             {
                 OccupyingCharacter = null;
+            }
+            
+            if (character == CharacterSelector.SelectedCharacter)
+            {
+                NamePlateSettings.EnableNamePlate(false);
             }
         }
     }
@@ -178,8 +201,7 @@ public class Interactable : MonoBehaviour, IInteractable
 
         remainingTime -= Time.deltaTime;
         _interactionTimerDict[character] = remainingTime;
-
-        // Если таймер истек, выходим из взаимодействия
+        
         if (remainingTime <= 0f)
         {
             ExitInteract(character);
@@ -192,6 +214,9 @@ public class Interactable : MonoBehaviour, IInteractable
         SetState(character, InteractionState.Entering);
         MoveTo(character);
         Rotate(character);
+        
+        if(AllowMultipleInteractions) return;
+        NamePlateSettings.EnableNamePlate(false);
     }
 
     private void Rotate(CharacterCore character)
@@ -233,6 +258,9 @@ public class Interactable : MonoBehaviour, IInteractable
     {
         OccupyingCharacter = character;
         SetState(character, InteractionState.Exiting);
+        
+        if(AllowMultipleInteractions) return;
+        NamePlateSettings.EnableNamePlate(true);
     }
 
     private void SyncAnimationWithState(CharacterCore character)
@@ -368,4 +396,26 @@ public struct TimerSettings
 {
     [field: SerializeField] public bool EnableTimer { get; set; }
     [field: SerializeField] public float InteractionDuration { get; set; }
+}
+
+[System.Serializable]
+public struct NamePlateSettings
+{
+    [field: SerializeField] public Nameplate Nameplate { get; set; }
+    [field: SerializeField] public string TextAlias { get; set; }
+    [field: SerializeField] public Vector3 Offset { get; set; }
+
+    public void Construct(TextDatabase database)
+    {
+        if(Nameplate == null) return;
+        Nameplate.SetName(database.Get(TextAlias));
+        Nameplate.SetOffset(Offset);
+        Nameplate.SetVisible(false);
+    }
+
+    public void EnableNamePlate(bool enable)
+    {
+        if(Nameplate == null) return;
+        Nameplate.SetVisible(enable);
+    }
 }

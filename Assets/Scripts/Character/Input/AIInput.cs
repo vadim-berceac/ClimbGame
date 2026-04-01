@@ -1,15 +1,16 @@
 
+using UnityEngine.Serialization;
 using Zenject;
 
 public class AIInput : MonoInputSource
 {
-    private CoreController _characterCore;
+    public CoreController CharacterCore { get; private set; }
     private CharacterSelector _characterSelector;
 
     [Inject]
     private void Construct(CoreController characterCore, CharacterSelector characterSelector)
     {
-        _characterCore = characterCore;
+        CharacterCore = characterCore;
         _characterSelector = characterSelector;
         
         _characterSelector.Connect(this);
@@ -18,13 +19,13 @@ public class AIInput : MonoInputSource
     public void EnablePlayerInput()
     {
         DisableAIInput();
-        _characterCore.InputHandler.SetupInput(InputSourceMode.Player);
+        CharacterCore.InputHandler.SetupInput(InputSourceMode.Player);
     }
 
     public void DisablePlayerInput()
     {
         EnableAIInput();
-        _characterCore.InputHandler.SetupInput(InputSourceMode.AI);
+        CharacterCore.InputHandler.SetupInput(InputSourceMode.AI);
     }
 
     private void EnableAIInput()

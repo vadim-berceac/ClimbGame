@@ -5,6 +5,6 @@ public class IsNotDestroyed : InteractCondition
 {
     public override bool Check(CharacterCore character, Interactable interactable)
     {
-        return !interactable.Damageable?.IsDestroyed() ?? true;
+        return !interactable.Damageable?.IsDead ?? true;
     }
 }
