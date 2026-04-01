@@ -14,37 +14,37 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TextDatabase
   entries:
   - <Key>k__BackingField: <bonfire_0>
-    <Text>k__BackingField: 'Bounfire
+    <Text>k__BackingField: '<Bounfire>
 
       [E] to rest'
   - <Key>k__BackingField: <chair_0>
-    <Text>k__BackingField: 'Chair
+    <Text>k__BackingField: '<Chair>
 
       [E] to rest'
   - <Key>k__BackingField: <pillow_0>
-    <Text>k__BackingField: 'Pillow
+    <Text>k__BackingField: '<Pillow>
 
       [E] to rest'
   - <Key>k__BackingField: <goldOre_0>
-    <Text>k__BackingField: 'Gold Ore
+    <Text>k__BackingField: '<Gold Ore>
 
       [E] to mine
 
       (Pickaxe required)'
   - <Key>k__BackingField: <goldOre_1>
-    <Text>k__BackingField: 'Gold Ore
+    <Text>k__BackingField: '<Gold Ore>
 
       [E] to mine
 
       (Pickaxe required)'
   - <Key>k__BackingField: <tree_0>
-    <Text>k__BackingField: 'Tree
+    <Text>k__BackingField: '<Tree>
 
       [E] to chop
 
       (Axe required)'
   - <Key>k__BackingField: <tree_1>
-    <Text>k__BackingField: 'Tree
+    <Text>k__BackingField: '<Tree>
 
       [E] to chop
 

@@ -8,6 +8,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 680488311616043847, guid: 35dcd7645b7a77b41ad9f3742b124c9a, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
     - target: {fileID: 4171257936197995159, guid: 35dcd7645b7a77b41ad9f3742b124c9a, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -48,10 +52,22 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4996181860728634804, guid: 35dcd7645b7a77b41ad9f3742b124c9a, type: 3}
+      propertyPath: m_fontStyle
+      value: 33
+      objectReference: {fileID: 0}
+    - target: {fileID: 4996181860728634804, guid: 35dcd7645b7a77b41ad9f3742b124c9a, type: 3}
+      propertyPath: m_TextStyleHashCode
+      value: 65
+      objectReference: {fileID: 0}
     - target: {fileID: 7549441351515685105, guid: 35dcd7645b7a77b41ad9f3742b124c9a, type: 3}
       propertyPath: m_Name
       value: InteractablePlate
       objectReference: {fileID: 0}
+    - target: {fileID: 7764004602556400118, guid: 35dcd7645b7a77b41ad9f3742b124c9a, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
     - target: {fileID: 8429575195540334496, guid: 35dcd7645b7a77b41ad9f3742b124c9a, type: 3}
       propertyPath: showHpBar
       value: 0

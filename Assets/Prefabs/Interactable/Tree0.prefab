@@ -52,7 +52,7 @@ MonoBehaviour:
   <NamePlateSettings>k__BackingField:
     <Nameplate>k__BackingField: {fileID: 4555835279915012663}
     <TextAlias>k__BackingField: <tree_0>
-    <Offset>k__BackingField: {x: 0, y: 1.5, z: 0.5}
+    <Offset>k__BackingField: {x: 0, y: 1.5, z: 0}
   <InteractConditions>k__BackingField:
   - {fileID: 11400000, guid: 93a004c70e62ee940a8b202563b5e955, type: 2}
   <Rotation>k__BackingField:
