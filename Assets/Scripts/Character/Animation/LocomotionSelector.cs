@@ -51,4 +51,9 @@ public class LocomotionSelector
     {
         _currentInteractLocomotion = locomotion;
     }
+
+    public void SetInteractLocomotion(LocomotionConfigs locomotionConfigs)
+    {
+        
+    }
 }

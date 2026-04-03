@@ -244,7 +244,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9972154d9f370a4b8f6d37d234d3770, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SitChair
-  sittingLocomotion: 8
+  interactLocomotion: 8
 --- !u!65 &7364127630140695911
 BoxCollider:
   m_ObjectHideFlags: 0

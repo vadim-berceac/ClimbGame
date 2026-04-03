@@ -3374,6 +3374,30 @@ PrefabInstance:
       propertyPath: m_Name
       value: Pillow
       objectReference: {fileID: 0}
+    - target: {fileID: 4648288670742116969, guid: cd24cdfe04b1d60489769e6ae2a9d382, type: 3}
+      propertyPath: locomotionConfig.<Idle>k__BackingField
+      value: 
+      objectReference: {fileID: 3094330708855449807, guid: 00972592459908a4787c36c051ccf6c5, type: 3}
+    - target: {fileID: 4648288670742116969, guid: cd24cdfe04b1d60489769e6ae2a9d382, type: 3}
+      propertyPath: locomotionConfig.<Locomotion>k__BackingField
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 4648288670742116969, guid: cd24cdfe04b1d60489769e6ae2a9d382, type: 3}
+      propertyPath: locomotionConfig.<StrafeLeft>k__BackingField
+      value: 
+      objectReference: {fileID: 3094330708855449807, guid: 00972592459908a4787c36c051ccf6c5, type: 3}
+    - target: {fileID: 4648288670742116969, guid: cd24cdfe04b1d60489769e6ae2a9d382, type: 3}
+      propertyPath: locomotionConfig.<MoveForward>k__BackingField
+      value: 
+      objectReference: {fileID: 3094330708855449807, guid: 00972592459908a4787c36c051ccf6c5, type: 3}
+    - target: {fileID: 4648288670742116969, guid: cd24cdfe04b1d60489769e6ae2a9d382, type: 3}
+      propertyPath: locomotionConfig.<StrafeRight>k__BackingField
+      value: 
+      objectReference: {fileID: 3094330708855449807, guid: 00972592459908a4787c36c051ccf6c5, type: 3}
+    - target: {fileID: 4648288670742116969, guid: cd24cdfe04b1d60489769e6ae2a9d382, type: 3}
+      propertyPath: locomotionConfig.<MoveBackward>k__BackingField
+      value: 
+      objectReference: {fileID: 3094330708855449807, guid: 00972592459908a4787c36c051ccf6c5, type: 3}
     - target: {fileID: 6457894291261115964, guid: cd24cdfe04b1d60489769e6ae2a9d382, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0

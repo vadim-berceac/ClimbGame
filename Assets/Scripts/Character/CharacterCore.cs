@@ -102,6 +102,12 @@ public class CharacterCore : CoreController
         Controller.Interact(value);
         _locomotionSelector.SetInteractLocomotion(locomotionType);
     }
+    
+    public void Interact(bool value, LocomotionConfigs locomotionConfigs)
+    {
+        Controller.Interact(value);
+        _locomotionSelector.SetInteractLocomotion(locomotionConfigs);
+    }
 
     private void OnDestroy()
     {
