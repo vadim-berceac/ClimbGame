@@ -1,3 +1,4 @@
+using Unity.Netcode;
 using UnityEngine;
 using Zenject;
 
@@ -22,6 +23,7 @@ public class CharacterCore : CoreController
     public bool IsInteracting => PlayablesAnimatorController.OneShotIsActive();
     public LocomotionType CurrentLocomotionType => _locomotionSelector.GetLocomotionType();
     public CharacterSlots CharacterSlots {get; private set;}
+    private float _debugTimer;
 
     [Inject]
     private void Construct(
@@ -108,9 +110,17 @@ public class CharacterCore : CoreController
         Controller.Interact(value);
         _locomotionSelector.SetInteractLocomotion(locomotionConfigs);
     }
-
-    private void OnDestroy()
+    
+    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
+    public override void RequestOwnershipServerRpc(ulong requestingClientId)
     {
+        var netObj = GetComponent<NetworkObject>();
+        netObj.ChangeOwnership(requestingClientId);
+    }
+
+    public override void OnDestroy()
+    {
+        base.OnDestroy();
         PlayablesAnimatorController.Destroy();
     }
 }

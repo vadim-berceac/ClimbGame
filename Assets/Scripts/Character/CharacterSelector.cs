@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Unity.Burst;
 using Unity.Cinemachine;
+using Unity.Netcode;
 using UnityEngine;
 using Zenject;
 
@@ -55,7 +56,6 @@ public class CharacterSelector : MonoBehaviour
       );
    }
 
-   
    private static float ClampAngle(float lfAngle, float lfMin, float lfMax)
    {
       if (lfAngle < -360f) lfAngle += 360f;
@@ -100,11 +100,16 @@ public class CharacterSelector : MonoBehaviour
 
       DeselectCurrentBrain();
 
-      CameraSettings.VirtualCamera.Follow = _inputBrainModules[characterIndex].transform;
-      _targetYaw = _inputBrainModules[characterIndex].transform.rotation.eulerAngles.y;
-      _inputBrainModules[characterIndex].EnablePlayerInput();
-      _selectedBrain = _inputBrainModules[characterIndex];
-      
+      var selectedBrain = _inputBrainModules[characterIndex];
+      var characterCore = selectedBrain.CharacterCore;
+    
+      characterCore.RequestOwnershipServerRpc(NetworkManager.Singleton.LocalClientId);
+    
+      CameraSettings.VirtualCamera.Follow = selectedBrain.transform;
+      _targetYaw = selectedBrain.transform.rotation.eulerAngles.y;
+      selectedBrain.EnablePlayerInput();
+      _selectedBrain = selectedBrain;
+    
       OnCharacterSelected?.Invoke(_selectedBrain);
    }
 
@@ -114,7 +119,11 @@ public class CharacterSelector : MonoBehaviour
       {
          return;
       }
-      
+
+      var characterCore = _selectedBrain.CharacterCore;
+    
+      characterCore.RequestOwnershipServerRpc(NetworkManager.ServerClientId);
+
       CameraSettings.VirtualCamera.Follow = null;
       _selectedBrain.DisablePlayerInput();
       _selectedBrain = null;
