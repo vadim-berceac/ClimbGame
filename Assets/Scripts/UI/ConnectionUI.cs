@@ -1,7 +1,3 @@
-using System.Net;
-using System.Net.Sockets;
-using Unity.Netcode;
-using Unity.Netcode.Transports.UTP;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -19,20 +15,15 @@ public class ConnectionUI : MonoBehaviour
     private void OnStartHost()
     {
         var port = ushort.Parse(settings.PortField.text);
-        Debug.Log($"[HOST] Запуск хоста на порте {port}");
 
-        try
-        {
-            var transport = NetworkManager.Singleton.GetComponent<UnityTransport>();
-            transport.SetConnectionData("0.0.0.0", (ushort)port);
-            NetworkManager.Singleton.StartHost();
-            var ip = GetLocalIPv4();
-            Debug.Log($"[HOST] Хост запущен {ip}");
-        }
-        catch (System.Exception ex)
-        {
-            Debug.LogError($"[HOST] Ошибка: {ex.Message}");
-        }
+        ConnectionService.Connect(new ConnectionData(ConnectionType.Host, null, port));
+    }
+    
+    private void OnStartServer()
+    {
+        var port = ushort.Parse(settings.PortField.text);
+
+        ConnectionService.Connect(new ConnectionData(ConnectionType.Server, null, port));
     }
 
     private void OnStartClient()
@@ -40,60 +31,7 @@ public class ConnectionUI : MonoBehaviour
         var ipAddress = settings.IpField.text;
         var port = ushort.Parse(settings.PortField.text);
     
-        Debug.Log($"[CLIENT] Попытка подключиться к: {ipAddress}:{port}");
-    
-        if (string.IsNullOrEmpty(ipAddress))
-        {
-            Debug.LogError("[CLIENT] IP пусто!");
-            return;
-        }
-
-        try
-        {
-            var transport = NetworkManager.Singleton.GetComponent<UnityTransport>();
-            Debug.Log($"[CLIENT] UnityTransport найден: {transport != null}");
-        
-            transport.SetConnectionData(ipAddress, (ushort)port);
-            Debug.Log("[CLIENT] SetConnectionData выполнен");
-        
-            NetworkManager.Singleton.StartClient();
-            Debug.Log("[CLIENT] StartClient вызван");
-        }
-        catch (System.Exception ex)
-        {
-            Debug.LogError($"[CLIENT] Ошибка: {ex.Message}");
-        }
-    }
-
-    private void OnStartServer()
-    {
-        var port = ushort.Parse(settings.PortField.text);
-        Debug.Log($"[SERVER] Запуск сервера на порте {port}");
-        try
-        {
-            var transport = NetworkManager.Singleton.GetComponent<UnityTransport>();
-            transport.SetConnectionData("0.0.0.0", (ushort)port);
-            NetworkManager.Singleton.StartServer();
-            var ip = GetLocalIPv4();
-            Debug.Log($"[SERVER] Сервер запущен {ip}");
-        }
-        catch (System.Exception ex)
-        {
-            Debug.LogError($"[SERVER] Ошибка: {ex.Message}");
-        }
-    }
-
-    private static string GetLocalIPv4()
-    {
-        var host = Dns.GetHostEntry(Dns.GetHostName());
-        foreach (var ip in host.AddressList)
-        {
-            if (ip.AddressFamily == AddressFamily.InterNetwork)
-            {
-                return ip.ToString();
-            }
-        }
-        return "No local IPv4 address found";
+        ConnectionService.Connect(new ConnectionData(ConnectionType.Client, ipAddress, port));
     }
 
     private void OnDisable()
