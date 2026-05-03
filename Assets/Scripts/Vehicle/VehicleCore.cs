@@ -76,8 +76,9 @@ public class VehicleCore : CoreController
         PlayablesAnimatorController.ConnectFootSteps(_soundContainer.GetAudioSet(locomotionConfig.Locomotion));
     }
 
-    private void OnDestroy()
+    public override void OnDestroy()
     {
+        base.OnDestroy();
         PlayablesAnimatorController.Destroy();
     }
 }

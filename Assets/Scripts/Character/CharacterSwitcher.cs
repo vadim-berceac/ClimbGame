@@ -19,25 +19,30 @@ public class CharacterSwitcher : MonoBehaviour
       _uiInput.OnCharacterSwitch += SelectNextCharacter;
    }
 
+   private int _currentIndex = 0;
+
    private void SelectNextCharacter()
    {
       var list = _characterSelector.GetInputBrainModules();
-      if (list == null || !list.Any())
+      if (list == null || list.Count == 0) return;
+
+      var filteredList = list
+         .Where(item => item != null && item.CurrentInputSourceMode != InputSourceMode.Player)
+         .ToList();
+
+      if (filteredList.Count == 0)
       {
-         return; 
+         Debug.Log("Нет доступных AI персонажей");
+         return;
       }
 
-      var selected = _characterSelector.GetSelectedBrain();
-      var nextItem = list.SkipWhile(item => item != selected).Skip(1).FirstOrDefault();
-      if (nextItem == null)
-      {
-         nextItem = list.FirstOrDefault(); 
-      }
+      _currentIndex = (_currentIndex + 1) % filteredList.Count;
+      var nextBrain = filteredList[_currentIndex];
+      var originalIndex = list.IndexOf(nextBrain);
 
-      var indexOfNextItem = list.IndexOf(nextItem);
-      if (indexOfNextItem >= 0)
+      if (originalIndex >= 0)
       {
-         _characterSelector.SelectByIndex(indexOfNextItem);
+         _characterSelector.SelectByIndex(originalIndex);
       }
    }
 

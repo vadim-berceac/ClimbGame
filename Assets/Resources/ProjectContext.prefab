@@ -75,3 +75,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ProjectInstaller
   textDatabase: {fileID: 11400000, guid: d3067f4d0649965488e98bcb2ece3504, type: 2}
+  networkManagerPrefab: {fileID: 6928248025080094934, guid: 2044f9d556859984d9830d6f2a16dd64, type: 3}

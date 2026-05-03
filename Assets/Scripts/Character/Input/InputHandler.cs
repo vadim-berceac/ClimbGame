@@ -4,15 +4,16 @@ public class InputHandler
 {
     private readonly IInputSource _playerSource;
     private readonly IInputSource _aiSource;
-    public Vector2 MoveInput => _currentInputSource?.OnMove ?? Vector2.zero;
-    public Vector2 LookInput => _currentInputSource?.OnLook ?? Vector2.zero;
-    public Vector3 Rotation => _currentInputSource?.Rotation ?? Vector3.zero;
-    public bool JumpPressed => _currentInputSource?.OnJump ?? false;
-    public bool RunPressed => _currentInputSource?.OnRun ?? false;
-    public bool CrouchPressed => _currentInputSource?.OnCrouch ?? false;
-    public bool InteractPressed => _currentInputSource?.OnInteract ?? false;
+    public Vector2 MoveInput => CurrentInputSource?.OnMove ?? Vector2.zero;
+    public Vector2 LookInput => CurrentInputSource?.OnLook ?? Vector2.zero;
+    public Vector3 Rotation => CurrentInputSource?.Rotation ?? Vector3.zero;
+    public bool JumpPressed => CurrentInputSource?.OnJump ?? false;
+    public bool RunPressed => CurrentInputSource?.OnRun ?? false;
+    public bool CrouchPressed => CurrentInputSource?.OnCrouch ?? false;
+    public bool InteractPressed => CurrentInputSource?.OnInteract ?? false;
     
-    private IInputSource _currentInputSource;
+    public IInputSource CurrentInputSource { get; private set; }
+    public InputSourceMode CurrentInputSourceMode { get; private set; }
     
     public InputHandler(IInputSource playerSource, IInputSource aiSource)
     {
@@ -25,19 +26,23 @@ public class InputHandler
         switch (mode)
         {
             case InputSourceMode.None:
-                _currentInputSource = null;
+                CurrentInputSource = null;
+                CurrentInputSourceMode = InputSourceMode.None;
                 break;
             
             case InputSourceMode.AI:
-                _currentInputSource = _aiSource;
+                CurrentInputSource = _aiSource;
+                CurrentInputSourceMode = InputSourceMode.AI;
                 break;
             
             case InputSourceMode.Player:
-                _currentInputSource = _playerSource;
+                CurrentInputSource = _playerSource;
+                CurrentInputSourceMode = InputSourceMode.Player;
                 break;
             
             case InputSourceMode.Vehicle:
-                _currentInputSource = null;
+                CurrentInputSource = null;
+                CurrentInputSourceMode = InputSourceMode.Vehicle;
                 break;
         }
     }

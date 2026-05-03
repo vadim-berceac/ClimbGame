@@ -1,11 +1,11 @@
-
-using UnityEngine.Serialization;
 using Zenject;
 
 public class AIInput : MonoInputSource
 {
     public CoreController CharacterCore { get; private set; }
     private CharacterSelector _characterSelector;
+    
+    public InputSourceMode CurrentInputSourceMode => CharacterCore.InputHandler.CurrentInputSourceMode;
 
     [Inject]
     private void Construct(CoreController characterCore, CharacterSelector characterSelector)
