@@ -8,9 +8,12 @@ using Zenject;
 
 public enum ConnectionType
 {
-    Host,
-    Server,
-    Client
+    LocalHost,
+    LocalServer,
+    LocalClient,
+    WebHost,
+    WebServer,
+    WebClient,
 }
 
 public readonly struct ConnectionData
@@ -52,16 +55,16 @@ public static class ConnectionService
         
         switch (connectionData.Type)
         {
-            case ConnectionType.Host:
-                StartHost(connectionData);
+            case ConnectionType.LocalHost:
+                StartLocalHost(connectionData);
                 break;
             
-            case ConnectionType.Server:
-                StartServer(connectionData);
+            case ConnectionType.LocalServer:
+                StartLocalServer(connectionData);
                 break;
             
-            case ConnectionType.Client:
-                StartClient(connectionData);
+            case ConnectionType.LocalClient:
+                StartLocalClient(connectionData);
                 break;
         }
         
@@ -69,21 +72,21 @@ public static class ConnectionService
         Debug.Log(CurrentConnection.ToString());
     }
 
-    private static void StartHost(ConnectionData connectionData)
+    private static void StartLocalHost(ConnectionData connectionData)
     {
         CurrentConnection = new ConnectionData(connectionData.Type, GetLocalIPv4ForDisplay(), connectionData.Port);
         
         StartTransport(DefaultIp, CurrentConnection.Port, NetworkManager.Singleton.StartHost);
     }
 
-    private static void StartServer(ConnectionData connectionData)
+    private static void StartLocalServer(ConnectionData connectionData)
     {
         CurrentConnection = new ConnectionData(connectionData.Type, GetLocalIPv4ForDisplay(), connectionData.Port);
         
         StartTransport(DefaultIp, CurrentConnection.Port, NetworkManager.Singleton.StartServer);
     }
 
-    private static void StartClient(ConnectionData connectionData)
+    private static void StartLocalClient(ConnectionData connectionData)
     {
         CurrentConnection = connectionData;
         

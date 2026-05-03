@@ -14,19 +14,19 @@ public class ConnectionUI : MonoBehaviour
 
     private void OnStartHost()
     {
-        ConnectionService.Connect(new ConnectionData(ConnectionType.Host,
+        ConnectionService.Connect(new ConnectionData(ConnectionType.LocalHost,
             null, GetPort(settings.PortField.text)));
     }
     
     private void OnStartServer()
     {
-        ConnectionService.Connect(new ConnectionData(ConnectionType.Server,
+        ConnectionService.Connect(new ConnectionData(ConnectionType.LocalServer,
             null, GetPort(settings.PortField.text)));
     }
 
     private void OnStartClient()
     {
-        ConnectionService.Connect(new ConnectionData(ConnectionType.Client,
+        ConnectionService.Connect(new ConnectionData(ConnectionType.LocalClient,
             settings.IpField.text, GetPort(settings.PortField.text)));
     }
 

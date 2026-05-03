@@ -1455,7 +1455,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Start Server
+  m_text: Start Local Server
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1898,7 +1898,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Start Client
+  m_text: Start Local Client
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -2771,7 +2771,7 @@ GameObject:
   - component: {fileID: 5020455373261429083}
   - component: {fileID: 8459111824628443660}
   m_Layer: 0
-  m_Name: StartHost
+  m_Name: StartLocalHost
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2892,7 +2892,7 @@ GameObject:
   - component: {fileID: 7067072703954890975}
   - component: {fileID: 7005514204103762468}
   m_Layer: 0
-  m_Name: StartServer
+  m_Name: StartLocalServer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3411,7 +3411,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Start Host
+  m_text: Start Local Host
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -3776,7 +3776,7 @@ GameObject:
   - component: {fileID: 3123643573429282752}
   - component: {fileID: 1559256363103850383}
   m_Layer: 0
-  m_Name: StartClient
+  m_Name: StartLocalClient
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
