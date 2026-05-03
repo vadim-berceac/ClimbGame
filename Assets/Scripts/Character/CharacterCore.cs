@@ -18,13 +18,18 @@ public class CharacterCore : CoreController
     private MoveSpeedData _moveData;
     private Vector3 _clampedInput;
     private float _currentSpeed;
-    
-    private readonly NetworkVariable<InputSourceMode> _inputSourceMode = new (InputSourceMode.AI);
+   
+    private readonly NetworkVariable<InputSourceMode> _inputSourceMode = new(InputSourceMode.AI);
+   
+    private readonly NetworkVariable<Vector3> _networkVelocity = 
+        new (Vector3.zero, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
+   
+    private readonly NetworkVariable<LocomotionType> _networkLocomotionType = 
+        new (LocomotionType.Walk0, NetworkVariableReadPermission.Everyone, NetworkVariableWritePermission.Owner);
     
     public bool IsInteracting => PlayablesAnimatorController.OneShotIsActive();
     public LocomotionType CurrentLocomotionType => _locomotionSelector.GetLocomotionType();
     public CharacterSlots CharacterSlots {get; private set;}
-    private float _debugTimer;
 
     [Inject]
     private void Construct(
@@ -61,13 +66,24 @@ public class CharacterCore : CoreController
         base.OnNetworkSpawn();
        
         InputHandler.SetupInput(_inputSourceMode.Value);
-      
+        
         _inputSourceMode.OnValueChanged += OnInputSourceModeChanged;
+        _networkLocomotionType.OnValueChanged += OnNetworkLocomotionTypeChanged;
     }
 
     private void OnInputSourceModeChanged(InputSourceMode previousValue, InputSourceMode newValue)
     {
         InputHandler.SetupInput(newValue);
+    }
+
+    private void OnNetworkLocomotionTypeChanged(LocomotionType previousValue, LocomotionType newValue)
+    {
+        if (!IsOwner)
+        {
+            _currentLocomotionType = newValue;
+            PlayablesAnimatorController.SetLocomotion(newValue);
+            PlayablesAnimatorController.ConnectFootSteps(_soundContainer.GetAudioSet(newValue));
+        }
     }
 
     public void PlayInteractAnimation(AnimationClip animationClip, FrameEventConfig frameEventConfig)
@@ -78,22 +94,38 @@ public class CharacterCore : CoreController
 
     private void Update()
     {
-        SetLocomotion();
-        
-        if (IsInteracting) return;
-        
-        _moveData = _animationContainer.GetMoveSpeedData(CurrentLocomotionType);
-        _clampedInput = _moveSpeed.GetClampedInput(_moveData);
-        _currentSpeed = _moveSpeed.GetSpeed(_moveData);
-        
-        Controller.JumpAndGravity(InputHandler.JumpPressed, _animationContainer.GetMoveSpeedData(LocomotionType.Jump0).YSpeed);
-        Controller.Move(_clampedInput, _currentSpeed, controllerData.SpeedChangeRate);
-
-        if (InputHandler.Rotation != Vector3.zero)
+        if (IsOwner)
         {
-            Controller.Rotation(InputHandler.Rotation, controllerData.RotationSpeed);
+            var locomotionType = _locomotionSelector.GetLocomotionType();
+            
+            if (locomotionType != _networkLocomotionType.Value && IsSpawned)
+            {
+                _networkLocomotionType.Value = locomotionType;
+                SetLocomotion();
+            }
+            
+            if (!IsInteracting)
+            {
+                _moveData = _animationContainer.GetMoveSpeedData(locomotionType);
+                _clampedInput = _moveSpeed.GetClampedInput(_moveData);
+                _currentSpeed = _moveSpeed.GetSpeed(_moveData);
+                
+                Controller.JumpAndGravity(InputHandler.JumpPressed, _animationContainer.GetMoveSpeedData(LocomotionType.Jump0).YSpeed);
+                Controller.Move(_clampedInput, _currentSpeed, controllerData.SpeedChangeRate);
+
+                if (InputHandler.Rotation != Vector3.zero)
+                {
+                    Controller.Rotation(InputHandler.Rotation, controllerData.RotationSpeed);
+                }
+               
+                if (IsSpawned)
+                {
+                    _networkVelocity.Value = Controller.Velocity;
+                }
+            }
         }
-        PlayablesAnimatorController.UpdateLocomotion(Controller.Velocity);
+        
+        PlayablesAnimatorController.UpdateLocomotion(_networkVelocity.Value);
     }
 
     public override void SetLocomotion(bool isInitialization = false)
@@ -110,12 +142,16 @@ public class CharacterCore : CoreController
 
     public void Interact(bool value, LocomotionType locomotionType)
     {
+        if (!IsOwner) return;
+        
         Controller.Interact(value);
         _locomotionSelector.SetInteractLocomotion(locomotionType);
     }
     
     public void Interact(bool value, LocomotionConfigs locomotionConfigs)
     {
+        if (!IsOwner) return;
+        
         Controller.Interact(value);
         _locomotionSelector.SetInteractLocomotion(locomotionConfigs);
     }
@@ -125,20 +161,20 @@ public class CharacterCore : CoreController
     {
         var netObj = GetComponent<NetworkObject>();
         netObj.ChangeOwnership(requestingClientId);
-       
+        
         _inputSourceMode.Value = mode;
-        InputHandler.SetupInput(_inputSourceMode.Value);
     }
 
     public override void OnNetworkDespawn()
     {
         _inputSourceMode.OnValueChanged -= OnInputSourceModeChanged;
+        _networkLocomotionType.OnValueChanged -= OnNetworkLocomotionTypeChanged;
         base.OnNetworkDespawn();
     }
 
     public override void OnDestroy()
     {
-        base.OnDestroy();
         PlayablesAnimatorController.Destroy();
+        base.OnDestroy();
     }
 }
