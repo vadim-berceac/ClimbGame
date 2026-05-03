@@ -24,15 +24,25 @@ public class CharacterSwitcher : MonoBehaviour
       var list = _characterSelector.GetInputBrainModules();
       if (list == null || !list.Any())
       {
-         return; 
+         return;
       }
 
       var selected = _characterSelector.GetSelectedBrain();
-      var nextItem = list.SkipWhile(item => item != selected).Skip(1).FirstOrDefault();
-      if (nextItem == null)
+    
+      var filteredList = list
+         .Where(item => item.CurrentInputSourceMode != InputSourceMode.Player)
+         .ToList();
+    
+      if (!filteredList.Any())
       {
-         nextItem = list.FirstOrDefault(); 
+         return; 
       }
+
+      var selectedIndex = filteredList.IndexOf(selected);
+    
+      var nextItem = selectedIndex >= 0 && selectedIndex < filteredList.Count - 1
+         ? filteredList[selectedIndex + 1]
+         : filteredList[0];
 
       var indexOfNextItem = list.IndexOf(nextItem);
       if (indexOfNextItem >= 0)

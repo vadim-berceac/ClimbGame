@@ -19,5 +19,5 @@ public abstract class CoreController : NetworkBehaviour , ICoreController
     public abstract void SetLocomotion(bool isInitialization = false);
     
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
-    public virtual void RequestOwnershipServerRpc(ulong requestingClientId){}
+    public virtual void RequestOwnershipServerRpc(ulong requestingClientId, InputSourceMode mode){}
 }

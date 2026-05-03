@@ -6,7 +6,6 @@ public class CharacterCore : CoreController
 {
     [field:SerializeField] public bool HasPick {get; private set;} // для теста
     [field:SerializeField] public bool HasLumberAxe {get; private set;}// для теста
-    [SerializeField] private InputSourceMode                  mode;
     [SerializeField] private AdvancedCharacterControllerData  controllerData;
 
     private CharacterAnimationContainer _animationContainer;  
@@ -19,6 +18,8 @@ public class CharacterCore : CoreController
     private MoveSpeedData _moveData;
     private Vector3 _clampedInput;
     private float _currentSpeed;
+    
+    private readonly NetworkVariable<InputSourceMode> _inputSourceMode = new (InputSourceMode.AI);
     
     public bool IsInteracting => PlayablesAnimatorController.OneShotIsActive();
     public LocomotionType CurrentLocomotionType => _locomotionSelector.GetLocomotionType();
@@ -38,7 +39,6 @@ public class CharacterCore : CoreController
         CharacterSlots                   slots)
     {
         InputHandler = new InputHandler(playerInput, aiInput);
-        InputHandler.SetupInput(mode);
 
         Controller          = new AdvancedCharacterController(controller, controllerData);
         _animationContainer = animationContainer;
@@ -56,15 +56,24 @@ public class CharacterCore : CoreController
         SetLocomotion(true);
     }
 
+    public override void OnNetworkSpawn()
+    {
+        base.OnNetworkSpawn();
+       
+        InputHandler.SetupInput(_inputSourceMode.Value);
+      
+        _inputSourceMode.OnValueChanged += OnInputSourceModeChanged;
+    }
+
+    private void OnInputSourceModeChanged(InputSourceMode previousValue, InputSourceMode newValue)
+    {
+        InputHandler.SetupInput(newValue);
+    }
+
     public void PlayInteractAnimation(AnimationClip animationClip, FrameEventConfig frameEventConfig)
     {
         if (IsInteracting) return;
         PlayablesAnimatorController.PlayOneShotAnimationClip(animationClip, frameEventConfig);
-    }
-
-    private void OnValidate()
-    {
-        InputHandler?.SetupInput(mode);
     }
 
     private void Update()
@@ -112,10 +121,19 @@ public class CharacterCore : CoreController
     }
     
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
-    public override void RequestOwnershipServerRpc(ulong requestingClientId)
+    public override void RequestOwnershipServerRpc(ulong requestingClientId, InputSourceMode mode)
     {
         var netObj = GetComponent<NetworkObject>();
         netObj.ChangeOwnership(requestingClientId);
+       
+        _inputSourceMode.Value = mode;
+        InputHandler.SetupInput(_inputSourceMode.Value);
+    }
+
+    public override void OnNetworkDespawn()
+    {
+        _inputSourceMode.OnValueChanged -= OnInputSourceModeChanged;
+        base.OnNetworkDespawn();
     }
 
     public override void OnDestroy()

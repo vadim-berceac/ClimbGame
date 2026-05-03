@@ -103,7 +103,7 @@ public class CharacterSelector : MonoBehaviour
       var selectedBrain = _inputBrainModules[characterIndex];
       var characterCore = selectedBrain.CharacterCore;
     
-      characterCore.RequestOwnershipServerRpc(NetworkManager.Singleton.LocalClientId);
+      characterCore.RequestOwnershipServerRpc(NetworkManager.Singleton.LocalClientId, InputSourceMode.Player);
     
       CameraSettings.VirtualCamera.Follow = selectedBrain.transform;
       _targetYaw = selectedBrain.transform.rotation.eulerAngles.y;
@@ -122,7 +122,7 @@ public class CharacterSelector : MonoBehaviour
 
       var characterCore = _selectedBrain.CharacterCore;
     
-      characterCore.RequestOwnershipServerRpc(NetworkManager.ServerClientId);
+      characterCore.RequestOwnershipServerRpc(NetworkManager.ServerClientId, InputSourceMode.AI);
 
       CameraSettings.VirtualCamera.Follow = null;
       _selectedBrain.DisablePlayerInput();
