@@ -65,7 +65,7 @@ public static class ConnectionService
                 break;
         }
         
-        ConnectionChanged?.Invoke(connectionData);
+        ConnectionChanged?.Invoke(CurrentConnection);
         Debug.Log(CurrentConnection.ToString());
     }
 
