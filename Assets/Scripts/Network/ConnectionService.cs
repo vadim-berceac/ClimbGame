@@ -4,6 +4,7 @@ using System.Net.Sockets;
 using Unity.Netcode;
 using Unity.Netcode.Transports.UTP;
 using UnityEngine;
+using Zenject;
 
 public enum ConnectionType
 {
@@ -42,6 +43,8 @@ public static class ConnectionService
     public static event Action<ConnectionData> ConnectionChanged;
     
     private const string DefaultIp = "0.0.0.0";
+    
+    [Inject] private static UnityTransport _unityTransport;
 
     public static void Connect(ConnectionData connectionData)
     {

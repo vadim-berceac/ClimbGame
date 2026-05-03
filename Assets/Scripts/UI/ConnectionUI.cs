@@ -14,24 +14,25 @@ public class ConnectionUI : MonoBehaviour
 
     private void OnStartHost()
     {
-        var port = ushort.Parse(settings.PortField.text);
-
-        ConnectionService.Connect(new ConnectionData(ConnectionType.Host, null, port));
+        ConnectionService.Connect(new ConnectionData(ConnectionType.Host,
+            null, GetPort(settings.PortField.text)));
     }
     
     private void OnStartServer()
     {
-        var port = ushort.Parse(settings.PortField.text);
-
-        ConnectionService.Connect(new ConnectionData(ConnectionType.Server, null, port));
+        ConnectionService.Connect(new ConnectionData(ConnectionType.Server,
+            null, GetPort(settings.PortField.text)));
     }
 
     private void OnStartClient()
     {
-        var ipAddress = settings.IpField.text;
-        var port = ushort.Parse(settings.PortField.text);
-    
-        ConnectionService.Connect(new ConnectionData(ConnectionType.Client, ipAddress, port));
+        ConnectionService.Connect(new ConnectionData(ConnectionType.Client,
+            settings.IpField.text, GetPort(settings.PortField.text)));
+    }
+
+    private static ushort GetPort(string port)
+    {
+        return ushort.Parse(port);
     }
 
     private void OnDisable()
