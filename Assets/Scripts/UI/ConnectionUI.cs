@@ -4,6 +4,7 @@ using UnityEngine.UI;
 public class ConnectionUI : MonoBehaviour
 {
     [SerializeField] private ConnectionUISettings settings;
+    [SerializeField] private string firstSceneName;
     
     private void Start()
     {
@@ -14,14 +15,20 @@ public class ConnectionUI : MonoBehaviour
 
     private void OnStartHost()
     {
-        ConnectionService.Connect(new ConnectionData(ConnectionType.LocalHost,
-            null, GetPort(settings.PortField.text)));
+        if (ConnectionService.Connect(new ConnectionData(ConnectionType.LocalHost,
+                null, GetPort(settings.PortField.text))))
+        {
+            ConnectionService.LoadNetworkScene(firstSceneName);
+        }
     }
     
     private void OnStartServer()
     {
-        ConnectionService.Connect(new ConnectionData(ConnectionType.LocalServer,
-            null, GetPort(settings.PortField.text)));
+        if (ConnectionService.Connect(new ConnectionData(ConnectionType.LocalServer,
+                null, GetPort(settings.PortField.text))))
+        {
+            ConnectionService.LoadNetworkScene(firstSceneName);
+        }
     }
 
     private void OnStartClient()
@@ -29,7 +36,7 @@ public class ConnectionUI : MonoBehaviour
         ConnectionService.Connect(new ConnectionData(ConnectionType.LocalClient,
             settings.IpField.text, GetPort(settings.PortField.text)));
     }
-
+    
     private static ushort GetPort(string port)
     {
         return ushort.Parse(port);

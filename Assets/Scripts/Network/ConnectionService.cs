@@ -4,6 +4,7 @@ using System.Net.Sockets;
 using Unity.Netcode;
 using Unity.Netcode.Transports.UTP;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Zenject;
 
 public enum ConnectionType
@@ -49,48 +50,77 @@ public static class ConnectionService
     
     [Inject] private static UnityTransport _unityTransport;
 
-    public static void Connect(ConnectionData connectionData)
+    public static bool Connect(ConnectionData connectionData)
     {
-        if(connectionData.Equals(CurrentConnection)) return;
+        if(connectionData.Equals(CurrentConnection)) return true;
+        var result = false;
         
         switch (connectionData.Type)
         {
             case ConnectionType.LocalHost:
-                StartLocalHost(connectionData);
+                result = StartLocalHost(connectionData);
                 break;
             
             case ConnectionType.LocalServer:
-                StartLocalServer(connectionData);
+                result = StartLocalServer(connectionData);
                 break;
             
             case ConnectionType.LocalClient:
-                StartLocalClient(connectionData);
+                result = StartLocalClient(connectionData);
                 break;
         }
         
         ConnectionChanged?.Invoke(CurrentConnection);
         Debug.Log(CurrentConnection.ToString());
+        return result;
     }
 
-    private static void StartLocalHost(ConnectionData connectionData)
+    public static void LoadNetworkScene(string sceneName)
+    {
+        NetworkManager.Singleton.SceneManager.LoadScene(sceneName, LoadSceneMode.Single);
+    }
+
+    private static bool StartLocalHost(ConnectionData connectionData)
     {
         CurrentConnection = new ConnectionData(connectionData.Type, GetLocalIPv4ForDisplay(), connectionData.Port);
         
-        StartTransport(DefaultIp, CurrentConnection.Port, NetworkManager.Singleton.StartHost);
+        return StartTransport(DefaultIp, CurrentConnection.Port, NetworkManager.Singleton.StartHost);
     }
 
-    private static void StartLocalServer(ConnectionData connectionData)
+    private static bool StartLocalServer(ConnectionData connectionData)
     {
         CurrentConnection = new ConnectionData(connectionData.Type, GetLocalIPv4ForDisplay(), connectionData.Port);
         
-        StartTransport(DefaultIp, CurrentConnection.Port, NetworkManager.Singleton.StartServer);
+        return StartTransport(DefaultIp, CurrentConnection.Port, NetworkManager.Singleton.StartServer);
     }
 
-    private static void StartLocalClient(ConnectionData connectionData)
+    private static bool StartLocalClient(ConnectionData connectionData)
     {
         CurrentConnection = connectionData;
         
-        StartTransport(CurrentConnection.ConnectedTo, CurrentConnection.Port, NetworkManager.Singleton.StartClient);
+        return StartTransport(CurrentConnection.ConnectedTo, CurrentConnection.Port, NetworkManager.Singleton.StartClient);
+    }
+    
+    public static void Disconnect()
+    {
+        if (NetworkManager.Singleton == null || !NetworkManager.Singleton.IsClient && !NetworkManager.Singleton.IsServer)
+        {
+            Debug.LogWarning("NetworkManager is not running. Nothing to disconnect.");
+            ResetCurrentConnection();
+            return;
+        }
+
+        Debug.Log($"Disconnecting... Current mode: {CurrentConnection.Type}");
+
+        NetworkManager.Singleton.Shutdown();
+
+        ResetCurrentConnection();
+    }
+
+    private static void ResetCurrentConnection()
+    {
+        CurrentConnection = default;
+        ConnectionChanged?.Invoke(CurrentConnection);
     }
 
     private static bool StartTransport(string ip, ushort port, Func<bool> startAction)
