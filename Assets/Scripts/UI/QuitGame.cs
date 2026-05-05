@@ -4,6 +4,9 @@ using UnityEngine.UI;
 public class QuitGame : MonoBehaviour
 {
     [field: SerializeField] public Button QuitButton { get; set; }
+    [field: SerializeField] public QuitMode QuitMode { get; set; }
+    [field: SerializeField] public bool BreakConnection { get; set; }
+    [field: SerializeField] public string MenuScene { get; set; }
 
     private void Start()
     {
@@ -17,6 +20,21 @@ public class QuitGame : MonoBehaviour
 
     private void OnQuitClicked()
     {
-        Application.Quit();
+        if (BreakConnection)
+        {
+            ConnectionService.Disconnect();
+        }
+        if (QuitMode == QuitMode.ExitGame)
+        {
+            Application.Quit();
+            return;
+        }
+        ConnectionService.LoadNetworkScene(MenuScene);
     }
+}
+
+public enum QuitMode
+{
+    Menu = 0,
+    ExitGame = 1
 }
