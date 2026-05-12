@@ -13,6 +13,82 @@ MonoBehaviour:
   m_Name: LocomotionConfigsSO_Mining1
   m_EditorClassIdentifier: Assembly-CSharp::LocomotionConfigsSO
   <LocomotionConfigs>k__BackingField:
+    <EnterEventField>k__BackingField:
+      Clip: {fileID: 3094330708855449807, guid: f59ec913a3da084488bc5cf5dcd93d30, type: 3}
+      Begin: 0
+      End: 11
+      OnEnter:
+        m_PersistentCalls:
+          m_Calls:
+          - m_Target: {fileID: 0}
+            m_TargetAssemblyTypeName: ItemSpawner, Assembly-CSharp
+            m_MethodName: Execute
+            m_Mode: 1
+            m_Arguments:
+              m_ObjectArgument: {fileID: 0}
+              m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+              m_IntArgument: 0
+              m_FloatArgument: 0
+              m_StringArgument: 
+              m_BoolArgument: 0
+            m_CallState: 2
+      OnExit:
+        m_PersistentCalls:
+          m_Calls:
+          - m_Target: {fileID: 0}
+            m_TargetAssemblyTypeName: LocoMotionSwitcher, Assembly-CSharp
+            m_MethodName: Execute
+            m_Mode: 1
+            m_Arguments:
+              m_ObjectArgument: {fileID: 0}
+              m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+              m_IntArgument: 0
+              m_FloatArgument: 0
+              m_StringArgument: 
+              m_BoolArgument: 0
+            m_CallState: 2
+      OnTick:
+        m_PersistentCalls:
+          m_Calls: []
+      WeightThreshold: 0.5
+    <ExitEventField>k__BackingField:
+      Clip: {fileID: 3094330708855449807, guid: 460ca0357c855c4499c05ed70c8373af, type: 3}
+      Begin: 0
+      End: 10
+      OnEnter:
+        m_PersistentCalls:
+          m_Calls: []
+      OnExit:
+        m_PersistentCalls:
+          m_Calls:
+          - m_Target: {fileID: 0}
+            m_TargetAssemblyTypeName: Sit, Assembly-CSharp
+            m_MethodName: Execute
+            m_Mode: 1
+            m_Arguments:
+              m_ObjectArgument: {fileID: 0}
+              m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+              m_IntArgument: 0
+              m_FloatArgument: 0
+              m_StringArgument: 
+              m_BoolArgument: 0
+            m_CallState: 2
+          - m_Target: {fileID: 0}
+            m_TargetAssemblyTypeName: ItemSpawner, Assembly-CSharp
+            m_MethodName: Execute
+            m_Mode: 1
+            m_Arguments:
+              m_ObjectArgument: {fileID: 0}
+              m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+              m_IntArgument: 0
+              m_FloatArgument: 0
+              m_StringArgument: 
+              m_BoolArgument: 0
+            m_CallState: 2
+      OnTick:
+        m_PersistentCalls:
+          m_Calls: []
+      WeightThreshold: 0.5
     <Locomotion>k__BackingField: 10
     <Direction>k__BackingField: 0
     <Idle>k__BackingField: {fileID: 3094330708855449807, guid: f10d5c71c0892a943946c210ccb96e72, type: 3}

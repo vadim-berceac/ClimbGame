@@ -13,6 +13,34 @@ MonoBehaviour:
   m_Name: LocomotionConfigsSO_Sit0
   m_EditorClassIdentifier: Assembly-CSharp::LocomotionConfigsSO
   <LocomotionConfigs>k__BackingField:
+    <EnterEventField>k__BackingField:
+      Clip: {fileID: 3094330708855449807, guid: 1ce769203d0287f45b720c27fd5fc5c1, type: 3}
+      Begin: 0
+      End: 13
+      OnEnter:
+        m_PersistentCalls:
+          m_Calls: []
+      OnExit:
+        m_PersistentCalls:
+          m_Calls: []
+      OnTick:
+        m_PersistentCalls:
+          m_Calls: []
+      WeightThreshold: 0.5
+    <ExitEventField>k__BackingField:
+      Clip: {fileID: 3094330708855449807, guid: 3828c6f180391774197918a424fb73b8, type: 3}
+      Begin: 0
+      End: 22
+      OnEnter:
+        m_PersistentCalls:
+          m_Calls: []
+      OnExit:
+        m_PersistentCalls:
+          m_Calls: []
+      OnTick:
+        m_PersistentCalls:
+          m_Calls: []
+      WeightThreshold: 0.5
     <Locomotion>k__BackingField: 6
     <Direction>k__BackingField: 0
     <Idle>k__BackingField: {fileID: 3094330708855449807, guid: bef28a53d1264b94d8620c8e66e3595d, type: 3}

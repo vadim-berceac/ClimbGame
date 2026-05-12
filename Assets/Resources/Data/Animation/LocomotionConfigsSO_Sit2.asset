@@ -13,6 +13,58 @@ MonoBehaviour:
   m_Name: LocomotionConfigsSO_Sit2
   m_EditorClassIdentifier: Assembly-CSharp::LocomotionConfigsSO
   <LocomotionConfigs>k__BackingField:
+    <EnterEventField>k__BackingField:
+      Clip: {fileID: 3094330708855449807, guid: 6a66181994202fe44b90298ffc2c3a0d, type: 3}
+      Begin: 0
+      End: 13
+      OnEnter:
+        m_PersistentCalls:
+          m_Calls: []
+      OnExit:
+        m_PersistentCalls:
+          m_Calls:
+          - m_Target: {fileID: 0}
+            m_TargetAssemblyTypeName: Sit, Assembly-CSharp
+            m_MethodName: Execute
+            m_Mode: 1
+            m_Arguments:
+              m_ObjectArgument: {fileID: 0}
+              m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+              m_IntArgument: 0
+              m_FloatArgument: 0
+              m_StringArgument: 
+              m_BoolArgument: 0
+            m_CallState: 2
+      OnTick:
+        m_PersistentCalls:
+          m_Calls: []
+      WeightThreshold: 0.5
+    <ExitEventField>k__BackingField:
+      Clip: {fileID: 3094330708855449807, guid: 68a718562c62a9641aa368d50f789492, type: 3}
+      Begin: 0
+      End: 21
+      OnEnter:
+        m_PersistentCalls:
+          m_Calls: []
+      OnExit:
+        m_PersistentCalls:
+          m_Calls:
+          - m_Target: {fileID: 0}
+            m_TargetAssemblyTypeName: Sit, Assembly-CSharp
+            m_MethodName: Execute
+            m_Mode: 1
+            m_Arguments:
+              m_ObjectArgument: {fileID: 0}
+              m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+              m_IntArgument: 0
+              m_FloatArgument: 0
+              m_StringArgument: 
+              m_BoolArgument: 0
+            m_CallState: 2
+      OnTick:
+        m_PersistentCalls:
+          m_Calls: []
+      WeightThreshold: 0.5
     <Locomotion>k__BackingField: 8
     <Direction>k__BackingField: 0
     <Idle>k__BackingField: {fileID: 3094330708855449807, guid: 3b4a867ff369674489690238e4644dca, type: 3}

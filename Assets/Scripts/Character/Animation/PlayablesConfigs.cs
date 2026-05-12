@@ -173,6 +173,27 @@ public struct LocomotionClipFrameRange
     [field: SerializeField] public float              WeightThreshold { get; set; }
 }
 
+[System.Serializable]
+public class FrameEventConfigField
+{
+    [SerializeField] public AnimationClip Clip;
+    [SerializeField] public int Begin;
+    [SerializeField] public int End;
+    [SerializeField] public UnityEvent OnEnter;
+    [SerializeField] public UnityEvent OnExit;
+    [SerializeField] public UnityEvent OnTick;
+    [SerializeField] public float WeightThreshold = 0.5f;
+
+    public FrameEventConfig ToFrameEventConfig() => new FrameEventConfig(
+        Begin, 
+        End,
+        () => OnEnter?.Invoke(), 
+        () => OnExit?.Invoke(),
+        () => OnTick?.Invoke(),
+        WeightThreshold
+    );
+}
+
 public enum LocomotionType
 {
     Walk0 = 0,

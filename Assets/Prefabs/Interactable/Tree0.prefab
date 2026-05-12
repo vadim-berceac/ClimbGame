@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 2612995824545391204}
   - component: {fileID: 2592495497779924788}
   - component: {fileID: 6325497342731124366}
-  - component: {fileID: 5179088994088734463}
   - component: {fileID: 5586584480328089367}
   m_Layer: 29
   m_Name: Tree0
@@ -69,82 +68,6 @@ MonoBehaviour:
   <Timer>k__BackingField:
     <EnableTimer>k__BackingField: 1
     <InteractionDuration>k__BackingField: 9.6
-  <InteractEnterEventField>k__BackingField:
-    Clip: {fileID: 3094330708855449807, guid: 516986d010767c54bae4e2036e5f94c7, type: 3}
-    Begin: 0
-    End: 11
-    OnEnter:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 5179088994088734463}
-          m_TargetAssemblyTypeName: ItemSpawner, Assembly-CSharp
-          m_MethodName: Execute
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-    OnExit:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 6325497342731124366}
-          m_TargetAssemblyTypeName: LocoMotionSwitcher, Assembly-CSharp
-          m_MethodName: Execute
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-    OnTick:
-      m_PersistentCalls:
-        m_Calls: []
-    WeightThreshold: 0.5
-  <InteractExitEventField>k__BackingField:
-    Clip: {fileID: 3094330708855449807, guid: 8b7e877d8196ae64a9319b9b5e066739, type: 3}
-    Begin: 0
-    End: 15
-    OnEnter:
-      m_PersistentCalls:
-        m_Calls: []
-    OnExit:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 6325497342731124366}
-          m_TargetAssemblyTypeName: Sit, Assembly-CSharp
-          m_MethodName: Execute
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-        - m_Target: {fileID: 5179088994088734463}
-          m_TargetAssemblyTypeName: ItemSpawner, Assembly-CSharp
-          m_MethodName: Execute
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-    OnTick:
-      m_PersistentCalls:
-        m_Calls: []
-    WeightThreshold: 0.5
   <AllowMultipleInteractions>k__BackingField: 1
 --- !u!114 &6325497342731124366
 MonoBehaviour:
@@ -160,20 +83,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SitChair
   interactLocomotionConfig: {fileID: 11400000, guid: 3e219a1b25dcca04cb639b2d45f871f7, type: 2}
   defaultLocomotionConfig: {fileID: 11400000, guid: 6216b1bec20e64746a04cd809cfd7b33, type: 2}
-  interactLocomotion: 11
-  defaultLocomotion: 0
---- !u!114 &5179088994088734463
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9128123404638868692}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5a28467eb2dfb3246937dd31f34a7b9b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ItemSpawner
   itemPrefab: {fileID: 5598007593342768091, guid: d04e08c62f031144191f734a76e9405a, type: 3}
   equippedItemSlot:
     <SlotType>k__BackingField: 0

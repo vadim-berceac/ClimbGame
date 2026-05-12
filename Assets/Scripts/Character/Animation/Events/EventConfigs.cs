@@ -4,9 +4,9 @@ public class FrameEventConfig
 {
     public readonly int    FromFrame;
     public readonly int    ToFrame;
-    public readonly Action OnEnter;
-    public readonly Action OnExit;
-    public readonly Action OnTick;
+    public Action OnEnter;
+    public Action OnExit;
+    public Action OnTick;
     public readonly float  WeightThreshold;
 
     public FrameEventConfig(

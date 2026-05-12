@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.Events;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using DG.Tweening;
@@ -7,8 +8,15 @@ using Zenject;
 
 public interface IInteractable
 {
-    public FrameEventConfig EnterInteractEvent { get; set; }
     public bool AllowMultipleInteractions { get; set; }
+}
+
+public enum InteractionState
+{
+    None,       
+    Entering,   
+    Idle,      
+    Exiting    
 }
 
 public class Interactable : MonoBehaviour, IInteractable
@@ -19,21 +27,11 @@ public class Interactable : MonoBehaviour, IInteractable
     [field: SerializeField] public MoveSettings Move { get; set; }
     [field: SerializeField] public TimerSettings Timer { get; set; }
     
-    private enum InteractionState
-    {
-        None,       
-        Entering,   
-        Idle,      
-        Exiting    
-    }
-
-    [field: SerializeField] public FrameEventConfigField InteractEnterEventField { get; set; } = new();
-    [field: SerializeField] public FrameEventConfigField InteractExitEventField { get; set; } = new();
     [field: SerializeField] public bool AllowMultipleInteractions { get; set; } = true;
-    public FrameEventConfig EnterInteractEvent { get; set; }
-    public FrameEventConfig ExitInteractEvent { get; set; }
     
     public CharacterCore OccupyingCharacter { get; private set; }
+
+    public event Action<CharacterCore, InteractionState> OnStateTransitioned;
 
     private readonly HashSet<CharacterCore> _charactersInZone = new();
     private readonly Dictionary<CharacterCore, InteractionState> _stateDict = new();
@@ -56,29 +54,7 @@ public class Interactable : MonoBehaviour, IInteractable
 
     private void Start()
     {
-        EnterInteractEvent = InteractEnterEventField.ToFrameEventConfig();
-        ExitInteractEvent = InteractExitEventField.ToFrameEventConfig();
-        
-       Damageable ??= GetComponent<IDamageable>();
-    }
-
-    public void ResetInteraction()
-    {
-        _stateDict.Clear();
-        _justExitedDict.Clear();
-        _lastAnimationStateDict.Clear();
-        _interactionTimerDict.Clear();
-    }
-
-    public void ResetInteraction(CharacterCore character)
-    {
-        if (character != null)
-        {
-            _stateDict.Remove(character);
-            _justExitedDict.Remove(character);
-            _lastAnimationStateDict.Remove(character);
-            _interactionTimerDict.Remove(character);
-        }
+        Damageable ??= GetComponent<IDamageable>();
     }
 
     private bool CheckConditions(CharacterCore character, Interactable interactable)
@@ -278,20 +254,7 @@ public class Interactable : MonoBehaviour, IInteractable
                 return;
             }
 
-            if (currentState == InteractionState.Entering)
-            {
-                if (InteractEnterEventField.Clip != null)
-                {
-                    character.PlayInteractAnimation(InteractEnterEventField.Clip, EnterInteractEvent);
-                }
-            }
-            else if (currentState == InteractionState.Exiting)
-            {
-                if (InteractExitEventField.Clip != null)
-                {
-                    character.PlayInteractAnimation(InteractExitEventField.Clip, ExitInteractEvent);
-                }
-            }
+            OnStateTransitioned?.Invoke(character, currentState);
 
             _lastAnimationStateDict[character] = currentState;
         }
@@ -349,27 +312,6 @@ public class Interactable : MonoBehaviour, IInteractable
     }
 
     #endregion
-}
-
-[System.Serializable]
-public class FrameEventConfigField
-{
-    [SerializeField] public AnimationClip Clip;
-    [SerializeField] public int Begin;
-    [SerializeField] public int End;
-    [SerializeField] public UnityEvent OnEnter;
-    [SerializeField] public UnityEvent OnExit;
-    [SerializeField] public UnityEvent OnTick;
-    [SerializeField] public float WeightThreshold = 0.5f;
-
-    public FrameEventConfig ToFrameEventConfig() => new FrameEventConfig(
-        Begin, 
-        End,
-        () => OnEnter?.Invoke(), 
-        () => OnExit?.Invoke(),
-        () => OnTick?.Invoke(),
-        WeightThreshold
-    );
 }
 
 [System.Serializable]
