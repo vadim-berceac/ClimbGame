@@ -8,6 +8,8 @@ using UnityEngine.Playables;
 public class PlayablesAnimatorController
 {
     #region Fields
+    
+    public float NormalizedTime {get; private set;}
 
     private readonly MonoBehaviour _coroutineRunner;
     private readonly AudioSource   _audioSource;
@@ -219,6 +221,51 @@ public class PlayablesAnimatorController
         {
             UpdateLocomotionHorizontal();
         }
+        
+        UpdateNormalizedTime();
+    }
+    
+    private void UpdateNormalizedTime()
+    {
+        // Выбираем актуальный миксер (curr или prev)
+        var activeMixer = _animationMixerLocomotionBlend.GetInputWeight(1) > 0.5f 
+            ? _animationMixerLocomotion 
+            : _animationMixerLocomotionPrev;
+
+        float maxWeight = -1f;
+        Playable bestPlayable = default;
+
+        // Находим клип с максимальным весом
+        for (int i = 0; i < 5; i++)
+        {
+            float weight = activeMixer.GetInputWeight(i);
+            if (weight > maxWeight)
+            {
+                maxWeight = weight;
+                bestPlayable = activeMixer.GetInput(i);
+            }
+        }
+
+        if (maxWeight < 0.01f || !bestPlayable.IsValid())
+        {
+            NormalizedTime = 0f;
+            return;
+        }
+
+        // Безопасное приведение к AnimationClipPlayable
+        if (bestPlayable.GetPlayableType() == typeof(AnimationClipPlayable))
+        {
+            var clipPlayable = (AnimationClipPlayable)bestPlayable;
+            var clip = clipPlayable.GetAnimationClip();
+
+            if (clip != null && clip.length > 0.001f)
+            {
+                NormalizedTime = (float)(clipPlayable.GetTime() / clip.length) % 1f;
+                return;
+            }
+        }
+
+        NormalizedTime = 0f;
     }
 
     private void UpdateLocomotionHorizontal()

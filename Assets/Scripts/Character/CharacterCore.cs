@@ -106,12 +106,15 @@ public class CharacterCore : CoreController
             
             if (!IsInteracting)
             {
+                var time = PlayablesAnimatorController.NormalizedTime;
                 _moveData = _animationContainer.GetMoveSpeedData(locomotionType);
-                _clampedInput = _moveSpeed.GetClampedInput(_moveData);
-                _currentSpeed = _moveSpeed.GetSpeed(_moveData);
+                _clampedInput = _moveSpeed.GetClampedInput(_moveData, time);
+                _currentSpeed = _moveSpeed.GetSpeed(_moveData, time);
                 
-                Controller.JumpAndGravity(InputHandler.JumpPressed, _animationContainer.GetMoveSpeedData(LocomotionType.Jump0).YSpeed);
+                Controller.JumpAndGravity(InputHandler.JumpPressed, _animationContainer.GetMoveSpeedData(LocomotionType.Jump0).GetY(time));
                 Controller.Move(_clampedInput, _currentSpeed, controllerData.SpeedChangeRate);
+                
+                Debug.Log(_currentSpeed);
 
                 if (InputHandler.Rotation != Vector3.zero)
                 {

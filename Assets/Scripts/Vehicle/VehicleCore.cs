@@ -48,11 +48,11 @@ public class VehicleCore : CoreController
     {
         SetLocomotion();
 
-        var clampedInput = _moveSpeed.GetClampedInput(locomotionConfig.MoveSpeedData);
-        var moveSpeed = _moveSpeed.GetSpeed(locomotionConfig.MoveSpeedData);
+        var clampedInput = _moveSpeed.GetClampedInput(locomotionConfig.MoveSpeedData, Time.deltaTime);
+        var moveSpeed = _moveSpeed.GetSpeed(locomotionConfig.MoveSpeedData, Time.deltaTime);
 
         Controller.Move(clampedInput, moveSpeed, 50f);
-        Controller.JumpAndGravity(_driverInput.JumpPressed, locomotionConfig.MoveSpeedData.YSpeed);
+        Controller.JumpAndGravity(_driverInput.JumpPressed, locomotionConfig.MoveSpeedData.GetY(Time.deltaTime));
         Controller.Rotation(_driverInput.Rotation, controllerData.RotationSpeed);
 
         PlayablesAnimatorController.UpdateLocomotion(Controller.HorizontalVelocity.normalized);
