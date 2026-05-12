@@ -1,3 +1,4 @@
+using System;
 using Unity.Netcode;
 using UnityEngine;
 using Zenject;
@@ -86,11 +87,23 @@ public class CharacterCore : CoreController
         }
     }
 
-    public void PlayInteractAnimation(AnimationClip animationClip, FrameEventConfig frameEventConfig)
+    public void PlayOneAnimation(FrameEventConfigField eventField, Action onEnterExtra)
     {
+        if (eventField == null || eventField.Clip == null)
+            return;
+
+        var eventConfig = eventField.ToFrameEventConfig();
+        var originalOnEnter = eventConfig.OnEnter;
+
+        eventConfig.OnEnter = () => {
+            onEnterExtra?.Invoke();
+            originalOnEnter?.Invoke();
+        };
+
         if (IsInteracting) return;
-        PlayablesAnimatorController.PlayOneShotAnimationClip(animationClip, frameEventConfig);
+        PlayablesAnimatorController.PlayOneShotAnimationClip(eventField.Clip, eventConfig);
     }
+
 
     private void Update()
     {
@@ -131,7 +144,7 @@ public class CharacterCore : CoreController
         PlayablesAnimatorController.UpdateLocomotion(_networkVelocity.Value);
     }
 
-    public override void SetLocomotion(bool isInitialization = false)
+    protected override void SetLocomotion(bool isInitialization = false)
     {
         var locomotionType = _locomotionSelector.GetLocomotionType();
         if (locomotionType == _currentLocomotionType && !isInitialization)
@@ -150,14 +163,22 @@ public class CharacterCore : CoreController
         Controller.Interact(value);
         _locomotionSelector.SetInteractLocomotion(locomotionType);
     }
-    
-    public void Interact(bool value, LocomotionConfigs locomotionConfigs)
-    {
-        if (!IsOwner) return;
-        
-        Controller.Interact(value);
-        _locomotionSelector.SetInteractLocomotion(locomotionConfigs);
-    }
+
+    // public void SwitchLocomotion(LocomotionConfigs newLocomotionConfig)
+    // {
+    //     var currentLocomotionType = _locomotionSelector.GetLocomotionType();
+    //     var currentLocomotionConfig = _animationContainer.GetLocomotionConfigs(currentLocomotionType);
+    //
+    //     if (currentLocomotionConfig.ExitEventField.Clip != null)
+    //     {
+    //         PlayOneAnimation(currentLocomotionConfig.ExitEventField, 
+    //             () => _locomotionSelector.SetInteractLocomotion(newLocomotionConfig));
+    //     }
+    //     else
+    //     {
+    //         _locomotionSelector.SetInteractLocomotion(newLocomotionConfig);
+    //     }
+    // }
     
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     public override void RequestOwnershipServerRpc(ulong requestingClientId, InputSourceMode mode)

@@ -16,7 +16,7 @@ public abstract class CoreController : NetworkBehaviour , ICoreController
     public PlayablesAnimatorController  PlayablesAnimatorController { get; set; }
     public InputHandler                 InputHandler { get; set; }
 
-    public abstract void SetLocomotion(bool isInitialization = false);
+    protected abstract void SetLocomotion(bool isInitialization = false);
     
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     public virtual void RequestOwnershipServerRpc(ulong requestingClientId, InputSourceMode mode){}

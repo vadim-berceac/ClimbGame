@@ -20,4 +20,9 @@ public struct CharacterAnimationContainer
     {
         return locomotionConfigsSO.FirstOrDefault(l => l.LocomotionConfigs.Locomotion == locomotionType).LocomotionConfigs.MoveSpeedData;
     }
+
+    public LocomotionConfigs GetLocomotionConfigs(LocomotionType locomotionType)
+    {
+        return locomotionConfigsSO.FirstOrDefault(l => l.LocomotionConfigs.Locomotion == locomotionType).LocomotionConfigs;
+    }
 }

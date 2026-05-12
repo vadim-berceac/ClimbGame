@@ -65,38 +65,17 @@ public class LocoMotionSwitcher : MonoBehaviour, IInteractableAction
     private void PlayEnterAnimation(CharacterCore character)
     {
         var enterEventField = interactLocomotionConfig.LocomotionConfigs.EnterEventField;
-        
-        if (enterEventField == null || enterEventField.Clip == null)
-            return;
-
-        var eventConfig = enterEventField.ToFrameEventConfig();
-        
-        var originalOnEnter = eventConfig.OnEnter;
-        eventConfig.OnEnter = () => {
-            originalOnEnter?.Invoke();
-            character.Interact(true, interactLocomotionConfig.LocomotionConfigs.Locomotion);
-        };
-        
-        character.PlayInteractAnimation(enterEventField.Clip, eventConfig);
+        character.PlayOneAnimation(enterEventField, 
+            () => character.Interact(true, interactLocomotionConfig.LocomotionConfigs.Locomotion));
     }
 
     private void PlayExitAnimation(CharacterCore character)
     {
         var exitEventField = interactLocomotionConfig.LocomotionConfigs.ExitEventField;
-        
-        if (exitEventField == null || exitEventField.Clip == null)
-            return;
-
-        var eventConfig = exitEventField.ToFrameEventConfig();
-        
-        var originalOnEnter = eventConfig.OnEnter;
-        eventConfig.OnEnter = () => {
-            character.Interact(false, defaultLocomotionConfig.LocomotionConfigs.Locomotion);
-            originalOnEnter?.Invoke();
-        };
-        
-        character.PlayInteractAnimation(exitEventField.Clip, eventConfig);
+        character.PlayOneAnimation(exitEventField, 
+            () => character.Interact(false, defaultLocomotionConfig.LocomotionConfigs.Locomotion));
     }
+
 
     public void Execute()
     {

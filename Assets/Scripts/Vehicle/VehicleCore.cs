@@ -70,7 +70,7 @@ public class VehicleCore : CoreController
         _moveSpeed = new MoveSpeed(InputHandler);
     }
 
-    public override void SetLocomotion(bool isInitialization = false)
+    protected override void SetLocomotion(bool isInitialization = false)
     {
         PlayablesAnimatorController.SetLocomotion(locomotionConfig.Locomotion);
         PlayablesAnimatorController.ConnectFootSteps(_soundContainer.GetAudioSet(locomotionConfig.Locomotion));

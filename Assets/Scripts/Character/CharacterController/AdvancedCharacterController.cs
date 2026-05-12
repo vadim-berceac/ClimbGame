@@ -337,8 +337,13 @@ public class AdvancedCharacterController
     {
         if (_forcedFallingFrames > 0)
         {
-            ApplyForcedFallVelocity();
-            return;
+            _forcedFallingFrames--;
+
+            if (_forcedFallingFrames == 0)
+            {
+                ApplyForcedFallVelocity();
+                return;
+            }
         }
 
         if (_isClimbing)
