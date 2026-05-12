@@ -180,7 +180,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f9972154d9f370a4b8f6d37d234d3770, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SitChair
+  interactLocomotionConfig: {fileID: 11400000, guid: 2d1c0a07f3fdf3842bcfaa44567c1964, type: 2}
+  defaultLocomotionConfig: {fileID: 11400000, guid: 6216b1bec20e64746a04cd809cfd7b33, type: 2}
   interactLocomotion: 10
+  defaultLocomotion: 0
 --- !u!114 &6184687985626235293
 MonoBehaviour:
   m_ObjectHideFlags: 0

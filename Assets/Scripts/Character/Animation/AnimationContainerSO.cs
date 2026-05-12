@@ -12,14 +12,12 @@ public class AnimationContainerSO : ScriptableObject
 public struct CharacterAnimationContainer
 {
     [Header("Locomotion")]
-    [SerializeField] private LocomotionConfigs[] locomotionConfigs;
-    [SerializeField] private LocomotionType defaultLocomotion;
+    [SerializeField] private LocomotionConfigsSO[] locomotionConfigsSO;
 
-    public LocomotionConfigs[] LocomotionConfigs => locomotionConfigs;
-    public LocomotionType DefaultLocomotion => defaultLocomotion;
+    public LocomotionConfigsSO[] LocomotionConfigs => locomotionConfigsSO;
 
     public MoveSpeedData GetMoveSpeedData(LocomotionType locomotionType)
     {
-        return locomotionConfigs.FirstOrDefault(l => l.Locomotion == locomotionType).MoveSpeedData;
+        return locomotionConfigsSO.FirstOrDefault(l => l.LocomotionConfigs.Locomotion == locomotionType).LocomotionConfigs.MoveSpeedData;
     }
 }

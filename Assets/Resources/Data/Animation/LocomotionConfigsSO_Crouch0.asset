@@ -1,0 +1,60 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 11569fbc41724594f980432b7898678d, type: 3}
+  m_Name: LocomotionConfigsSO_Crouch0
+  m_EditorClassIdentifier: Assembly-CSharp::LocomotionConfigsSO
+  <LocomotionConfigs>k__BackingField:
+    <Locomotion>k__BackingField: 3
+    <Direction>k__BackingField: 0
+    <Idle>k__BackingField: {fileID: 3094330708855449807, guid: 1206eca428c3cbc4ca8dbc01cefd0288, type: 3}
+    <MoveForward>k__BackingField: {fileID: 3094330708855449807, guid: c75ab60f951ff3f429d82ba0f55807a8, type: 3}
+    <MoveBackward>k__BackingField: {fileID: 3094330708855449807, guid: 5bd474a44164c3f439df43f014fc86aa, type: 3}
+    <StrafeLeft>k__BackingField: {fileID: 1691851316169767371, guid: 871312c6d96bd1c4e8afe2b8df4ae592, type: 3}
+    <StrafeRight>k__BackingField: {fileID: 3775301772596003388, guid: f26d668e11e649f48b97fc24a463466b, type: 3}
+    <MoveSpeedData>k__BackingField:
+      <IdleSpeed>k__BackingField: 0
+      <ForwardSpeed>k__BackingField: 2.5
+      <BackwardSpeed>k__BackingField: 1.5
+      <StrafeLeftSpeed>k__BackingField: 1.5
+      <StrafeRightSpeed>k__BackingField: 1.5
+      <YSpeed>k__BackingField: 0
+    <FrameRanges>k__BackingField:
+    - <EventTag>k__BackingField: StepL
+      <ClipType>k__BackingField: 1
+      <FromFrame>k__BackingField: 1
+      <ToFrame>k__BackingField: 2
+      <WeightThreshold>k__BackingField: 0.5
+    - <EventTag>k__BackingField: StepR
+      <ClipType>k__BackingField: 1
+      <FromFrame>k__BackingField: 13
+      <ToFrame>k__BackingField: 14
+      <WeightThreshold>k__BackingField: 0.5
+    - <EventTag>k__BackingField: StepR
+      <ClipType>k__BackingField: 2
+      <FromFrame>k__BackingField: 2
+      <ToFrame>k__BackingField: 3
+      <WeightThreshold>k__BackingField: 0.5
+    - <EventTag>k__BackingField: StepL
+      <ClipType>k__BackingField: 2
+      <FromFrame>k__BackingField: 13
+      <ToFrame>k__BackingField: 14
+      <WeightThreshold>k__BackingField: 0.5
+    - <EventTag>k__BackingField: StepL
+      <ClipType>k__BackingField: 3
+      <FromFrame>k__BackingField: 3
+      <ToFrame>k__BackingField: 4
+      <WeightThreshold>k__BackingField: 0.5
+    - <EventTag>k__BackingField: StepR
+      <ClipType>k__BackingField: 4
+      <FromFrame>k__BackingField: 3
+      <ToFrame>k__BackingField: 4
+      <WeightThreshold>k__BackingField: 0.5

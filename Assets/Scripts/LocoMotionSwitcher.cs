@@ -3,8 +3,8 @@ using UnityEngine;
 [RequireComponent(typeof(Interactable))]
 public class LocoMotionSwitcher : MonoBehaviour, IInteractableAction
 {
-    [SerializeField] private LocomotionType interactLocomotion;
-    [SerializeField] private LocomotionType defaultLocomotion;
+    [SerializeField] private LocomotionConfigsSO interactLocomotionConfig;
+    [SerializeField] private LocomotionConfigsSO defaultLocomotionConfig;
     
     private Interactable _interactable;
     
@@ -15,13 +15,13 @@ public class LocoMotionSwitcher : MonoBehaviour, IInteractableAction
 
     public void Execute()
     {
-        if (_interactable.OccupyingCharacter.CurrentLocomotionType != interactLocomotion)
+        if (_interactable.OccupyingCharacter.CurrentLocomotionType != interactLocomotionConfig.LocomotionConfigs.Locomotion)
         {
-            _interactable.OccupyingCharacter.Interact(true, interactLocomotion);
+            _interactable.OccupyingCharacter.Interact(true, interactLocomotionConfig.LocomotionConfigs.Locomotion);
             return;
         }
         
-        _interactable.OccupyingCharacter.Interact(false, defaultLocomotion);
+        _interactable.OccupyingCharacter.Interact(false, defaultLocomotionConfig.LocomotionConfigs.Locomotion);
         _interactable.ResetInteraction(_interactable.OccupyingCharacter); 
     }
 }

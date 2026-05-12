@@ -7,6 +7,11 @@ using UnityEngine.Events;
 [System.Serializable]
 public struct LocomotionConfigs
 {
+    [field: Header("Events")]
+    [field: SerializeField] public FrameEventConfigField EnterEventField { get; set; }
+    [field: SerializeField] public FrameEventConfigField ExitEventField { get; set; }
+    
+    [field: Header("Blending")]
     [field: SerializeField] public LocomotionType     Locomotion    { get; set; }
     [field: SerializeField] public LocomotionDirection Direction    { get; set; }
     [field: SerializeField] public AnimationClip      Idle          { get; set; }

@@ -51,7 +51,7 @@ public class PlayablesAnimatorController
         MonoBehaviour       coroutineRunner,
         Animator            animator,
         AudioSource         audioSource,
-        LocomotionConfigs[] locomotionConfigs)
+        LocomotionConfigsSO[] locomotionConfigs)
     {
         _coroutineRunner = coroutineRunner;
         _audioSource     = audioSource;
@@ -69,7 +69,7 @@ public class PlayablesAnimatorController
 
         _animationMixerTopLevel.ConnectInput(0, _animationMixerLocomotionBlend, 0, 1f);
 
-        _bakedLocomotions = BakeAllLocomotions(locomotionConfigs);
+        _bakedLocomotions = BakeAllLocomotion(locomotionConfigs);
 
         _scriptPlayableOutput = ScriptPlayableOutput.Create(_playableGraph, "Footsteps");
         _footstepsPlayable    = ScriptPlayable<FootstepsPlayablesBehavior>.Create(_playableGraph);
@@ -93,11 +93,11 @@ public class PlayablesAnimatorController
         return (blend, curr, prev);
     }
 
-    private BakedLocomotion[] BakeAllLocomotions(LocomotionConfigs[] configs)
+    private BakedLocomotion[] BakeAllLocomotion(LocomotionConfigsSO[] configs)
     {
         var result = new BakedLocomotion[configs.Length];
         for (var i = 0; i < configs.Length; i++)
-            result[i] = this.BakeLocomotion(configs[i], _playableGraph);
+            result[i] = this.BakeLocomotion(configs[i].LocomotionConfigs, _playableGraph);
         return result;
     }
 

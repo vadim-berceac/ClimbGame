@@ -320,3 +320,18 @@ MonoBehaviour:
         <YSpeed>k__BackingField: 0
       <FrameRanges>k__BackingField: []
     defaultLocomotion: 0
+    locomotionConfigsSO:
+    - {fileID: 11400000, guid: 3e219a1b25dcca04cb639b2d45f871f7, type: 2}
+    - {fileID: 11400000, guid: 98ed330c6b7532644800c5d0bef8fa25, type: 2}
+    - {fileID: 11400000, guid: 94b32e68c0502d24a891531ba6b4f83a, type: 2}
+    - {fileID: 11400000, guid: 740700a8532e76045aa9a04061f0c91a, type: 2}
+    - {fileID: 11400000, guid: a73e73fbdccc8514b8539edde21d7f2b, type: 2}
+    - {fileID: 11400000, guid: 16bfe4a929fa5d04192bc89353c634b8, type: 2}
+    - {fileID: 11400000, guid: 2f5e8720da973a447a1e54d36acfd3e3, type: 2}
+    - {fileID: 11400000, guid: 2d1c0a07f3fdf3842bcfaa44567c1964, type: 2}
+    - {fileID: 11400000, guid: ad2cd000c058984488863f36e961c43e, type: 2}
+    - {fileID: 11400000, guid: ebe588e928f1ab844b950e33108db8ab, type: 2}
+    - {fileID: 11400000, guid: 5d0259f35aeeebb489c5b4a40facc031, type: 2}
+    - {fileID: 11400000, guid: b43d4a0d427920a4f84ae25744613ca7, type: 2}
+    - {fileID: 11400000, guid: 6216b1bec20e64746a04cd809cfd7b33, type: 2}
+    defaultLocomotionSO: {fileID: 11400000, guid: 6216b1bec20e64746a04cd809cfd7b33, type: 2}
