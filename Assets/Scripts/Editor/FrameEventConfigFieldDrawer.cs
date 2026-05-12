@@ -20,14 +20,6 @@ public class FrameEventConfigFieldDrawer : PropertyDrawer
         if (isFoldoutOpen)
         {
             height += (lineHeight + lineSpacing) * 5; 
-            
-            var onEnterProp = property.FindPropertyRelative(nameof(FrameEventConfigField.OnEnter));
-            var onExitProp = property.FindPropertyRelative(nameof(FrameEventConfigField.OnExit));
-            var onTickProp = property.FindPropertyRelative(nameof(FrameEventConfigField.OnTick));
-            
-            height += EditorGUI.GetPropertyHeight(onEnterProp) + lineSpacing;
-            height += EditorGUI.GetPropertyHeight(onExitProp) + lineSpacing;
-            height += EditorGUI.GetPropertyHeight(onTickProp) + lineSpacing;
         }
         
         return height;
@@ -67,9 +59,6 @@ public class FrameEventConfigFieldDrawer : PropertyDrawer
             var beginProp = property.FindPropertyRelative(nameof(FrameEventConfigField.Begin));
             var endProp = property.FindPropertyRelative(nameof(FrameEventConfigField.End));
             var weightProp = property.FindPropertyRelative(nameof(FrameEventConfigField.WeightThreshold));
-            var onEnterProp = property.FindPropertyRelative(nameof(FrameEventConfigField.OnEnter));
-            var onExitProp = property.FindPropertyRelative(nameof(FrameEventConfigField.OnExit));
-            var onTickProp = property.FindPropertyRelative(nameof(FrameEventConfigField.OnTick));
             
             if (maxFrame > 0)
             {
@@ -96,20 +85,6 @@ public class FrameEventConfigFieldDrawer : PropertyDrawer
             var weightRect = new Rect(position.x, currentY, position.width, lineHeight);
             EditorGUI.PropertyField(weightRect, weightProp, new GUIContent("Weight Threshold"));
             currentY += lineHeight + lineSpacing;
-           
-            var onEnterHeight = EditorGUI.GetPropertyHeight(onEnterProp);
-            var onEnterRect = new Rect(position.x, currentY, position.width, onEnterHeight);
-            EditorGUI.PropertyField(onEnterRect, onEnterProp, new GUIContent("On Enter"), true);
-            currentY += onEnterHeight + lineSpacing;
-           
-            var onExitHeight = EditorGUI.GetPropertyHeight(onExitProp);
-            var onExitRect = new Rect(position.x, currentY, position.width, onExitHeight);
-            EditorGUI.PropertyField(onExitRect, onExitProp, new GUIContent("On Exit"), true);
-            currentY += onExitHeight + lineSpacing;
-            
-            var onTickHeight = EditorGUI.GetPropertyHeight(onTickProp);
-            var onTickRect = new Rect(position.x, currentY, position.width, onTickHeight);
-            EditorGUI.PropertyField(onTickRect, onTickProp, new GUIContent("On Tick"), true);
             
             EditorGUI.indentLevel--;
         }

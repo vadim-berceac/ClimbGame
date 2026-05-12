@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Animations;
 using UnityEngine.Events;
@@ -179,10 +180,11 @@ public class FrameEventConfigField
     [SerializeField] public AnimationClip Clip;
     [SerializeField] public int Begin;
     [SerializeField] public int End;
-    [SerializeField] public UnityEvent OnEnter;
-    [SerializeField] public UnityEvent OnExit;
-    [SerializeField] public UnityEvent OnTick;
     [SerializeField] public float WeightThreshold = 0.5f;
+    
+    [HideInInspector] public UnityEvent OnEnter;
+    [HideInInspector] public UnityEvent OnExit;
+    [HideInInspector] public UnityEvent OnTick;
 
     public FrameEventConfig ToFrameEventConfig() => new FrameEventConfig(
         Begin, 
