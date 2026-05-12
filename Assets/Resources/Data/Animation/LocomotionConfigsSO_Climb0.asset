@@ -49,12 +49,6 @@ MonoBehaviour:
     <StrafeLeft>k__BackingField: {fileID: 3094330708855449807, guid: 7a68386faaa232d41be76b2b2cc204a3, type: 3}
     <StrafeRight>k__BackingField: {fileID: 3094330708855449807, guid: e5d2d18723842ce4bad7520fc2736d2b, type: 3}
     <MoveSpeedData>k__BackingField:
-      <IdleSpeed>k__BackingField: 0
-      <ForwardSpeed>k__BackingField: 1.2
-      <BackwardSpeed>k__BackingField: 1.2
-      <StrafeLeftSpeed>k__BackingField: 1
-      <StrafeRightSpeed>k__BackingField: 1
-      <YSpeed>k__BackingField: 0
       <IdleSpeedCurve>k__BackingField:
         serializedVersion: 2
         m_Curve:
