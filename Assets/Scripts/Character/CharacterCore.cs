@@ -106,7 +106,7 @@ public class CharacterCore : CoreController
             
             var time = PlayablesAnimatorController.NormalizedTime;
             _moveData = _animationContainer.GetMoveSpeedData(locomotionType);
-            _clampedInput = _moveSpeed.GetClampedInput(_moveData, time);
+            _clampedInput = _moveSpeed.GetCurrentInput();
             _currentSpeed = _moveSpeed.GetSpeed(_moveData, time);
                 
             Controller.JumpAndGravity(InputHandler.JumpPressed, _moveData.GetY(time));
