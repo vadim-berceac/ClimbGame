@@ -15,8 +15,8 @@ MonoBehaviour:
   <LocomotionConfigs>k__BackingField:
     <EnterEventField>k__BackingField:
       Clip: {fileID: 3094330708855449807, guid: c6f6799d0cc1fbf42b6c8f5c52cd9605, type: 3}
-      Begin: 0
-      End: 0
+      Begin: 12
+      End: 20
       WeightThreshold: 0.5
       OnEnter:
         m_PersistentCalls:
@@ -28,7 +28,7 @@ MonoBehaviour:
         m_PersistentCalls:
           m_Calls: []
     <ExitEventField>k__BackingField:
-      Clip: {fileID: 3094330708855449807, guid: 8603987c94f26ed4f842c25738d2f790, type: 3}
+      Clip: {fileID: 0}
       Begin: 0
       End: 0
       WeightThreshold: 0.5
@@ -43,11 +43,11 @@ MonoBehaviour:
           m_Calls: []
     <Locomotion>k__BackingField: 5
     <Direction>k__BackingField: 0
-    <Idle>k__BackingField: {fileID: 8973767263969007744, guid: b19585d2a5825de4e9f27595974e1104, type: 3}
-    <MoveForward>k__BackingField: {fileID: 3094330708855449807, guid: c6f6799d0cc1fbf42b6c8f5c52cd9605, type: 3}
-    <MoveBackward>k__BackingField: {fileID: 3094330708855449807, guid: c6f6799d0cc1fbf42b6c8f5c52cd9605, type: 3}
-    <StrafeLeft>k__BackingField: {fileID: 3094330708855449807, guid: c6f6799d0cc1fbf42b6c8f5c52cd9605, type: 3}
-    <StrafeRight>k__BackingField: {fileID: 3094330708855449807, guid: c6f6799d0cc1fbf42b6c8f5c52cd9605, type: 3}
+    <Idle>k__BackingField: {fileID: 8908273484855622883, guid: 72bd353186f85834aa8936cc53c70752, type: 3}
+    <MoveForward>k__BackingField: {fileID: 8908273484855622883, guid: 72bd353186f85834aa8936cc53c70752, type: 3}
+    <MoveBackward>k__BackingField: {fileID: 8908273484855622883, guid: 72bd353186f85834aa8936cc53c70752, type: 3}
+    <StrafeLeft>k__BackingField: {fileID: 8908273484855622883, guid: 72bd353186f85834aa8936cc53c70752, type: 3}
+    <StrafeRight>k__BackingField: {fileID: 8908273484855622883, guid: 72bd353186f85834aa8936cc53c70752, type: 3}
     <MoveSpeedData>k__BackingField:
       <IdleSpeedCurve>k__BackingField:
         serializedVersion: 2
@@ -240,7 +240,7 @@ MonoBehaviour:
         m_Curve:
         - serializedVersion: 3
           time: 0
-          value: 10
+          value: 4
           inSlope: 0
           outSlope: 0
           tangentMode: 34
@@ -249,7 +249,7 @@ MonoBehaviour:
           outWeight: 0.33333334
         - serializedVersion: 3
           time: 1
-          value: 10
+          value: 4
           inSlope: 0
           outSlope: 0
           tangentMode: 34

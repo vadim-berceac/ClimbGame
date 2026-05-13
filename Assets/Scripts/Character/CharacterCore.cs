@@ -1,16 +1,17 @@
-using System;
 using Unity.Netcode;
 using UnityEngine;
 using Zenject;
 
 public class CharacterCore : CoreController
 {
-    [field:SerializeField] public bool HasPick {get; private set;} // для теста
-    [field:SerializeField] public bool HasLumberAxe {get; private set;}// для теста
+    [field:Header("Test Inventory Temp")]
+    [field:SerializeField] public bool HasPick {get; private set;}
+    [field:SerializeField] public bool HasLumberAxe {get; private set;} 
+    
+    [field:Header("Controller Settings")]
     [SerializeField] private AdvancedCharacterControllerData  controllerData;
 
-    private CharacterAnimationContainer _animationContainer;  
-    private CharacterSoundContainer    _soundContainer;
+    private CharacterAnimationContainer _animationContainer; 
     private MoveSpeed                  _moveSpeed;
     private LocomotionSelector         _locomotionSelector;
     private CharacterAnimationEvents   _animationEvents;
@@ -48,18 +49,18 @@ public class CharacterCore : CoreController
 
         Controller          = new AdvancedCharacterController(controller, controllerData);
         _animationContainer = animationContainer;
-        _soundContainer     = soundContainer;
         _animationEvents    = animationEvents;
         CharacterSlots      = slots;
         _locomotionSelector = new LocomotionSelector(Controller, InputHandler);
         _moveSpeed          = new MoveSpeed(InputHandler);
 
         PlayablesAnimatorController =
-            new PlayablesAnimatorController(this, animator, audioSource, _animationContainer.LocomotionConfigs);
+            new PlayablesAnimatorController(this, animator, audioSource, _animationContainer.LocomotionConfigs, soundContainer);
         
         PlayablesAnimatorController.SetEventTagResolver(_animationEvents.Resolve);
 
-        SetLocomotion(true);
+        _currentLocomotionType = _animationContainer.GetDefaultLocomotionType();
+        PlayablesAnimatorController.FinalizeLocomotionChange(_currentLocomotionType, UpdateLocomotion, UpdateNetworkLocomotion);
     }
 
     public override void OnNetworkSpawn()
@@ -83,27 +84,8 @@ public class CharacterCore : CoreController
         {
             _currentLocomotionType = newValue;
             PlayablesAnimatorController.SetLocomotion(newValue);
-            PlayablesAnimatorController.ConnectFootSteps(_soundContainer.GetAudioSet(newValue));
         }
     }
-
-    public void PlayOneAnimation(FrameEventConfigField eventField, Action onEnterExtra)
-    {
-        if (eventField == null || eventField.Clip == null)
-            return;
-
-        var eventConfig = eventField.ToFrameEventConfig();
-        var originalOnEnter = eventConfig.OnEnter;
-
-        eventConfig.OnEnter = () => {
-            onEnterExtra?.Invoke();
-            originalOnEnter?.Invoke();
-        };
-
-        if (IsInteracting) return;
-        PlayablesAnimatorController.PlayOneShotAnimationClip(eventField.Clip, eventConfig);
-    }
-
 
     private void Update()
     {
@@ -114,7 +96,7 @@ public class CharacterCore : CoreController
             if (locomotionType != _networkLocomotionType.Value && IsSpawned)
             {
                 _networkLocomotionType.Value = locomotionType;
-                SetLocomotion();
+                SwitchLocomotion(_animationContainer.GetLocomotionConfigs(locomotionType));
             }
             
             if (IsInteracting)
@@ -141,44 +123,66 @@ public class CharacterCore : CoreController
             }
         }
         
-        PlayablesAnimatorController.UpdateLocomotion(_networkVelocity.Value);
+        PlayablesAnimatorController.UpdateCurrentLocomotion(_networkVelocity.Value);
     }
 
-    protected override void SetLocomotion(bool isInitialization = false)
+    public override void SwitchLocomotion(LocomotionConfigs newLocomotionConfig, bool setBusy = false)
     {
-        var locomotionType = _locomotionSelector.GetLocomotionType();
-        if (locomotionType == _currentLocomotionType && !isInitialization)
-        {
+        if (IsInteracting || !IsOwner) 
             return;
+
+        Controller.SetBusy(setBusy);
+
+        var currentConfig = _animationContainer.GetLocomotionConfigs(_currentLocomotionType);
+
+        if (currentConfig.ExitEventField?.Clip != null)
+        {
+            if (!IsInteracting)
+            {
+                PlayablesAnimatorController.PlayOneAnimation(currentConfig.ExitEventField, () =>
+                {
+                    ApplyNewLocomotion(newLocomotionConfig);
+                });
+            }
         }
-        _currentLocomotionType = locomotionType;
-        PlayablesAnimatorController.SetLocomotion(_currentLocomotionType);
-        PlayablesAnimatorController.ConnectFootSteps(_soundContainer.GetAudioSet(_currentLocomotionType));
+        else
+        {
+            ApplyNewLocomotion(newLocomotionConfig);
+        }
     }
 
-    public void Interact(bool value, LocomotionType locomotionType)
+    private void ApplyNewLocomotion(LocomotionConfigs newConfig)
     {
-        if (!IsOwner) return;
-        
-        Controller.Interact(value);
-        _locomotionSelector.SetInteractLocomotion(locomotionType);
+        _locomotionSelector.SetInteractLocomotion(newConfig.Locomotion);
+
+        if (newConfig.EnterEventField?.Clip != null)
+        {
+            if (!IsInteracting)
+            {
+                PlayablesAnimatorController.PlayOneAnimation(newConfig.EnterEventField, () =>
+                {
+                    PlayablesAnimatorController.FinalizeLocomotionChange(newConfig.Locomotion, UpdateLocomotion, UpdateNetworkLocomotion);
+                });
+            }
+        }
+        else
+        {
+            PlayablesAnimatorController.FinalizeLocomotionChange(newConfig.Locomotion, UpdateLocomotion, UpdateNetworkLocomotion);
+        }
     }
 
-    // public void SwitchLocomotion(LocomotionConfigs newLocomotionConfig)
-    // {
-    //     var currentLocomotionType = _locomotionSelector.GetLocomotionType();
-    //     var currentLocomotionConfig = _animationContainer.GetLocomotionConfigs(currentLocomotionType);
-    //
-    //     if (currentLocomotionConfig.ExitEventField.Clip != null)
-    //     {
-    //         PlayOneAnimation(currentLocomotionConfig.ExitEventField, 
-    //             () => _locomotionSelector.SetInteractLocomotion(newLocomotionConfig));
-    //     }
-    //     else
-    //     {
-    //         _locomotionSelector.SetInteractLocomotion(newLocomotionConfig);
-    //     }
-    // }
+    private void UpdateNetworkLocomotion(LocomotionType newType)
+    {
+        if (IsSpawned)
+        {
+            _networkLocomotionType.Value = newType;
+        }
+    }
+
+    private void UpdateLocomotion(LocomotionType newType)
+    {
+        _currentLocomotionType = newType;
+    }
     
     [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
     public override void RequestOwnershipServerRpc(ulong requestingClientId, InputSourceMode mode)

@@ -44,7 +44,7 @@ public class LocoMotionSwitcher : MonoBehaviour, IInteractableAction
         {
             case InteractionState.Entering:
                 Execute();
-                PlayEnterAnimation(character);
+                character.SwitchLocomotion(interactLocomotionConfig.LocomotionConfigs, true);
                 break;
 
             case InteractionState.Idle:
@@ -52,7 +52,7 @@ public class LocoMotionSwitcher : MonoBehaviour, IInteractableAction
 
             case InteractionState.Exiting:
                 Execute();
-                PlayExitAnimation(character);
+                character.SwitchLocomotion(defaultLocomotionConfig.LocomotionConfigs, false);
                 break;
 
             case InteractionState.None:
@@ -61,21 +61,6 @@ public class LocoMotionSwitcher : MonoBehaviour, IInteractableAction
 
         _lastProcessedState = newState;
     }
-
-    private void PlayEnterAnimation(CharacterCore character)
-    {
-        var enterEventField = interactLocomotionConfig.LocomotionConfigs.EnterEventField;
-        character.PlayOneAnimation(enterEventField, 
-            () => character.Interact(true, interactLocomotionConfig.LocomotionConfigs.Locomotion));
-    }
-
-    private void PlayExitAnimation(CharacterCore character)
-    {
-        var exitEventField = interactLocomotionConfig.LocomotionConfigs.ExitEventField;
-        character.PlayOneAnimation(exitEventField, 
-            () => character.Interact(false, defaultLocomotionConfig.LocomotionConfigs.Locomotion));
-    }
-
 
     public void Execute()
     {

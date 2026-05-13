@@ -17,6 +17,7 @@ MonoBehaviour:
       Clip: {fileID: 0}
       Begin: 0
       End: 0
+      WeightThreshold: 0.5
       OnEnter:
         m_PersistentCalls:
           m_Calls: []
@@ -26,11 +27,11 @@ MonoBehaviour:
       OnTick:
         m_PersistentCalls:
           m_Calls: []
-      WeightThreshold: 0.5
     <ExitEventField>k__BackingField:
-      Clip: {fileID: 0}
+      Clip: {fileID: 3094330708855449807, guid: 8603987c94f26ed4f842c25738d2f790, type: 3}
       Begin: 0
-      End: 0
+      End: 18
+      WeightThreshold: 0.5
       OnEnter:
         m_PersistentCalls:
           m_Calls: []
@@ -40,7 +41,6 @@ MonoBehaviour:
       OnTick:
         m_PersistentCalls:
           m_Calls: []
-      WeightThreshold: 0.5
     <Locomotion>k__BackingField: 4
     <Direction>k__BackingField: 0
     <Idle>k__BackingField: {fileID: 8908273484855622883, guid: 72bd353186f85834aa8936cc53c70752, type: 3}

@@ -11,6 +11,7 @@ public class AnimationContainerSO : ScriptableObject
 [Serializable]
 public struct CharacterAnimationContainer
 {
+    [SerializeField] private LocomotionType defaultLocomotion;
     [Header("Locomotion")]
     [SerializeField] private LocomotionConfigsSO[] locomotionConfigsSO;
 
@@ -24,5 +25,10 @@ public struct CharacterAnimationContainer
     public LocomotionConfigs GetLocomotionConfigs(LocomotionType locomotionType)
     {
         return locomotionConfigsSO.FirstOrDefault(l => l.LocomotionConfigs.Locomotion == locomotionType).LocomotionConfigs;
+    }
+
+    public LocomotionType GetDefaultLocomotionType()
+    {
+        return defaultLocomotion;
     }
 }

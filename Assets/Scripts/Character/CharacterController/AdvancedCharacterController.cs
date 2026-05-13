@@ -61,7 +61,7 @@ public class AdvancedCharacterController
     private bool _isJumping;
     private bool _jumpRequested;
     private bool _isOnClimbableSurface;
-    private bool _isSiting;
+    private bool _isBusy;
 
     #endregion
 
@@ -87,7 +87,7 @@ public class AdvancedCharacterController
     public bool   IsOnClimbableSurface() => _isOnClimbableSurface;
     public bool   IsJumping()            => _isJumping;
     public bool   IsFalling()            => !_isGrounded && !_isOnClimbableSurface && _velocity.y < -JumpVelocityThreshold;
-    public bool   IsInteract()             => _isSiting;
+    public bool   IsInteract()             => _isBusy;
     public bool   IsAirborne()           => !_isGrounded && !_isClimbing && !_isOnClimbableSurface;
     public Vector3 Velocity              => _transform.InverseTransformDirection(_velocity);
     public Vector2 HorizontalVelocity    => new (Velocity.x, Velocity.z);
@@ -120,14 +120,14 @@ public class AdvancedCharacterController
 
     #region Public Methods
 
-    public void Interact(bool isSiting)
+    public void SetBusy(bool isSiting)
     {
-        _isSiting = isSiting;
+        _isBusy = isSiting;
     }
 
     public void Move(Vector3 motion, float inputSpeed, float? speedChangeRate = null)
     {
-        if(!_controller.enabled || _isSiting) return;
+        if(!_controller.enabled || _isBusy) return;
         
         _moveInput   = motion;
         _targetSpeed = inputSpeed;
@@ -158,7 +158,7 @@ public class AdvancedCharacterController
 
     public void JumpAndGravity(bool jumpPressed, float jumpHeight, float gravityMultiplier = 2f)
     {
-        if(!_controller.enabled || _isSiting) return;
+        if(!_controller.enabled || _isBusy) return;
         
         _jumpHeight = jumpHeight;
         _gravity    = gravityMultiplier * Physics.gravity.y;
@@ -170,7 +170,7 @@ public class AdvancedCharacterController
 
     public void Rotation(Vector3 rotation, float rotationSpeed)
     {
-        if(!_controller.enabled || _isSiting) return;
+        if(!_controller.enabled || _isBusy) return;
         
         _rotationInput = rotation;
         _rotationSpeed = rotationSpeed;

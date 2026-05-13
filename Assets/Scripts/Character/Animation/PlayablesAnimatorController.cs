@@ -13,6 +13,7 @@ public class PlayablesAnimatorController
 
     private readonly MonoBehaviour _coroutineRunner;
     private readonly AudioSource   _audioSource;
+    private readonly CharacterSoundContainer _soundContainer;
     private          PlayableGraph _playableGraph;
 
     // Graph nodes
@@ -53,10 +54,12 @@ public class PlayablesAnimatorController
         MonoBehaviour       coroutineRunner,
         Animator            animator,
         AudioSource         audioSource,
-        LocomotionConfigsSO[] locomotionConfigs)
+        LocomotionConfigsSO[] locomotionConfigs,
+        CharacterSoundContainer soundContainer)
     {
         _coroutineRunner = coroutineRunner;
         _audioSource     = audioSource;
+        _soundContainer = soundContainer;
 
         _playableGraph = PlayableGraph.Create("AnimatorController");
 
@@ -201,7 +204,7 @@ public class PlayablesAnimatorController
         _locomotionBlendHandle = null;
     }
 
-    public void UpdateLocomotion(Vector3 velocity)
+    public void UpdateCurrentLocomotion(Vector3 velocity)
     {
         var input = _currentBakedLocomotion.Direction == LocomotionDirection.Horizontal 
             ? new Vector2(velocity.x, velocity.z)
@@ -223,6 +226,16 @@ public class PlayablesAnimatorController
         }
         
         UpdateNormalizedTime();
+    }
+    
+    public void FinalizeLocomotionChange(LocomotionType newType,  Action<LocomotionType> onLocomotionUpdate, Action<LocomotionType> onLocomotionChanged)
+    {
+        onLocomotionUpdate?.Invoke(newType);
+    
+        SetLocomotion(newType);
+        ConnectFootSteps(_soundContainer.GetAudioSet(newType));
+        
+        onLocomotionChanged?.Invoke(newType);
     }
     
     private void UpdateNormalizedTime()
@@ -350,7 +363,22 @@ public class PlayablesAnimatorController
 
     #region OneShot
 
-    public void PlayOneShotAnimationClip(AnimationClip animationClip, params FrameEventConfig[] frameEvents)
+    public void PlayOneAnimation(FrameEventConfigField eventField, Action onEnterExtra)
+    {
+        if (eventField == null || eventField.Clip == null)
+            return;
+
+        var eventConfig = eventField.ToFrameEventConfig();
+        var originalOnEnter = eventConfig.OnEnter;
+
+        eventConfig.OnEnter = () => {
+            onEnterExtra?.Invoke();
+            originalOnEnter?.Invoke();
+        };
+        PlayOneShotAnimationClip(eventField.Clip, eventConfig);
+    }
+    
+    private void PlayOneShotAnimationClip(AnimationClip animationClip, params FrameEventConfig[] frameEvents)
     {
         if (IsAlreadyPlaying(animationClip)) return;
         if (OneShotIsActive()) InterruptOneShotAnimationClip();
